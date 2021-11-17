@@ -15,6 +15,7 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
+  ActivityIndicator,
   TouchableHighlight,
   FlatList,
   Dimensions,
@@ -57,7 +58,7 @@ class Home extends React.Component {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3NGY4MmQ0NC1iZjgxLTQwNmYtOTAwNC1iODM2NDJjZDQxYjciLCJlbWFpbCI6ImpqaHVic3BvdHRlc3QxMUB5b3BtYWlsLmNvbSIsInVpZCI6Im5kS3lEN2lMNVk2Nk44ZUwvLzFweU55bWRtb3lYOUJiMlB2Z2kzdGpkUkZ2YnRmYjU2OUZ4OHRQM0VDUnNBTnQiLCJpcCI6IjE3Mi4zMS40MC4xOTQiLCJyb2xlIjoiY3VzdG9tZXIiLCJleHAiOjE2MzcxMjQyNTEsImlzcyI6Ik1vb3ZheklkZW50aXR5IiwiYXVkIjoiTW9vdmF6V2ViQXBwIn0.R1NXvPca5EfmVxwLhxzx5bv3Nod4K1Gk2sPfylDI3lc',
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxNWQwODY1OS1lMGEyLTQyN2ItYjBlYS1hZWZiNTBkMDdkNTMiLCJlbWFpbCI6ImpqaHVic3BvdHRlc3QxMUB5b3BtYWlsLmNvbSIsInVpZCI6Im5kS3lEN2lMNVk2Nk44ZUwvLzFweU55bWRtb3lYOUJiMlB2Z2kzdGpkUkZ2YnRmYjU2OUZ4OHRQM0VDUnNBTnQiLCJpcCI6IjE3Mi4zMS40MC4xOTQiLCJyb2xlIjoiY3VzdG9tZXIiLCJleHAiOjE2MzcyMzUzODksImlzcyI6Ik1vb3ZheklkZW50aXR5IiwiYXVkIjoiTW9vdmF6V2ViQXBwIn0.7s12wTIHcPxtHika2cmXgV5thj9fSYfnb9PJy3VBGwA',
       }
     })
     .then(response => response.json())
@@ -85,7 +86,7 @@ class Home extends React.Component {
               <View style={styles.columnHeadCountCon}>
                 <Text style={styles.columnHeadCount} allowFontScaling={false}>{tasks.totalItemCount}</Text>
               </View>
-              <Image resizeMode='cover' style={{width: 34, height: 34}} source={{uri: icons.add}} />
+              <Image resizeMode='cover' style={{width: 28, height: 28}} source={{uri: icons.add}} />
             </View>
           </View>
           <FlatList
@@ -113,7 +114,13 @@ class Home extends React.Component {
         </>
       )
     } else {
-      return <></>
+      return (
+        <View style={{ height: 200, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator
+            size="small"
+          />
+        </View>
+      )
     }
   }
 
@@ -122,7 +129,7 @@ class Home extends React.Component {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3NGY4MmQ0NC1iZjgxLTQwNmYtOTAwNC1iODM2NDJjZDQxYjciLCJlbWFpbCI6ImpqaHVic3BvdHRlc3QxMUB5b3BtYWlsLmNvbSIsInVpZCI6Im5kS3lEN2lMNVk2Nk44ZUwvLzFweU55bWRtb3lYOUJiMlB2Z2kzdGpkUkZ2YnRmYjU2OUZ4OHRQM0VDUnNBTnQiLCJpcCI6IjE3Mi4zMS40MC4xOTQiLCJyb2xlIjoiY3VzdG9tZXIiLCJleHAiOjE2MzcxMjQyNTEsImlzcyI6Ik1vb3ZheklkZW50aXR5IiwiYXVkIjoiTW9vdmF6V2ViQXBwIn0.R1NXvPca5EfmVxwLhxzx5bv3Nod4K1Gk2sPfylDI3lc',
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxNWQwODY1OS1lMGEyLTQyN2ItYjBlYS1hZWZiNTBkMDdkNTMiLCJlbWFpbCI6ImpqaHVic3BvdHRlc3QxMUB5b3BtYWlsLmNvbSIsInVpZCI6Im5kS3lEN2lMNVk2Nk44ZUwvLzFweU55bWRtb3lYOUJiMlB2Z2kzdGpkUkZ2YnRmYjU2OUZ4OHRQM0VDUnNBTnQiLCJpcCI6IjE3Mi4zMS40MC4xOTQiLCJyb2xlIjoiY3VzdG9tZXIiLCJleHAiOjE2MzcyMzUzODksImlzcyI6Ik1vb3ZheklkZW50aXR5IiwiYXVkIjoiTW9vdmF6V2ViQXBwIn0.7s12wTIHcPxtHika2cmXgV5thj9fSYfnb9PJy3VBGwA',
       }
     })
     .then(response => response.json())
@@ -142,39 +149,41 @@ class Home extends React.Component {
     if (tasks) {
       return (
         <>
-          <View style={styles.columnHead}>
-            <View style={styles.columnHeadCon}>
-              <Image resizeMode='contain' style={[styles.columnHeadIcon, {width: 36, height: 30}]} source={{uri: icons.head[index]}} />
-              <Text style={styles.columnHeadTitle} allowFontScaling={false}>{ index == 0 ? 'Dated Tasks' : index == 1 ? 'Undated Tasks' : '' }</Text>
-            </View>
-            <View style={styles.columnHeadCon}>
-              <View style={styles.columnHeadCountCon}>
-                <Text style={styles.columnHeadCount} allowFontScaling={false}>{tasks.totalItemCount}</Text>
+          <View style={styles.rows}>
+            <View style={styles.rowHead}>
+              <View style={styles.columnHeadCon}>
+                <View style={styles.rowHeadDot}></View>
+                <Text style={styles.columnHeadTitle} allowFontScaling={false}>{ index == 0 ? 'Dated Tasks' : index == 1 ? 'Undated Tasks' : '' }</Text>
               </View>
-              <Image resizeMode='cover' style={{width: 34, height: 34}} source={{uri: icons.add}} />
+              <View style={styles.columnHeadCon}>
+                <View style={styles.columnHeadCountCon}>
+                  <Text style={styles.columnHeadCount} allowFontScaling={false}>{tasks.totalItemCount}</Text>
+                </View>
+                <Image resizeMode='cover' style={{width: 28, height: 28}} source={{uri: icons.add}} />
+              </View>
             </View>
-          </View>
-          {
-            tasks.items.map((item, key) => {
-              return (
-                <TouchableHighlight key={key} activeOpacity={0.9} underlayColor="none">
-                  <View style={[styles.column, {backgroundColor: item.statusText == 'Task/Note' ? '#FFF5F8' : '#FFF'}]} key={index}>
-                    <View style={styles.columnStatusCon}>
-                      <View style={[styles.columnStatusTextCon, {backgroundColor: item.statusText == 'Task/Note' ? '#e89cae' : '' || item.statusText == 'In Progress' ? '#448de3' : '' || item.statusText == 'Suggested Task' ? '#d3d6d9' : ''}]}>
-                        <Text style={styles.columnStatusText} allowFontScaling={false}>{item.statusText}</Text>
+            {
+              tasks.items.map((item, key) => {
+                return (
+                  <TouchableHighlight key={key} activeOpacity={0.9} underlayColor="none">
+                    <View style={[styles.column, {backgroundColor: item.statusText == 'Task/Note' ? '#FFF5F8' : '#FFF'}]} key={index}>
+                      <View style={styles.columnStatusCon}>
+                        <View style={[styles.columnStatusTextCon, {backgroundColor: item.statusText == 'Task/Note' ? '#e89cae' : '' || item.statusText == 'In Progress' ? '#448de3' : '' || item.statusText == 'Suggested Task' ? '#d3d6d9' : ''}]}>
+                          <Text style={styles.columnStatusText} allowFontScaling={false}>{item.statusText}</Text>
+                        </View>
+                        <View style={styles.columnStatusHeadCon}>
+                          <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: icons.star}} />
+                          <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: icons.more}} />
+                        </View>
                       </View>
-                      <View style={styles.columnStatusHeadCon}>
-                        <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: icons.star}} />
-                        <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: icons.more}} />
-                      </View>
+                      <Text style={styles.columnTitle} allowFontScaling={false}>{item.title}</Text>
+                      <Text style={styles.columnDescription} allowFontScaling={false}>{item.description}</Text>
                     </View>
-                    <Text style={styles.columnTitle} allowFontScaling={false}>{item.title}</Text>
-                    <Text style={styles.columnDescription} allowFontScaling={false}>{item.description}</Text>
-                  </View>
-                </TouchableHighlight>
-              )
-            })
-          }
+                  </TouchableHighlight>
+                )
+              })
+            }
+          </View>
         </>
       )
     } else {
@@ -245,19 +254,19 @@ class Home extends React.Component {
           <View style={[styles.taskview, {display: this.state.active == 'Task View' ? 'flex' : 'none'}]}>
             <Swiper autoplay={false} height={1000} showsButtons={false} showPagination={false} index={0} dot={<></>} activeDot={<></>}>
               <View style={styles.slide}>
-                {this.renderColumns(this.state.tasks.origin, 0)}
+                {this.renderColumns(this.state.tasks && this.state.tasks.origin, 0)}
               </View>
               <View style={styles.slide}>
-                {this.renderColumns(this.state.tasks.destination, 1)}
+                {this.renderColumns(this.state.tasks && this.state.tasks.destination, 1)}
               </View>
               <View style={styles.slide}>
-                {this.renderColumns(this.state.tasks.taskNote, 2)}
+                {this.renderColumns(this.state.tasks && this.state.tasks.taskNote, 2)}
               </View>
             </Swiper>
           </View>
           <View style={[styles.timeline, {display: this.state.active == 'Timeline View' ? 'flex' : 'none'}]}>
-            {this.renderRows(this.state.tasks.dated, 0)}
-            {this.renderRows(this.state.tasks.unDated, 1)}
+            {this.renderRows(this.state.tasks && this.state.tasks.dated, 0)}
+            {this.renderRows(this.state.tasks && this.state.tasks.unDated, 1)}
           </View>
           <View style={styles.footer}>
             <Image resizeMode='cover' style={styles.footerImage} source={{uri: icons.footer}} />
@@ -428,6 +437,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   columnStatusHeadCon: {
+    position: 'relative',
     flexDirection: 'row'
   },
   columnStatusTextCon: {
@@ -455,6 +465,34 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     marginTop: 6
+  },
+
+  // rows
+  timeline: {
+    marginTop: 20,
+    minHeight: 200
+  },
+  rows: {
+    marginLeft: 30,
+    marginRight: 20,
+    paddingLeft: 20,
+    borderColor: '#D3D6D9',
+    borderLeftWidth: 1
+  },
+  rowHead: {
+    paddingBottom: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  rowHeadDot: {
+    position: 'absolute',
+    top: 0,
+    left: -30,
+    width: 20,
+    height: 20,
+    borderRadius: 20,
+    backgroundColor: '#000'
   },
 
   // swiper
