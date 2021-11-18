@@ -10,6 +10,7 @@ import React, { Component } from 'react';
 import icons from './Icons';
 import Swiper from 'react-native-swiper';
 import ActionSheet from 'react-native-actionsheet';
+import ModalDropdown from 'react-native-modal-dropdown';
 import {
   SafeAreaView,
   ScrollView,
@@ -33,12 +34,12 @@ class Home extends React.Component {
         {
           text: 'Days to your move',
           color: '#000',
-          num: 100
+          num: 0
         },
         {
           text: 'Tasks in Progress',
           color: '#458de3',
-          num: 10
+          num: 0
         },
         {
           text: 'Tasks Completed',
@@ -47,18 +48,94 @@ class Home extends React.Component {
         }
       ],
       tasks: {},
+      reloDetail: null,
+      currency: null,
+      bearer: {},
       active: 'Task View'
     }
 
-    this.fetchDataListColumn()
+    this.bearer()
   }
 
-  fetchDataListColumn() {
+  bearer () {
+    fetch(`https://api-staging-c.moovaz.com/api/Account/authenticate`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        "email": 'jjhubspottest11@yopmail.com',
+        "password": '12345678'
+      })
+    })
+    .then(response => response.json())
+    .then(responseData => {
+      this.setState({
+        bearer: responseData.data
+      })
+      this.currency()
+      this.reloDetail()
+      this.fetchDataListColumn()
+    })
+    .catch((error) => {
+      console.log('err: ', error)
+    })
+    .done()
+  }
+
+  currency() {
+    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-relo-currency?RelocateID=56816b12-d01e-489b-b6e9-8112f86ba420`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${ this.state.bearer.jwToken }`,
+      },
+    })
+    .then(response => response.json())
+    .then(responseData => {
+      this.setState({
+        currency: responseData.data
+      })
+      console.log(responseData.data);
+    })
+    .catch((error) => {
+      console.log('err: ', error)
+    })
+    .done()
+  }
+
+  reloDetail () {
+    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-relo-detail`, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${ this.state.bearer.jwToken }`,
+      }
+    })
+    .then(response => response.json())
+    .then(responseData => {
+      var numberBox = this.state.numberBox
+      numberBox[0].num = responseData.data.totalDaysToMoveDate
+      numberBox[1].num = responseData.data.totalTaskInProgress
+      numberBox[2].num = responseData.data.totalTaskCompleted
+      this.setState({
+        numberBox
+      })
+    })
+    .catch((error) => {
+      console.log('err: ', error)
+    })
+    .done();
+  }
+
+  fetchDataListColumn () {
     fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-task-list-column?relocateId=56816b12-d01e-489b-b6e9-8112f86ba420&status=all`, {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxNWQwODY1OS1lMGEyLTQyN2ItYjBlYS1hZWZiNTBkMDdkNTMiLCJlbWFpbCI6ImpqaHVic3BvdHRlc3QxMUB5b3BtYWlsLmNvbSIsInVpZCI6Im5kS3lEN2lMNVk2Nk44ZUwvLzFweU55bWRtb3lYOUJiMlB2Z2kzdGpkUkZ2YnRmYjU2OUZ4OHRQM0VDUnNBTnQiLCJpcCI6IjE3Mi4zMS40MC4xOTQiLCJyb2xlIjoiY3VzdG9tZXIiLCJleHAiOjE2MzcyMzUzODksImlzcyI6Ik1vb3ZheklkZW50aXR5IiwiYXVkIjoiTW9vdmF6V2ViQXBwIn0.7s12wTIHcPxtHika2cmXgV5thj9fSYfnb9PJy3VBGwA',
+        'Authorization': `Bearer ${ this.state.bearer.jwToken }`,
       }
     })
     .then(response => response.json())
@@ -116,9 +193,7 @@ class Home extends React.Component {
     } else {
       return (
         <View style={{ height: 200, justifyContent: 'center', alignItems: 'center' }}>
-          <ActivityIndicator
-            size="small"
-          />
+          <ActivityIndicator size="small" />
         </View>
       )
     }
@@ -129,7 +204,7 @@ class Home extends React.Component {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxNWQwODY1OS1lMGEyLTQyN2ItYjBlYS1hZWZiNTBkMDdkNTMiLCJlbWFpbCI6ImpqaHVic3BvdHRlc3QxMUB5b3BtYWlsLmNvbSIsInVpZCI6Im5kS3lEN2lMNVk2Nk44ZUwvLzFweU55bWRtb3lYOUJiMlB2Z2kzdGpkUkZ2YnRmYjU2OUZ4OHRQM0VDUnNBTnQiLCJpcCI6IjE3Mi4zMS40MC4xOTQiLCJyb2xlIjoiY3VzdG9tZXIiLCJleHAiOjE2MzcyMzUzODksImlzcyI6Ik1vb3ZheklkZW50aXR5IiwiYXVkIjoiTW9vdmF6V2ViQXBwIn0.7s12wTIHcPxtHika2cmXgV5thj9fSYfnb9PJy3VBGwA',
+        'Authorization': `Bearer ${ this.state.bearer.jwToken }`,
       }
     })
     .then(response => response.json())
@@ -137,7 +212,6 @@ class Home extends React.Component {
       this.setState({
         tasks: responseData.data
       })
-      console.log(responseData.data);
     })
     .catch((error) => {
       console.log('err: ', error)
@@ -198,9 +272,18 @@ class Home extends React.Component {
           <View style={styles.backgroundContainer}>
             <Image resizeMode='cover' style={styles.backgroundContainerImage} source={{uri: icons.headbg}} />
             <View style={styles.backgroundContainerText}>
-              <Text allowFontScaling={false} style={{color: '#FFF'}}>Singapore</Text>
-              <Image resizeMode='cover' style={styles.backgroundContainerIcon} source={{uri: 'https://staging-customerportal.moovaz.com/static/media/goodbye.e157fe90.svg'}} />
-              <Text allowFontScaling={false} style={{color: '#FFF'}}>Australia</Text>
+              <View style={styles.backgroundContainerHead}>
+                <View style={styles.backgroundContainerDotLine}></View>
+                <View style={styles.backgroundContainerDot}>
+                  <Text allowFontScaling={false} style={styles.countryName}>{this.state.currency && this.state.currency.origination.countryName}</Text>
+                </View>
+                <View style={styles.backgroundContainerIconCon}>
+                  <Image resizeMode='contain' style={styles.backgroundContainerIcon} source={{uri: icons.logo}} />
+                </View>
+                <View style={[styles.backgroundContainerDot]}>
+                  <Text allowFontScaling={false} style={styles.countryName}>{this.state.currency && this.state.currency.destination.countryName}</Text>
+                </View>
+              </View>
             </View>
           </View>
           <View style={styles.numberBox}>
@@ -220,6 +303,7 @@ class Home extends React.Component {
             <>
               <Text allowFontScaling={false} style={{color: '#909194'}}>All Tasks</Text>
               <Image resizeMode='cover' style={styles.tasksIconArrowDown} source={{uri: icons.arrowDown}} />
+              <ActionSheet ref={o => this.ActionSheet = o} title={'Select ...'} options={['All Tasks', 'Starred', 'In Progress', 'Completed', 'Cancel']} cancelButtonIndex={4} onPress={(index) => { /* do something */ }} />
             </>
           </TouchableHighlight>
           <View style={[styles.tasks, {marginTop: 0, padding: 0}]}>
@@ -241,16 +325,10 @@ class Home extends React.Component {
                 <Text allowFontScaling={false} style={{color: this.state.active == 'Timeline View' ? '#E89CAE' : '#909194'}}>Timeline View</Text>
               </>
             </TouchableHighlight>
-            <Image resizeMode='cover' style={[styles.tasksIcon, {marginRight: 13, width: 20, height: 20}]} source={{uri: icons.theme}} />
+            <ModalDropdown options={['option 1', 'option 2']}>
+              <Image resizeMode='cover' style={[styles.tasksIcon, {marginRight: 13, width: 20, height: 20}]} source={{uri: icons.theme}} />
+            </ModalDropdown>
           </View>
-          <ActionSheet
-            ref={o => this.ActionSheet = o}
-            title={'Select ...'}
-            options={['All Tasks', 'Starred', 'In Progress', 'Completed', 'Cancel']}
-            cancelButtonIndex={4}
-            // destructiveButtonIndex={4}
-            onPress={(index) => { /* do something */ }}
-          />
           <View style={[styles.taskview, {display: this.state.active == 'Task View' ? 'flex' : 'none'}]}>
             <Swiper autoplay={false} height={1000} showsButtons={false} showPagination={false} index={0} dot={<></>} activeDot={<></>}>
               <View style={styles.slide}>
@@ -293,15 +371,51 @@ const styles = StyleSheet.create({
     zIndex: -1
   },
   backgroundContainerText: {
-    // position: 'absolute',
-    // bottom: 0,
     width: '100%',
     height: 120,
-    padding: 20,
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    paddingTop: 40,
     zIndex: 111
+  },
+  backgroundContainerIconCon: {
+    position: 'relative',
+    padding: 5,
+    backgroundColor: '#FFF',
+    borderRadius: 40
+  },
+  backgroundContainerHead: {
+    position: 'relative',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '80%',
+    marginLeft: '10%'
+  },
+  backgroundContainerDot: {
+    width: 15,
+    height: 15,
+    borderRadius: 15,
+    backgroundColor: '#FFF',
+  },
+  backgroundContainerDotLine: {
+    position: 'absolute',
+    width: '100%',
+    // left: 0,
+    borderColor: '#fff',
+    borderBottomWidth: 2,
+  },
+  backgroundContainerIcon: {
+    width: 30,
+    height: 30,
+  },
+  countryName: {
+    fontWeight: '800',
+    color: '#FFF',
+    fontSize: 14,
+    position: 'absolute',
+    top: 22,
+    width: 120,
+    marginLeft: -55,
+    textAlign: 'center'
   },
 
   // numberBox
@@ -359,7 +473,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 13,
     borderColor: '#f4f4f4',
-    borderRightWidth: 1
+    borderRightWidth: 1,
   },
   taskTimeline: {
     flex: 1,
@@ -470,7 +584,8 @@ const styles = StyleSheet.create({
   // rows
   timeline: {
     marginTop: 20,
-    minHeight: 200
+    minHeight: 200,
+    paddingBottom: 100,
   },
   rows: {
     marginLeft: 30,
@@ -497,14 +612,13 @@ const styles = StyleSheet.create({
 
   // swiper
   slide: {
-    paddingBottom: 40,
+    paddingBottom: 100,
     // width: '80%',
     // marginRight: 30
   },
 
   // footer
   footerImage: {
-    marginTop: 180,
     width: '100%',
     height: 180
   }
