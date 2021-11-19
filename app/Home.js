@@ -51,7 +51,28 @@ class Home extends React.Component {
       reloDetail: null,
       currency: null,
       bearer: {},
-      active: 'Task View'
+      list: {
+        index: 0,
+        active: 'Task View',
+        type: [
+          {
+            text: 'All Tasks',
+            status: 'all'
+          },
+          {
+            text: 'Starred',
+            status: 'starred'
+          },
+          {
+            text: 'In Progress',
+            status: 'in-progress'
+          },
+          {
+            text: 'Completed',
+            status: 'completed'
+          },
+        ]
+      },
     }
 
     this.bearer()
@@ -131,7 +152,7 @@ class Home extends React.Component {
   }
 
   fetchDataListColumn () {
-    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-task-list-column?relocateId=56816b12-d01e-489b-b6e9-8112f86ba420&status=all`, {
+    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-task-list-column?relocateId=56816b12-d01e-489b-b6e9-8112f86ba420&status=${ this.state.list.type[this.state.list.index].status }`, {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -200,7 +221,7 @@ class Home extends React.Component {
   }
 
   fetchDataListRow() {
-    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-task-list-row?relocateId=56816b12-d01e-489b-b6e9-8112f86ba420&status=all`, {
+    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-task-list-row?relocateId=56816b12-d01e-489b-b6e9-8112f86ba420&status=${ this.state.list.type[this.state.list.index].status }`, {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -301,35 +322,46 @@ class Home extends React.Component {
           </View>
           <TouchableHighlight style={styles.tasks} underlayColor="rgba(255, 255, 255, 0.75)" activeOpacity={0.8} onPress={() => this.ActionSheet.show()}>
             <>
-              <Text allowFontScaling={false} style={{color: '#909194'}}>All Tasks</Text>
+              <Text allowFontScaling={false} style={{color: '#909194'}}>{this.state.list.type[this.state.list.index].text}</Text>
               <Image resizeMode='cover' style={styles.tasksIconArrowDown} source={{uri: icons.arrowDown}} />
-              <ActionSheet ref={o => this.ActionSheet = o} title={'Select ...'} options={['All Tasks', 'Starred', 'In Progress', 'Completed', 'Cancel']} cancelButtonIndex={4} onPress={(index) => { /* do something */ }} />
+              <ActionSheet ref={o => this.ActionSheet = o} title={'Select ...'} options={['All Tasks', 'Starred', 'In Progress', 'Completed', 'Cancel']} cancelButtonIndex={4} onPress={(index) => {
+                if (index == 4) {
+                  return
+                } else {
+                  this.state.list.index = index
+                  this.setState({list: this.state.list})
+                  this.fetchDataListRow()
+                  this.fetchDataListColumn()                  
+                }
+              }} />
             </>
           </TouchableHighlight>
           <View style={[styles.tasks, {marginTop: 0, padding: 0}]}>
             <TouchableHighlight style={styles.taskView} underlayColor="rgba(255, 255, 255, 0.75)" activeOpacity={0.8} onPress={() => {
               this.fetchDataListColumn()
-              this.setState({active: 'Task View'})
+              this.state.list.active = 'Task View'
+              this.setState({list: this.state.list})
             }}>
               <>
-                <Image resizeMode='cover' style={styles.tasksIcon} source={{uri: this.state.active == 'Task View' ? icons.taskActive : icons.task}} />
+                <Image resizeMode='cover' style={styles.tasksIcon} source={{uri: this.state.list.active == 'Task View' ? icons.taskActive : icons.task}} />
                 <Text allowFontScaling={false} style={{color: this.state.active == 'Task View' ? '#E89CAE' : '#909194'}}>Task View</Text>
               </>
             </TouchableHighlight>
             <TouchableHighlight style={styles.taskTimeline} underlayColor="rgba(255, 255, 255, 0.75)" activeOpacity={0.8} onPress={() => {
               this.fetchDataListRow()
-              this.setState({active: 'Timeline View'})
+              this.state.list.active = 'Timeline View'
+              this.setState({list: this.state.list})
             }}>
               <>
-                <Image resizeMode='cover' style={styles.tasksIcon} source={{uri: this.state.active == 'Timeline View' ? icons.timelineActive : icons.timeline}} />
-                <Text allowFontScaling={false} style={{color: this.state.active == 'Timeline View' ? '#E89CAE' : '#909194'}}>Timeline View</Text>
+                <Image resizeMode='cover' style={styles.tasksIcon} source={{uri: this.state.list.active == 'Timeline View' ? icons.timelineActive : icons.timeline}} />
+                <Text allowFontScaling={false} style={{color: this.state.list.active == 'Timeline View' ? '#E89CAE' : '#909194'}}>Timeline View</Text>
               </>
             </TouchableHighlight>
             <ModalDropdown options={['option 1', 'option 2']}>
               <Image resizeMode='cover' style={[styles.tasksIcon, {marginRight: 13, width: 20, height: 20}]} source={{uri: icons.theme}} />
             </ModalDropdown>
           </View>
-          <View style={[styles.taskview, {display: this.state.active == 'Task View' ? 'flex' : 'none'}]}>
+          <View style={[styles.taskview, {display: this.state.list.active == 'Task View' ? 'flex' : 'none'}]}>
             <Swiper autoplay={false} height={1000} showsButtons={false} showPagination={false} index={0} dot={<></>} activeDot={<></>}>
               <View style={styles.slide}>
                 {this.renderColumns(this.state.tasks && this.state.tasks.origin, 0)}
@@ -342,7 +374,7 @@ class Home extends React.Component {
               </View>
             </Swiper>
           </View>
-          <View style={[styles.timeline, {display: this.state.active == 'Timeline View' ? 'flex' : 'none'}]}>
+          <View style={[styles.timeline, {display: this.state.list.active == 'Timeline View' ? 'flex' : 'none'}]}>
             {this.renderRows(this.state.tasks && this.state.tasks.dated, 0)}
             {this.renderRows(this.state.tasks && this.state.tasks.unDated, 1)}
           </View>
