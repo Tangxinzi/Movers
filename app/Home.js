@@ -171,44 +171,80 @@ class Home extends React.Component {
     .done();
   }
 
-  renderColumns = (tasks, index) => {
+  renderColumns = (tasks, taskIndex) => {
     if (tasks) {
       return (
         <>
           <View style={styles.columnHead}>
             <View style={styles.columnHeadCon}>
-              <Image resizeMode='contain' style={[styles.columnHeadIcon, {width: 36, height: 30}]} source={{uri: icons.head[index]}} />
-              <Text style={styles.columnHeadTitle} allowFontScaling={false}>{ index == 0 ? 'Singapore' : index == 1 ? 'Sydney' : index == 2 ? 'My Memos' : '' }</Text>
+              <Image resizeMode='contain' style={[styles.columnHeadIcon, {width: 36, height: 30}]} source={{uri: icons.head[taskIndex]}} />
+              <Text style={styles.columnHeadTitle} allowFontScaling={false}>{ taskIndex == 0 ? 'Singapore' : taskIndex == 1 ? 'Sydney' : taskIndex == 2 ? 'My Memos' : '' }</Text>
             </View>
             <View style={styles.columnHeadCon}>
               <View style={styles.columnHeadCountCon}>
                 <Text style={styles.columnHeadCount} allowFontScaling={false}>{tasks.totalItemCount}</Text>
               </View>
-              <Image resizeMode='cover' style={{width: 28, height: 28}} source={{uri: icons.add}} />
+              <TouchableHighlight underlayColor="rgba(255, 255, 255, 0.85)" activeOpacity={0.85} onPress={() => {
+                  this.props.navigation.navigate('TaskCreate')
+                }}
+              >
+                <Image resizeMode='cover' style={{width: 28, height: 28}} source={{uri: icons.add}} />
+              </TouchableHighlight>
             </View>
           </View>
-          <FlatList
-            data={tasks.items}
-            horizontal={false}
-            numColumns={1}
-            style={styles.columns}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({item, index}) =>
-              <View style={[styles.column, {backgroundColor: item.statusText == 'Task/Note' ? '#FFF5F8' : '#FFF'}]} key={index}>
-                <View style={styles.columnStatusCon}>
-                  <View style={[styles.columnStatusTextCon, {backgroundColor: item.statusText == 'Task/Note' ? '#e89cae' : '' || item.statusText == 'In Progress' ? '#448de3' : '' || item.statusText == 'Suggested Task' ? '#d3d6d9' : ''}]}>
-                    <Text style={styles.columnStatusText} allowFontScaling={false}>{item.statusText}</Text>
-                  </View>
-                  <View style={styles.columnStatusHeadCon}>
-                    <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: icons.star}} />
-                    <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: icons.more}} />
-                  </View>
-                </View>
-                <Text style={styles.columnTitle} allowFontScaling={false}>{item.title}</Text>
-                <Text style={styles.columnDescription} allowFontScaling={false}>{item.description}</Text>
-              </View>
-            }
-          />
+          <View style={styles.columns}>
+            <FlatList
+              data={tasks.items}
+              horizontal={false}
+              numColumns={1}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({item, index}) =>
+                <>
+                  {
+                    index == tasks.items.length - 1 ? (
+                      <View>
+                        <View style={[styles.column, {backgroundColor: item.statusText == 'Task/Note' ? '#FFF5F8' : '#FFF'}]} key={index}>
+                          <View style={styles.columnStatusCon}>
+                            <View style={[styles.columnStatusTextCon, {backgroundColor: item.statusText == 'Task/Note' ? '#e89cae' : '' || item.statusText == 'In Progress' ? '#448de3' : '' || item.statusText == 'Suggested Task' ? '#d3d6d9' : ''}]}>
+                              <Text style={styles.columnStatusText} allowFontScaling={false}>{item.statusText}</Text>
+                            </View>
+                            <View style={styles.columnStatusHeadCon}>
+                              <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: false ? icons.starred : icons.star}} />
+                              <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: icons.more}} />
+                            </View>
+                          </View>
+                          <Text style={styles.columnTitle} allowFontScaling={false}>{item.title}</Text>
+                          <Text style={styles.columnDescription} allowFontScaling={false}>{item.description}</Text>
+                        </View>
+                        <View style={[styles.column, {borderTopLeftRadius: 24, backgroundColor: '#ffefcb', borderColor: '#ffaf00', borderWidth: 1}]} key={tasks.items.length}>
+                          <View style={[styles.columnStatusCon, {marginTop: 10, marginBottom: 10}]}>
+                            <Image resizeMode='contain' style={styles.columnFoot} source={{uri: icons.foot[taskIndex]}} />
+                            <Image resizeMode='contain' style={styles.columnFootComment} source={{uri: icons.comment}} />
+                          </View>
+                          <Text style={styles.columnTitle} allowFontScaling={false}>All you need to know about relocating!</Text>
+                          <Text style={styles.columnDescription} allowFontScaling={false}>Here's what you need to think about and know when you're relocating!</Text>
+                        </View>
+                      </View>
+                    ) : (
+                      <View style={[styles.column, {backgroundColor: item.statusText == 'Task/Note' ? '#FFF5F8' : '#FFF'}]} key={index}>
+                        <View style={styles.columnStatusCon}>
+                          <View style={[styles.columnStatusTextCon, {backgroundColor: item.statusText == 'Task/Note' ? '#e89cae' : '' || item.statusText == 'In Progress' ? '#448de3' : '' || item.statusText == 'Suggested Task' ? '#d3d6d9' : ''}]}>
+                            <Text style={styles.columnStatusText} allowFontScaling={false}>{item.statusText}</Text>
+                          </View>
+                          <View style={styles.columnStatusHeadCon}>
+                            <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: false ? icons.starred : icons.star}} />
+                            <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: icons.more}} />
+                          </View>
+                        </View>
+                        <Text style={styles.columnTitle} allowFontScaling={false}>{item.title}</Text>
+                        <Text style={styles.columnDescription} allowFontScaling={false}>{item.description}</Text>
+                      </View>
+                    )
+                  }
+                </>
+              }
+            />
+          </View>
         </>
       )
     } else {
@@ -267,7 +303,7 @@ class Home extends React.Component {
                           <Text style={styles.columnStatusText} allowFontScaling={false}>{item.statusText}</Text>
                         </View>
                         <View style={styles.columnStatusHeadCon}>
-                          <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: icons.star}} />
+                          <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: false ? icons.starred : icons.star}} />
                           <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: icons.more}} />
                         </View>
                       </View>
@@ -331,7 +367,7 @@ class Home extends React.Component {
                   this.state.list.index = index
                   this.setState({list: this.state.list})
                   this.fetchDataListRow()
-                  this.fetchDataListColumn()                  
+                  this.fetchDataListColumn()
                 }
               }} />
             </>
@@ -536,7 +572,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     padding: 15,
     borderRadius: 10,
-    backgroundColor: '#FFF'
+    backgroundColor: '#FFF',
   },
   columnHead: {
     margin: 20,
@@ -577,6 +613,14 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     marginLeft: 3
+  },
+  columnFoot: {
+    width: 50,
+    height: 50
+  },
+  columnFootComment: {
+    width: 38,
+    height: 50
   },
   columnStatusCon: {
     flexDirection: 'row',
