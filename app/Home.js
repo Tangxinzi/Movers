@@ -16,6 +16,7 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
+  AsyncStorage,
   ActivityIndicator,
   TouchableHighlight,
   FlatList,
@@ -23,7 +24,11 @@ import {
   Image,
   Text,
   View,
+  Alert,
+  Appearance
 } from 'react-native';
+
+const colorScheme = Appearance.getColorScheme();
 
 class Home extends React.Component {
   constructor(props) {
@@ -86,15 +91,40 @@ class Home extends React.Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        "email": 'jjhubspottest11@yopmail.com',
-        "password": '12345678'
+        "email": 'mrsjanesmith@yopmail.com',
+        "password": 'MasterPassword'
+        // "email": 'jjhubspottest11@yopmail.com',
+        // "password": '12345678'
       })
     })
     .then(response => response.json())
     .then(responseData => {
+      AsyncStorage.setItem('bearer', JSON.stringify(responseData.data))
       this.setState({
         bearer: responseData.data
       })
+      this.getReloDetail()
+      this.reloDetail()
+      this.fetchDataListColumn()
+    })
+    .catch((error) => {
+      console.log('err: ', error)
+    })
+    .done()
+  }
+
+  getReloDetail() {
+    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-relo-detail`, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${ this.state.bearer.jwToken }`,
+      }
+    })
+    .then(response => response.json())
+    .then(responseData => {
+      this.setState({reloDetail: responseData.data})
+      AsyncStorage.setItem('reloDetail', JSON.stringify(responseData.data))
       this.currency()
       this.reloDetail()
       this.fetchDataListColumn()
@@ -105,8 +135,31 @@ class Home extends React.Component {
     .done()
   }
 
-  currency() {
-    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-relo-currency?RelocateID=56816b12-d01e-489b-b6e9-8112f86ba420`, {
+  // delete task
+  deleteTask (taskId) {
+    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/delete-task`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${ this.state.bearer.jwToken }`,
+      },
+      body: JSON.stringify({
+        taskId
+      })
+    })
+    .then(response => response.json())
+    .then(responseData => {
+      this.currency()
+    })
+    .catch((error) => {
+      console.log('err: ', error)
+    })
+    .done()
+  }
+
+  currency () {
+    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-relo-currency?RelocateID=${ this.state.reloDetail.relocateId }`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -116,10 +169,7 @@ class Home extends React.Component {
     })
     .then(response => response.json())
     .then(responseData => {
-      this.setState({
-        currency: responseData.data
-      })
-      console.log(responseData.data);
+      this.setState({ currency: responseData.data })
     })
     .catch((error) => {
       console.log('err: ', error)
@@ -152,7 +202,7 @@ class Home extends React.Component {
   }
 
   fetchDataListColumn () {
-    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-task-list-column?relocateId=56816b12-d01e-489b-b6e9-8112f86ba420&status=${ this.state.list.type[this.state.list.index].status }`, {
+    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-task-list-column?relocateId=${ this.state.reloDetail.relocateId }&status=${ this.state.list.type[this.state.list.index].status }`, {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -184,10 +234,9 @@ class Home extends React.Component {
               <View style={styles.columnHeadCountCon}>
                 <Text style={styles.columnHeadCount} allowFontScaling={false}>{tasks.totalItemCount}</Text>
               </View>
-              <TouchableHighlight underlayColor="rgba(255, 255, 255, 0.85)" activeOpacity={0.85} onPress={() => {
-                  this.props.navigation.navigate('TaskCreate')
-                }}
-              >
+              <TouchableHighlight underlayColor="none" activeOpacity={0.85} onPress={() => {
+                this.props.navigation.navigate('TaskCreate', {taskIndex})
+              }}>
                 <Image resizeMode='cover' style={{width: 28, height: 28}} source={{uri: icons.add}} />
               </TouchableHighlight>
             </View>
@@ -205,16 +254,26 @@ class Home extends React.Component {
                       <View>
                         <View style={[styles.column, {backgroundColor: item.statusText == 'Task/Note' ? '#FFF5F8' : '#FFF'}]} key={index}>
                           <View style={styles.columnStatusCon}>
-                            <View style={[styles.columnStatusTextCon, {backgroundColor: item.statusText == 'Task/Note' ? '#e89cae' : '' || item.statusText == 'In Progress' ? '#448de3' : '' || item.statusText == 'Suggested Task' ? '#d3d6d9' : ''}]}>
+                            <View style={[styles.columnStatusTextCon, {backgroundColor: item.statusText == 'New Task' ? '#ffaf00' : '' || item.statusText == 'Task/Note' ? '#e89cae' : '' || item.statusText == 'In Progress' ? '#448de3' : '' || item.statusText == 'Suggested Task' ? '#d3d6d9' : '' || item.statusText == 'Completed' ? '#00bd9d' : ''}]}>
                               <Text style={styles.columnStatusText} allowFontScaling={false}>{item.statusText}</Text>
                             </View>
                             <View style={styles.columnStatusHeadCon}>
                               <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: false ? icons.starred : icons.star}} />
-                              <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: icons.more}} />
+                              <TouchableHighlight underlayColor="none" activeOpacity={0.85} onPress={() => {
+                                this.setState({taskId: item.taskId})
+                                this.ActionSheetAction.show()
+                              }}>
+                                <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: icons.more}} />
+                              </TouchableHighlight>
                             </View>
                           </View>
-                          <Text style={styles.columnTitle} allowFontScaling={false}>{item.title}</Text>
-                          <Text style={styles.columnDescription} allowFontScaling={false}>{item.description}</Text>
+                          <Image resizeMode='cover' style={[styles.columnHeadIcon, {position: 'absolute', left: 10, top: 55}]} source={{uri: icons.checkedEmpty}} />
+                          <TouchableHighlight style={{marginLeft: 30}} underlayColor="none" activeOpacity={0.85} onPress={() => this.props.navigation.navigate('TaskIndex', {taskIndex, taskId: item.taskId})}>
+                            <>
+                              <Text style={styles.columnTitle} allowFontScaling={false}>{item.title}</Text>
+                              <Text style={styles.columnDescription} allowFontScaling={false}>{item.description}</Text>
+                            </>
+                          </TouchableHighlight>
                         </View>
                         <View style={[styles.column, {borderTopLeftRadius: 24, backgroundColor: '#ffefcb', borderColor: '#ffaf00', borderWidth: 1}]} key={tasks.items.length}>
                           <View style={[styles.columnStatusCon, {marginTop: 10, marginBottom: 10}]}>
@@ -228,16 +287,26 @@ class Home extends React.Component {
                     ) : (
                       <View style={[styles.column, {backgroundColor: item.statusText == 'Task/Note' ? '#FFF5F8' : '#FFF'}]} key={index}>
                         <View style={styles.columnStatusCon}>
-                          <View style={[styles.columnStatusTextCon, {backgroundColor: item.statusText == 'Task/Note' ? '#e89cae' : '' || item.statusText == 'In Progress' ? '#448de3' : '' || item.statusText == 'Suggested Task' ? '#d3d6d9' : ''}]}>
+                          <View style={[styles.columnStatusTextCon, {backgroundColor: item.statusText == 'New Task' ? '#ffaf00' : '' || item.statusText == 'Task/Note' ? '#e89cae' : '' || item.statusText == 'In Progress' ? '#448de3' : '' || item.statusText == 'Suggested Task' ? '#d3d6d9' : '' || item.statusText == 'Completed' ? '#00bd9d' : ''}]}>
                             <Text style={styles.columnStatusText} allowFontScaling={false}>{item.statusText}</Text>
                           </View>
                           <View style={styles.columnStatusHeadCon}>
                             <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: false ? icons.starred : icons.star}} />
-                            <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: icons.more}} />
+                            <TouchableHighlight underlayColor="none" activeOpacity={0.85} onPress={() => {
+                              this.setState({taskId: item.taskId})
+                              this.ActionSheetAction.show()
+                            }}>
+                              <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: icons.more}} />
+                            </TouchableHighlight>
                           </View>
                         </View>
-                        <Text style={styles.columnTitle} allowFontScaling={false}>{item.title}</Text>
-                        <Text style={styles.columnDescription} allowFontScaling={false}>{item.description}</Text>
+                        <Image resizeMode='cover' style={[styles.columnHeadIcon, {position: 'absolute', left: 10, top: 55}]} source={{uri: icons.checkedEmpty}} />
+                        <TouchableHighlight style={{marginLeft: 30}} underlayColor="none" activeOpacity={0.85} onPress={() => this.props.navigation.navigate('TaskIndex', {taskIndex, taskId: item.taskId})}>
+                          <>
+                            <Text style={styles.columnTitle} allowFontScaling={false}>{item.title}</Text>
+                            <Text style={styles.columnDescription} allowFontScaling={false}>{item.description}</Text>
+                          </>
+                        </TouchableHighlight>
                       </View>
                     )
                   }
@@ -249,7 +318,7 @@ class Home extends React.Component {
       )
     } else {
       return (
-        <View style={{ height: 200, justifyContent: 'center', alignItems: 'center' }}>
+        <View style={{ height: 220, justifyContent: 'center', alignItems: 'center' }}>
           <ActivityIndicator size="small" />
         </View>
       )
@@ -257,7 +326,7 @@ class Home extends React.Component {
   }
 
   fetchDataListRow() {
-    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-task-list-row?relocateId=56816b12-d01e-489b-b6e9-8112f86ba420&status=${ this.state.list.type[this.state.list.index].status }`, {
+    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-task-list-row?relocateId=${ this.state.reloDetail.relocateId }&status=${ this.state.list.type[this.state.list.index].status }`, {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -299,16 +368,26 @@ class Home extends React.Component {
                   <TouchableHighlight key={key} activeOpacity={0.9} underlayColor="none">
                     <View style={[styles.column, {backgroundColor: item.statusText == 'Task/Note' ? '#FFF5F8' : '#FFF'}]} key={index}>
                       <View style={styles.columnStatusCon}>
-                        <View style={[styles.columnStatusTextCon, {backgroundColor: item.statusText == 'Task/Note' ? '#e89cae' : '' || item.statusText == 'In Progress' ? '#448de3' : '' || item.statusText == 'Suggested Task' ? '#d3d6d9' : ''}]}>
+                        <View style={[styles.columnStatusTextCon, {backgroundColor: item.statusText == 'New Task' ? '#ffaf00' : '' || item.statusText == 'Task/Note' ? '#e89cae' : '' || item.statusText == 'In Progress' ? '#448de3' : '' || item.statusText == 'Suggested Task' ? '#d3d6d9' : '' || item.statusText == 'Completed' ? '#00bd9d' : ''}]}>
                           <Text style={styles.columnStatusText} allowFontScaling={false}>{item.statusText}</Text>
                         </View>
                         <View style={styles.columnStatusHeadCon}>
                           <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: false ? icons.starred : icons.star}} />
-                          <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: icons.more}} />
+                          <TouchableHighlight underlayColor="none" activeOpacity={0.85} onPress={() => {
+                            this.setState({taskId: item.taskId})
+                            this.ActionSheetAction.show()
+                          }}>
+                            <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: icons.more}} />
+                          </TouchableHighlight>
                         </View>
                       </View>
-                      <Text style={styles.columnTitle} allowFontScaling={false}>{item.title}</Text>
-                      <Text style={styles.columnDescription} allowFontScaling={false}>{item.description}</Text>
+                      <Image resizeMode='cover' style={[styles.columnHeadIcon, {position: 'absolute', left: 10, top: 55}]} source={{uri: icons.checkedEmpty}} />
+                      <TouchableHighlight style={{marginLeft: 30}} underlayColor="none" activeOpacity={0.85} onPress={() => this.props.navigation.navigate('TaskIndex', {taskIndex, taskId: item.taskId})}>
+                        <>
+                          <Text style={styles.columnTitle} allowFontScaling={false}>{item.title}</Text>
+                          <Text style={styles.columnDescription} allowFontScaling={false}>{item.description}</Text>
+                        </>
+                      </TouchableHighlight>
                     </View>
                   </TouchableHighlight>
                 )
@@ -318,7 +397,11 @@ class Home extends React.Component {
         </>
       )
     } else {
-      return <></>
+      return (
+        <View style={{ height: 220, justifyContent: 'center', alignItems: 'center' }}>
+
+        </View>
+      )
     }
   }
 
@@ -397,6 +480,33 @@ class Home extends React.Component {
               <Image resizeMode='cover' style={[styles.tasksIcon, {marginRight: 13, width: 20, height: 20}]} source={{uri: icons.theme}} />
             </ModalDropdown>
           </View>
+          <ActionSheet
+            ref={o => this.ActionSheetAction = o}
+            title={'Action'}
+            options={['Edit', 'Delete', 'Cancel']}
+            cancelButtonIndex={2}
+            onPress={(index) => {
+              switch (index) {
+                case 0:
+
+                  break;
+                case 1:
+                  Alert.alert('Delete Task?', 'Are you sure you want to delete this task?',
+                    [
+                      {
+                        text: "CANCEL", onPress: () => {}
+                      },
+                      {
+                        text: "DELETE", onPress: () => this.deleteTask(this.state.taskId)
+                      }
+                    ]
+                  )
+                  break;
+                default:
+
+              }
+            }}
+          />
           <View style={[styles.taskview, {display: this.state.list.active == 'Task View' ? 'flex' : 'none'}]}>
             <Swiper autoplay={false} height={1000} showsButtons={false} showPagination={false} index={0} dot={<></>} activeDot={<></>}>
               <View style={styles.slide}>
@@ -425,7 +535,7 @@ class Home extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#f4f4f4'
+    backgroundColor: colorScheme === 'dark' ? '#111' : '#f4f4f4'
   },
 
   // backgroundContainer
@@ -435,12 +545,12 @@ const styles = StyleSheet.create({
   backgroundContainerImage: {
     position: 'absolute',
     width: '100%',
-    height: 120,
+    height: 130,
     zIndex: -1
   },
   backgroundContainerText: {
     width: '100%',
-    height: 120,
+    height: 130,
     paddingTop: 40,
     zIndex: 111
   },
@@ -610,8 +720,8 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   columnHeadIcon: {
-    width: 24,
-    height: 24,
+    width: 22,
+    height: 22,
     marginLeft: 3
   },
   columnFoot: {
@@ -625,6 +735,7 @@ const styles = StyleSheet.create({
   columnStatusCon: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginBottom: 5
   },
   columnStatusHeadCon: {
     position: 'relative',

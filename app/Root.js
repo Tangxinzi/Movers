@@ -17,6 +17,7 @@ import Home from './Home'
 import Web from './Web'
 import Login from './Login'
 
+import TaskIndex from './task/Index'
 import TaskCreate from './task/Create'
 
 class SettingsScreen extends React.Component {
@@ -81,6 +82,17 @@ const App = createStackNavigator({
     screen: BottomNavigatorScreen,
     navigationOptions: {
       header: null
+    }
+  },
+  TaskIndex: {
+    screen: TaskIndex,
+    navigationOptions: {
+      headerBackTitleVisible: false,
+      headerStyle: {
+        borderBottomWidth: 0,
+        elevation: 0,
+        shadowOpacity: 0
+      }
     }
   },
   DetailsScreen: { screen: DetailsScreen },
