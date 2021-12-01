@@ -382,7 +382,7 @@ class Home extends React.Component {
                         </View>
                       </View>
                       <Image resizeMode='cover' style={[styles.columnHeadIcon, {position: 'absolute', left: 10, top: 55}]} source={{uri: icons.checkedEmpty}} />
-                      <TouchableHighlight style={{marginLeft: 30}} underlayColor="none" activeOpacity={0.85} onPress={() => this.props.navigation.navigate('TaskIndex', {taskIndex, taskId: item.taskId})}>
+                      <TouchableHighlight style={{marginLeft: 30}} underlayColor="none" activeOpacity={0.85} onPress={() => this.props.navigation.navigate('TaskIndex', {index, taskId: item.taskId})}>
                         <>
                           <Text style={styles.columnTitle} allowFontScaling={false}>{item.title}</Text>
                           <Text style={styles.columnDescription} allowFontScaling={false}>{item.description}</Text>
@@ -697,6 +697,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   columnHeadTitle: {
+    color: colorScheme === 'dark' ? '#f4f4f4' : '#111',
     fontFamily: 'Baskerville',
     fontSize: 24,
     marginLeft: 10,

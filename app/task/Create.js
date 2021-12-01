@@ -40,6 +40,15 @@ class Login extends React.Component {
         </>
       </TouchableHighlight>
     ),
+    headerRight: (
+      <TouchableHighlight
+        style={{padding: 10}}
+        activeOpacity={0.85}
+        underlayColor="none"
+      >
+        <Text allowFontScaling={false} numberOfLines={1}></Text>
+      </TouchableHighlight>
+    ),
     tabBarVisible: false,
     headerStyle: {
       elevation: 0,
@@ -51,6 +60,7 @@ class Login extends React.Component {
 
     this.state = {
       params: props.navigation.state.params,
+      reloDetail: {},
       radio: true,
       description: '',
       additionalnotes: '',
@@ -72,6 +82,17 @@ class Login extends React.Component {
     .then((response) => {
       this.setState({
         bearer: JSON.parse(response)
+      })
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+    .done()
+
+    AsyncStorage.getItem('reloDetail')
+    .then((response) => {
+      this.setState({
+        reloDetail: JSON.parse(response)
       })
     })
     .catch((error) => {
@@ -100,15 +121,15 @@ class Login extends React.Component {
         "taskType": "destination",
         "chooseCategory": "0",
         "serviceId": null,
-        "title": "testing...",
-        "description": "testing...testing...testing...testing...testing...",
+        "title": this.state.title || '',
+        "description": this.state.description || '',
         "note": "testing...testing...testing...testing...testing...",
         "startDate": "2021-11-29",
         "isImportant": false,
         "dueDate": "2021-11-29",
         "budgetType": 129,
         "budgetAmount": 1121,
-        "relocateId": "56816b12-d01e-489b-b6e9-8112f86ba420"
+        "relocateId": this.state.reloDetail.relocateId
       })
     })
     .then(response => response.json())

@@ -19,8 +19,10 @@ import {
   ActivityIndicator,
   DeviceEventEmitter,
   TouchableHighlight,
-  useWindowDimensions
+  useWindowDimensions,
+  Appearance
 } from 'react-native';
+const colorScheme = Appearance.getColorScheme();
 
 class Index extends React.Component {
   static navigationOptions = ({navigation, screenProps}) => ({
@@ -37,6 +39,15 @@ class Index extends React.Component {
             marginHorizontal: 0
           }}>Task</Text>
         </>
+      </TouchableHighlight>
+    ),
+    headerRight: (
+      <TouchableHighlight
+        style={{padding: 10}}
+        activeOpacity={0.85}
+        underlayColor="none"
+      >
+        <Text allowFontScaling={false} numberOfLines={1}></Text>
       </TouchableHighlight>
     ),
     tabBarVisible: false,
@@ -177,16 +188,18 @@ class Index extends React.Component {
                 <Text allowFontScaling={false} style={[styles.rowText, {marginLeft: 10, color: '#e89cae', fontWeight: '600'}]}>ADD DUE DATE OR BUDGET</Text>
               </View>
             </TouchableHighlight>
-            {
-              this.state.taskVendor.map((item, key) => {
-                return (
-                  <View style={styles.vendor} key={key}>
-                    <Text allowFontScaling={false} style={styles.vendorTitle}>{item.companyName}</Text>
-                    <Text allowFontScaling={false} style={styles.vendorTitle}>{item.priceTierName}</Text>
-                  </View>
-                )
-              })
-            }
+            <View style={{borderRadius: 5, overflow: 'hidden'}}>
+              {
+                this.state.taskVendor.map((item, key) => {
+                  return (
+                    <View style={styles.vendor} key={key}>
+                      <Text allowFontScaling={false} style={styles.vendorTitle}>{item.companyName}</Text>
+                      <Text allowFontScaling={false} style={styles.vendorTitle}>{item.priceTierName}</Text>
+                    </View>
+                  )
+                })
+              }
+            </View>
           </View>
         </ScrollView>
       )
@@ -204,7 +217,7 @@ const styles = {
   container: {
     position: 'relative',
     padding: 20,
-    width: '100%',
+    width: '100%'
   },
   br: {
     // marginTop: 10,
