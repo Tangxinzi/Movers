@@ -14,6 +14,7 @@ import { createAppContainer } from 'react-navigation';
 import { createStackNavigator, CardStyleInterpolators } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import Home from './Home'
+import Services from './Services'
 import Web from './Web'
 import Login from './Login'
 
@@ -35,16 +36,6 @@ class SettingsScreen extends React.Component {
 }
 
 class DetailsScreen extends React.Component {
-  render() {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Details!</Text>
-      </View>
-    );
-  }
-}
-
-class HomeScreen extends React.Component {
   static navigationOptions = ({navigation, screenProps}) => ({
     header: null,
     tabBarVisible: false,
@@ -59,13 +50,27 @@ class HomeScreen extends React.Component {
 
   render() {
     return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Details!</Text>
+      </View>
+    );
+  }
+}
+
+class HomeScreen extends React.Component {
+  render() {
+    return (
       <Home {...this.props} />
     );
   }
 }
 
 const HomeStack = createStackNavigator({
-  Home: HomeScreen
+  Home: Home
+});
+
+const ServiceScreen = createStackNavigator({
+  Services: Services
 });
 
 const BottomNavigatorScreen = createBottomTabNavigator({
@@ -78,8 +83,20 @@ const BottomNavigatorScreen = createBottomTabNavigator({
 });
 
 const App = createStackNavigator({
-  BottomNavigatorScreen: {
-    screen: BottomNavigatorScreen,
+  // BottomNavigatorScreen: {
+  //   screen: BottomNavigatorScreen,
+  //   navigationOptions: {
+  //     header: null
+  //   }
+  // },
+  ServiceScreen: {
+    screen: ServiceScreen,
+    navigationOptions: {
+      header: null
+    }
+  },
+  HomeScreen: {
+    screen: HomeScreen,
     navigationOptions: {
       header: null
     }

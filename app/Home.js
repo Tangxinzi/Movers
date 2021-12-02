@@ -8,6 +8,8 @@
 
 import React, { Component } from 'react';
 import icons from './Icons';
+import iconsBottom from './icons/iconsBottom';
+import Bottom from './components/Bottom';
 import Swiper from 'react-native-swiper';
 import ActionSheet from 'react-native-actionsheet';
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -528,6 +530,7 @@ class Home extends React.Component {
             <Image resizeMode='cover' style={styles.footerImage} source={{uri: icons.footer}} />
           </View>
         </ScrollView>
+        <Bottom {...this.props} type="home" />
       </SafeAreaView>
     )
   }
@@ -808,8 +811,9 @@ const styles = StyleSheet.create({
   // footer
   footerImage: {
     width: '100%',
-    height: 180
-  }
+    height: 180,
+    marginBottom: 40
+  },
 });
 
 export default Home;
