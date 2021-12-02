@@ -51,10 +51,10 @@ class Login extends React.Component {
         underlayColor='transparent'
         style={{paddingLeft: 10, paddingRight: 10}}
         onPress={() => {
-          navigation.navigate('Web', { title: '注册', uri: 'https://taupd.ferer.net/mobile/user/register' })
+
         }}
       >
-        <Text allowFontScaling={false} style={{fontSize: 15}}>注册</Text>
+        <Text allowFontScaling={false} style={{fontSize: 15}}></Text>
       </TouchableHighlight>
     ),
     tabBarVisible: false,

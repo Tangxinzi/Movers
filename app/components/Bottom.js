@@ -56,10 +56,10 @@ export default class Bottom extends React.Component {
             <Text style={styles.textBottom} allowFontScaling={false}>Services</Text>
           </>
         </TouchableHighlight>
-        <TouchableHighlight style={styles.iconsBottom} underlayColor="none" activeOpacity={0.85}>
+        <TouchableHighlight style={styles.iconsBottom} underlayColor="none" activeOpacity={0.85} onPress={() => this.props.navigation.navigate('Login')}>
           <>
             <Image resizeMode='cover' style={styles.iconBottom} source={{uri: this.props.type == 'resources' ? iconsBottom.resourcesActive : iconsBottom.resources}} />
-            <Text style={styles.textBottom} allowFontScaling={false}>Resources</Text>
+            <Text style={styles.textBottom} allowFontScaling={false}>Login</Text>
           </>
         </TouchableHighlight>
       </View>
