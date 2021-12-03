@@ -114,13 +114,13 @@ class Login extends React.Component {
             keyboardVerticalOffset={10}
           >
             <View style={styles.textInputContainer}>
-              <Text allowFontScaling={false}>手机号</Text>
+              <Text allowFontScaling={false}>Email Address</Text>
               <TextInput
                 allowFontScaling={false}
                 style={styles.textInput}
-                placeholder="请输入手机号"
+                placeholder="For eg. dave@moovaz.life"
                 clearButtonMode="while-editing"
-                keyboardType="numeric"
+                keyboardType="email-address"
                 defaultValue={this.state.phone}
                 placeholderTextColor="#CCC"
                 onChangeText={(params) => {
@@ -131,11 +131,11 @@ class Login extends React.Component {
               />
             </View>
             <View style={styles.textInputContainer}>
-              <Text allowFontScaling={false}>密码</Text>
+              <Text allowFontScaling={false}>Password</Text>
               <TextInput
                 allowFontScaling={false}
                 style={styles.textInput}
-                placeholder="请输入密码"
+                placeholder=""
                 clearButtonMode="while-editing"
                 password={true}
                 defaultValue={this.state.password}
@@ -186,13 +186,12 @@ const styles = {
   },
   textInput: {
     width: '100%',
-    borderColor: 'gray',
-    color: '#111',
-    borderBottomWidth: 2,
-    padding: 10,
+    borderColor: '#d3d6d9',
+    borderWidth: 1,
+    borderRadius: 4,
+    padding: 15,
     // height: 43,
     marginTop: 10,
-    paddingLeft: 0,
     fontWeight: '700',
     borderRadius: 0,
     color: '#111',

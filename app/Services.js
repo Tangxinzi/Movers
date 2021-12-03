@@ -1,6 +1,8 @@
 'use strict';
 
 import React, { Component } from 'react';
+import Header from './components/Header';
+import Footer from './components/Footer';
 import Bottom from './components/Bottom';
 import {
   SafeAreaView,
@@ -103,36 +105,40 @@ export default class Services extends React.Component {
   render() {
     return (
       <SafeAreaView>
-        <ScrollView style={styles.container}>
-          <Text allowFontScaling={false} style={styles.title}>Find the services you need in</Text>
-          <View style={styles.countrySelection}>
-            <Text allowFontScaling={false} style={[styles.country, {color: '#FFF', backgroundColor: '#000'}]}>Singapore</Text>
-            <Text allowFontScaling={false} style={styles.country}>Boston</Text>
-          </View>
-          <View style={styles.vendoies}>
-          {
-            this.state.vendor.map((item, key) => {
-              return (
-                <View style={styles.vendor} key={key}>
-                  <View style={styles.vendorRow}>
-                    <Image resizeMode='cover' style={styles.vendorImage} source={{uri: 'https://staging-customerportal.moovaz.com/logo192.png'}} />
-                    <View style={styles.vendorContent}>
-                      <Text allowFontScaling={false} style={styles.servicesName}>{item.services[0]['name'].toUpperCase()}</Text>
-                      <Text allowFontScaling={false} style={styles.companyName}>{item.companyName}</Text>
-                      <Text allowFontScaling={false} style={styles.companyName}>{item.priceTierName}</Text>
+        <ScrollView>
+          <Header />
+          <View style={styles.container}>
+            <Text allowFontScaling={false} style={styles.title}>Find the services you need in</Text>
+            <View style={styles.countrySelection}>
+              <Text allowFontScaling={false} style={[styles.country, {color: '#FFF', backgroundColor: '#000'}]}>Singapore</Text>
+              <Text allowFontScaling={false} style={styles.country}>Boston</Text>
+            </View>
+            <View style={styles.vendoies}>
+            {
+              this.state.vendor.map((item, key) => {
+                return (
+                  <View style={styles.vendor} key={key}>
+                    <View style={styles.vendorRow}>
+                      <Image resizeMode='cover' style={styles.vendorImage} source={{uri: 'https://staging-customerportal.moovaz.com/logo192.png'}} />
+                      <View style={styles.vendorContent}>
+                        <Text allowFontScaling={false} style={styles.servicesName}>{item.services[0]['name'].toUpperCase()}</Text>
+                        <Text allowFontScaling={false} style={styles.companyName}>{item.companyName}</Text>
+                        <Text allowFontScaling={false} style={styles.companyName}>{item.priceTierName}</Text>
+                      </View>
                     </View>
-                  </View>
-                  <Text allowFontScaling={false} style={styles.shortDescription}>{item.shortDescription}</Text>
-                  <TouchableHighlight style={styles.touchButton} underlayColor="none" activeOpacity={0.85} onPress={() => {
+                    <Text allowFontScaling={false} style={styles.shortDescription}>{item.shortDescription}</Text>
+                    <TouchableHighlight style={styles.touchButton} underlayColor="none" activeOpacity={0.85} onPress={() => {
 
-                  }}>
-                    <Text allowFontScaling={false} style={styles.statusText}>{item.statusText.toUpperCase()}</Text>
-                  </TouchableHighlight>
-                </View>
-              )
-            })
-          }
+                    }}>
+                      <Text allowFontScaling={false} style={styles.statusText}>{item.statusText.toUpperCase()}</Text>
+                    </TouchableHighlight>
+                  </View>
+                )
+              })
+            }
+            </View>
           </View>
+          <Footer />
         </ScrollView>
         <Bottom {...this.props} type="services" />
       </SafeAreaView>

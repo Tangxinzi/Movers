@@ -26,19 +26,18 @@ export default class Bottom extends React.Component {
     this.state = {
       params: props.navigation.state.params
     }
-    console.log(this.props.type);
   }
 
   render() {
     return (
       <View style={styles.iconsBottomContainer}>
-        <TouchableHighlight style={styles.iconsBottom} underlayColor="none" activeOpacity={0.85}>
+        <TouchableHighlight style={styles.iconsBottom} underlayColor="none" activeOpacity={0.85} onPress={() => this.props.navigation.navigate('IndexScreen')}>
           <>
             <Image resizeMode='cover' style={styles.iconBottom} source={{uri: this.props.type == 'index' ? iconsBottom.indexActive : iconsBottom.index}} />
             <Text style={styles.textBottom} allowFontScaling={false}>Index</Text>
           </>
         </TouchableHighlight>
-        <TouchableHighlight style={styles.iconsBottom} underlayColor="none" activeOpacity={0.85}>
+        <TouchableHighlight style={styles.iconsBottom} underlayColor="none" activeOpacity={0.85} onPress={() => this.props.navigation.navigate('FolderScreen')}>
           <>
             <Image resizeMode='cover' style={styles.iconBottom} source={{uri: this.props.type == 'folder' ? iconsBottom.folderActive : iconsBottom.folder}} />
             <Text style={styles.textBottom} allowFontScaling={false}>Floder</Text>
@@ -98,7 +97,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   iconBottom: {
-    width: 20,
+    width: 21,
     height: 20,
     marginBottom: 5
   },

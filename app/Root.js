@@ -13,7 +13,9 @@ import {
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator, CardStyleInterpolators } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
+import Index from './Index'
 import Home from './Home'
+import Folder from './Folder'
 import Services from './Services'
 import Web from './Web'
 import Login from './Login'
@@ -65,13 +67,33 @@ class HomeScreen extends React.Component {
   }
 }
 
+class IndexScreen extends React.Component {
+  render() {
+    return (
+      <Index {...this.props} />
+    );
+  }
+}
+
+class FolderScreen extends React.Component {
+  render() {
+    return (
+      <Folder {...this.props} />
+    );
+  }
+}
+
+class ServiceScreen extends React.Component {
+  render() {
+    return (
+      <Services {...this.props} />
+    );
+  }
+}
+
 const HomeStack = createStackNavigator({
   Home: Home
-});
-
-const ServiceScreen = createStackNavigator({
-  Services: Services
-});
+})
 
 const BottomNavigatorScreen = createBottomTabNavigator({
   Home: {
@@ -89,14 +111,26 @@ const App = createStackNavigator({
   //     header: null
   //   }
   // },
-  ServiceScreen: {
-    screen: ServiceScreen,
+  IndexScreen: {
+    screen: IndexScreen,
+    navigationOptions: {
+      header: null
+    }
+  },
+  FolderScreen: {
+    screen: FolderScreen,
     navigationOptions: {
       header: null
     }
   },
   HomeScreen: {
     screen: HomeScreen,
+    navigationOptions: {
+      header: null
+    }
+  },
+  ServiceScreen: {
+    screen: ServiceScreen,
     navigationOptions: {
       header: null
     }

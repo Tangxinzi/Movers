@@ -9,7 +9,9 @@
 import React, { Component } from 'react';
 import icons from './Icons';
 import iconsBottom from './icons/iconsBottom';
+import Header from './components/Header';
 import Bottom from './components/Bottom';
+import Footer from './components/Footer';
 import Swiper from 'react-native-swiper';
 import ActionSheet from 'react-native-actionsheet';
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -409,126 +411,127 @@ class Home extends React.Component {
 
   render() {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView>
         <ScrollView contentInsetAdjustmentBehavior="automatic">
-          <View style={styles.backgroundContainer}>
-            <Image resizeMode='cover' style={styles.backgroundContainerImage} source={{uri: icons.headbg}} />
-            <View style={styles.backgroundContainerText}>
-              <View style={styles.backgroundContainerHead}>
-                <View style={styles.backgroundContainerDotLine}></View>
-                <View style={styles.backgroundContainerDot}>
-                  <Text allowFontScaling={false} style={styles.countryName}>{this.state.currency && this.state.currency.origination.countryName}</Text>
-                </View>
-                <View style={styles.backgroundContainerIconCon}>
-                  <Image resizeMode='contain' style={styles.backgroundContainerIcon} source={{uri: icons.logo}} />
-                </View>
-                <View style={[styles.backgroundContainerDot]}>
-                  <Text allowFontScaling={false} style={styles.countryName}>{this.state.currency && this.state.currency.destination.countryName}</Text>
+          <Header />
+          <View style={styles.container}>
+            <View style={styles.backgroundContainer}>
+              <Image resizeMode='cover' style={styles.backgroundContainerImage} source={{uri: icons.headbg}} />
+              <View style={styles.backgroundContainerText}>
+                <View style={styles.backgroundContainerHead}>
+                  <View style={styles.backgroundContainerDotLine}></View>
+                  <View style={styles.backgroundContainerDot}>
+                    <Text allowFontScaling={false} style={styles.countryName}>{this.state.currency && this.state.currency.origination.countryName}</Text>
+                  </View>
+                  <View style={styles.backgroundContainerIconCon}>
+                    <Image resizeMode='contain' style={styles.backgroundContainerIcon} source={{uri: icons.logo}} />
+                  </View>
+                  <View style={[styles.backgroundContainerDot]}>
+                    <Text allowFontScaling={false} style={styles.countryName}>{this.state.currency && this.state.currency.destination.countryName}</Text>
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
-          <View style={styles.numberBox}>
-            {
-              this.state.numberBox.map((item, key) => {
-                return (
-                  <View key={key} style={styles.numberBoxItem}>
-                    <View style={[styles.numberBoxItemBar, {backgroundColor: item.color}]}></View>
-                    <Text allowFontScaling={false} style={[styles.numberBoxItemNum, {color: item.color}]}>{item.num}</Text>
-                    <Text allowFontScaling={false} numberOfLines={2} style={[styles.numberBoxItemText, {color: item.color}]}>{item.text}</Text>
-                  </View>
-                )
-              })
-            }
-          </View>
-          <TouchableHighlight style={styles.tasks} underlayColor="rgba(255, 255, 255, 0.75)" activeOpacity={0.8} onPress={() => this.ActionSheet.show()}>
-            <>
-              <Text allowFontScaling={false} style={{color: '#909194'}}>{this.state.list.type[this.state.list.index].text}</Text>
-              <Image resizeMode='cover' style={styles.tasksIconArrowDown} source={{uri: icons.arrowDown}} />
-              <ActionSheet ref={o => this.ActionSheet = o} title={'Select ...'} options={['All Tasks', 'Starred', 'In Progress', 'Completed', 'Cancel']} cancelButtonIndex={4} onPress={(index) => {
-                if (index == 4) {
-                  return
-                } else {
-                  this.state.list.index = index
-                  this.setState({list: this.state.list})
-                  this.fetchDataListRow()
-                  this.fetchDataListColumn()
-                }
-              }} />
-            </>
-          </TouchableHighlight>
-          <View style={[styles.tasks, {marginTop: 0, padding: 0}]}>
-            <TouchableHighlight style={styles.taskView} underlayColor="rgba(255, 255, 255, 0.75)" activeOpacity={0.8} onPress={() => {
-              this.fetchDataListColumn()
-              this.state.list.active = 'Task View'
-              this.setState({list: this.state.list})
-            }}>
-              <>
-                <Image resizeMode='cover' style={styles.tasksIcon} source={{uri: this.state.list.active == 'Task View' ? icons.taskActive : icons.task}} />
-                <Text allowFontScaling={false} style={{color: this.state.active == 'Task View' ? '#E89CAE' : '#909194'}}>Task View</Text>
-              </>
-            </TouchableHighlight>
-            <TouchableHighlight style={styles.taskTimeline} underlayColor="rgba(255, 255, 255, 0.75)" activeOpacity={0.8} onPress={() => {
-              this.fetchDataListRow()
-              this.state.list.active = 'Timeline View'
-              this.setState({list: this.state.list})
-            }}>
-              <>
-                <Image resizeMode='cover' style={styles.tasksIcon} source={{uri: this.state.list.active == 'Timeline View' ? icons.timelineActive : icons.timeline}} />
-                <Text allowFontScaling={false} style={{color: this.state.list.active == 'Timeline View' ? '#E89CAE' : '#909194'}}>Timeline View</Text>
-              </>
-            </TouchableHighlight>
-            <ModalDropdown options={['option 1', 'option 2']}>
-              <Image resizeMode='cover' style={[styles.tasksIcon, {marginRight: 13, width: 20, height: 20}]} source={{uri: icons.theme}} />
-            </ModalDropdown>
-          </View>
-          <ActionSheet
-            ref={o => this.ActionSheetAction = o}
-            title={'Action'}
-            options={['Edit', 'Delete', 'Cancel']}
-            cancelButtonIndex={2}
-            onPress={(index) => {
-              switch (index) {
-                case 0:
-
-                  break;
-                case 1:
-                  Alert.alert('Delete Task?', 'Are you sure you want to delete this task?',
-                    [
-                      {
-                        text: "CANCEL", onPress: () => {}
-                      },
-                      {
-                        text: "DELETE", onPress: () => this.deleteTask(this.state.taskId)
-                      }
-                    ]
+            <View style={styles.numberBox}>
+              {
+                this.state.numberBox.map((item, key) => {
+                  return (
+                    <View key={key} style={styles.numberBoxItem}>
+                      <View style={[styles.numberBoxItemBar, {backgroundColor: item.color}]}></View>
+                      <Text allowFontScaling={false} style={[styles.numberBoxItemNum, {color: item.color}]}>{item.num}</Text>
+                      <Text allowFontScaling={false} numberOfLines={2} style={[styles.numberBoxItemText, {color: item.color}]}>{item.text}</Text>
+                    </View>
                   )
-                  break;
-                default:
-
+                })
               }
-            }}
-          />
-          <View style={[styles.taskview, {display: this.state.list.active == 'Task View' ? 'flex' : 'none'}]}>
-            <Swiper autoplay={false} height={1000} showsButtons={false} showPagination={false} index={0} dot={<></>} activeDot={<></>}>
-              <View style={styles.slide}>
-                {this.renderColumns(this.state.tasks && this.state.tasks.origin, 0)}
-              </View>
-              <View style={styles.slide}>
-                {this.renderColumns(this.state.tasks && this.state.tasks.destination, 1)}
-              </View>
-              <View style={styles.slide}>
-                {this.renderColumns(this.state.tasks && this.state.tasks.taskNote, 2)}
-              </View>
-            </Swiper>
+            </View>
+            <TouchableHighlight style={styles.tasks} underlayColor="rgba(255, 255, 255, 0.75)" activeOpacity={0.8} onPress={() => this.ActionSheet.show()}>
+              <>
+                <Text allowFontScaling={false} style={{color: '#909194'}}>{this.state.list.type[this.state.list.index].text}</Text>
+                <Image resizeMode='cover' style={styles.tasksIconArrowDown} source={{uri: icons.arrowDown}} />
+                <ActionSheet ref={o => this.ActionSheet = o} title={'Select ...'} options={['All Tasks', 'Starred', 'In Progress', 'Completed', 'Cancel']} cancelButtonIndex={4} onPress={(index) => {
+                  if (index == 4) {
+                    return
+                  } else {
+                    this.state.list.index = index
+                    this.setState({list: this.state.list})
+                    this.fetchDataListRow()
+                    this.fetchDataListColumn()
+                  }
+                }} />
+              </>
+            </TouchableHighlight>
+            <View style={[styles.tasks, {marginTop: 0, padding: 0}]}>
+              <TouchableHighlight style={styles.taskView} underlayColor="rgba(255, 255, 255, 0.75)" activeOpacity={0.8} onPress={() => {
+                this.fetchDataListColumn()
+                this.state.list.active = 'Task View'
+                this.setState({list: this.state.list})
+              }}>
+                <>
+                  <Image resizeMode='cover' style={styles.tasksIcon} source={{uri: this.state.list.active == 'Task View' ? icons.taskActive : icons.task}} />
+                  <Text allowFontScaling={false} style={{color: this.state.active == 'Task View' ? '#E89CAE' : '#909194'}}>Task View</Text>
+                </>
+              </TouchableHighlight>
+              <TouchableHighlight style={styles.taskTimeline} underlayColor="rgba(255, 255, 255, 0.75)" activeOpacity={0.8} onPress={() => {
+                this.fetchDataListRow()
+                this.state.list.active = 'Timeline View'
+                this.setState({list: this.state.list})
+              }}>
+                <>
+                  <Image resizeMode='cover' style={styles.tasksIcon} source={{uri: this.state.list.active == 'Timeline View' ? icons.timelineActive : icons.timeline}} />
+                  <Text allowFontScaling={false} style={{color: this.state.list.active == 'Timeline View' ? '#E89CAE' : '#909194'}}>Timeline View</Text>
+                </>
+              </TouchableHighlight>
+              <ModalDropdown options={['option 1', 'option 2']}>
+                <Image resizeMode='cover' style={[styles.tasksIcon, {marginRight: 13, width: 20, height: 20}]} source={{uri: icons.theme}} />
+              </ModalDropdown>
+            </View>
+            <ActionSheet
+              ref={o => this.ActionSheetAction = o}
+              title={'Action'}
+              options={['Edit', 'Delete', 'Cancel']}
+              cancelButtonIndex={2}
+              onPress={(index) => {
+                switch (index) {
+                  case 0:
+
+                    break;
+                  case 1:
+                    Alert.alert('Delete Task?', 'Are you sure you want to delete this task?',
+                      [
+                        {
+                          text: "CANCEL", onPress: () => {}
+                        },
+                        {
+                          text: "DELETE", onPress: () => this.deleteTask(this.state.taskId)
+                        }
+                      ]
+                    )
+                    break;
+                  default:
+
+                }
+              }}
+            />
+            <View style={[styles.taskview, {display: this.state.list.active == 'Task View' ? 'flex' : 'none'}]}>
+              <Swiper autoplay={false} height={1000} showsButtons={false} showPagination={false} index={0} dot={<></>} activeDot={<></>}>
+                <View style={styles.slide}>
+                  {this.renderColumns(this.state.tasks && this.state.tasks.origin, 0)}
+                </View>
+                <View style={styles.slide}>
+                  {this.renderColumns(this.state.tasks && this.state.tasks.destination, 1)}
+                </View>
+                <View style={styles.slide}>
+                  {this.renderColumns(this.state.tasks && this.state.tasks.taskNote, 2)}
+                </View>
+              </Swiper>
+            </View>
+            <View style={[styles.timeline, {display: this.state.list.active == 'Timeline View' ? 'flex' : 'none'}]}>
+              {this.renderRows(this.state.tasks && this.state.tasks.dated, 0)}
+              {this.renderRows(this.state.tasks && this.state.tasks.unDated, 1)}
+            </View>
           </View>
-          <View style={[styles.timeline, {display: this.state.list.active == 'Timeline View' ? 'flex' : 'none'}]}>
-            {this.renderRows(this.state.tasks && this.state.tasks.dated, 0)}
-            {this.renderRows(this.state.tasks && this.state.tasks.unDated, 1)}
-          </View>
-          <View style={styles.footer}>
-            <Image resizeMode='cover' style={styles.footerImage} source={{uri: icons.footer}} />
-          </View>
+          <Footer />
         </ScrollView>
         <Bottom {...this.props} type="home" />
       </SafeAreaView>
@@ -806,13 +809,6 @@ const styles = StyleSheet.create({
     paddingBottom: 100,
     // width: '80%',
     // marginRight: 30
-  },
-
-  // footer
-  footerImage: {
-    width: '100%',
-    height: 180,
-    marginBottom: 40
   },
 });
 
