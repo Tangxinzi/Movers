@@ -30,7 +30,12 @@ export default class Folder extends React.Component {
     this.state = {
       bearer: null,
       reloDetail: null,
-      documents: []
+      documents: [],
+      fileByType: 'all',
+      sortByColumn: {
+        index: 0,
+        text: ['Sort by document name', 'Sort by uploader name', 'Sort by uploaded name', 'Cancel']
+      }
     }
 
     AsyncStorage.getItem('bearer')
@@ -56,8 +61,9 @@ export default class Folder extends React.Component {
     .done()
   }
 
-  fetchData () {
-    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-all-documents?RelocateId=${ this.state.reloDetail.relocateId }&pageNumber=0&pageSize=20&sortByColumn=uploaded_on&sortByType=desc&FileByType=all`, {
+  fetchData (sortByColumn) {
+    this.setState({documents: []})
+    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-all-documents?RelocateId=${ this.state.reloDetail.relocateId }&pageNumber=0&pageSize=20&sortByColumn=${ sortByColumn || 'uploaded_on' }&sortByType=desc&FileByType=${ this.state.fileByType || 'FileByType' }`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -81,32 +87,72 @@ export default class Folder extends React.Component {
         <ScrollView>
           <Header />
           <View style={styles.container}>
-            <Text allowFontScaling={false} style={styles.title}>My Folder</Text>
+            <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
+              <Text allowFontScaling={false} style={styles.title}>My Folder</Text>
+              <Text allowFontScaling={false} style={styles.pinkLink}>UPLOAD FILE</Text>
+            </View>
             <TouchableHighlight style={styles.tasks} underlayColor="rgba(255, 255, 255, 0.75)" activeOpacity={0.8} onPress={() => this.ActionSheet.show()}>
               <>
-                <Text allowFontScaling={false} style={{color: '#909194'}}>Sort by uploaded date</Text>
+                <Text allowFontScaling={false} style={{color: '#909194'}}>{this.state.sortByColumn.text[this.state.sortByColumn.index]}</Text>
                 <Image resizeMode='cover' style={styles.tasksIconArrowDown} source={{uri: icons.arrowDown}} />
-                <ActionSheet ref={o => this.ActionSheet = o} title={'Select ...'} options={['Sort by document name', 'Sort by uploader name', 'Sort by uploaded name', 'Cancel']} cancelButtonIndex={3} onPress={(index) => {
-                  if (index == 4) {
-                    return
+                <ActionSheet ref={o => this.ActionSheet = o} title={'Select ...'} options={this.state.sortByColumn.text} cancelButtonIndex={3} onPress={(index) => {
+                  this.state.sortByColumn.index = index
+                  this.setState({ sortByColumn: this.state.sortByColumn })
+                  switch (index) {
+                    case 0:
+                      this.fetchData('doc_name')
+                      break;
+                    case 1:
+                      this.fetchData('uploaded_by')
+                      break;
+                    case 2:
+                      this.fetchData('uploaded_on')
+                      break;
+                    default:
+
                   }
                 }} />
               </>
             </TouchableHighlight>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.typeSelectionScroll}>
-              <TouchableHighlight style={[styles.typeSelection, {borderColor: '#e89cae'}]} underlayColor="none" activeOpacity={0.9}>
+              <TouchableHighlight style={{borderColor: this.state.fileByType == 'all' ? '#e89cae' : '#d3d6d9', ...styles.typeSelection}} underlayColor="none" activeOpacity={0.9} onPress={() => {
+                this.setState({
+                  fileByType: 'all'
+                })
+                this.fetchData()
+              }}>
                 <Text allowFontScaling={false} style={styles.typeSelectionText} numberOfLines={1}>All</Text>
               </TouchableHighlight>
-              <TouchableHighlight style={styles.typeSelection} underlayColor="none" activeOpacity={0.9}>
+              <TouchableHighlight style={{borderColor: this.state.fileByType == 'my_file' ? '#e89cae' : '#d3d6d9', ...styles.typeSelection}} underlayColor="none" activeOpacity={0.9} onPress={() => {
+                this.setState({
+                  fileByType: 'my_file'
+                })
+                this.fetchData()
+              }}>
                 <Text allowFontScaling={false} style={styles.typeSelectionText} numberOfLines={1}>Files Uploaded</Text>
               </TouchableHighlight>
-              <TouchableHighlight style={styles.typeSelection} underlayColor="none" activeOpacity={0.9}>
+              <TouchableHighlight style={{borderColor: this.state.fileByType == 'received' ? '#e89cae' : '#d3d6d9', ...styles.typeSelection}} underlayColor="none" activeOpacity={0.9} onPress={() => {
+                this.setState({
+                  fileByType: 'received'
+                })
+                this.fetchData()
+              }}>
                 <Text allowFontScaling={false} style={styles.typeSelectionText} numberOfLines={1}>Files Received</Text>
               </TouchableHighlight>
-              <TouchableHighlight style={styles.typeSelection} underlayColor="none" activeOpacity={0.9}>
+              <TouchableHighlight style={{borderColor: this.state.fileByType == 'invoice' ? '#e89cae' : '#d3d6d9', ...styles.typeSelection}} underlayColor="none" activeOpacity={0.9} onPress={() => {
+                this.setState({
+                  fileByType: 'invoice'
+                })
+                this.fetchData()
+              }}>
                 <Text allowFontScaling={false} style={styles.typeSelectionText} numberOfLines={1}>Quotations Received</Text>
               </TouchableHighlight>
-              <TouchableHighlight style={styles.typeSelection} underlayColor="none" activeOpacity={0.9}>
+              <TouchableHighlight style={{borderColor: this.state.fileByType == 'quotation' ? '#e89cae' : '#d3d6d9', ...styles.typeSelection}} underlayColor="none" activeOpacity={0.9} onPress={() => {
+                this.setState({
+                  fileByType: 'quotation'
+                })
+                this.fetchData()
+              }}>
                 <Text allowFontScaling={false} style={styles.typeSelectionText} numberOfLines={1}>Invoices Received</Text>
               </TouchableHighlight>
             </ScrollView>
@@ -130,6 +176,9 @@ export default class Folder extends React.Component {
                 )
               })
             }
+            {
+              !this.state.documents.length ? <Text style={styles.typeSelectionText} style={{padding: 15}}>Loading your documents ...</Text> : <></>
+            }
             </View>
           </View>
           <Footer />
@@ -146,20 +195,29 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 36,
-    marginBottom: 5,
     marginTop: 20,
+    marginRight: 10,
     fontFamily: 'Baskerville',
   },
+  pinkLink: {
+    fontSize: 16,
+    fontWeight: '700',
+    marginBottom: 5,
+    color: '#e89cae',
+    // borderBottomWidth: 2,
+    borderColor: 'pink',
+    borderBottomStyle: 'dotted'
+  },
   typeSelectionScroll: {
-    marginTop: 30,
-    marginBottom: 30
+    marginTop: 40,
+    marginBottom: 20
   },
   typeSelection: {
     paddingLeft: 15,
     paddingRight: 15,
     paddingBottom: 10,
     borderBottomWidth: 1,
-    borderColor: '#d3d6d9'
+    // borderColor: '#d3d6d9'
   },
   typeSelectionText: {
     fontSize: 16,
@@ -216,7 +274,7 @@ const styles = StyleSheet.create({
   tasks: {
     backgroundColor: '#FFF',
     borderRadius: 5,
-    marginTop: 10,
+    marginTop: 20,
     marginBottom: 15,
     padding: 15,
     flexDirection: 'row',
