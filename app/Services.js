@@ -1,9 +1,11 @@
 'use strict';
 
 import React, { Component } from 'react';
+import icons from './Icons';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Bottom from './components/Bottom';
+import ActionSheet from 'react-native-actionsheet';
 import {
   SafeAreaView,
   ScrollView,
@@ -28,9 +30,53 @@ export default class Services extends React.Component {
     this.state = {
       bearer: null,
       reloDetail: null,
-      vendor: []
+      vendor: [],
+      bodyContent: {
+        "RelocateId": "",
+        "pageNumber": 1,
+        "pageSize": 20,
+        "filterServices": [],
+        "serviceType": "origin",
+        "sortBy": "recently_added",
+        "sortByType": "desc"
+      },
+      list: {
+        index: 0,
+        active: 'Recently Added',
+        type: [
+          {
+            text: 'Recently Added',
+            sortBy: 'recently_added',
+            sortByType: 'desc'
+          },
+          {
+            text: 'A - Z',
+            sortBy: 'name',
+            sortByType: 'asc'
+          },
+          {
+            text: 'Z - A',
+            sortBy: 'name',
+            sortByType: 'desc'
+          },
+          {
+            text: '$ - $$$',
+            sortBy: 'price_tier',
+            sortByType: 'asc'
+          },
+          {
+            text: '$$$ - $',
+            sortBy: 'price_tier',
+            sortByType: 'desc'
+          },
+        ]
+      },
     }
 
+    this.storage()
+  }
+
+  storage () {
     AsyncStorage.getItem('bearer')
     .then((response) => {
       this.setState({
@@ -38,9 +84,12 @@ export default class Services extends React.Component {
       })
       AsyncStorage.getItem('reloDetail')
       .then((response) => {
-        console.log(JSON.parse(response));
+        response = JSON.parse(response)
+        var bodyContent = this.state.bodyContent
+        bodyContent.relocateId = response.relocateId
         this.setState({
-          reloDetail: JSON.parse(response)
+          bodyContent,
+          reloDetail: response
         })
         this.fetchData()
       })
@@ -56,6 +105,7 @@ export default class Services extends React.Component {
   }
 
   fetchData () {
+    this.setState({vendor: []})
     fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-vendor`, {
       method: 'POST',
       headers: {
@@ -63,15 +113,7 @@ export default class Services extends React.Component {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${ this.state.bearer.jwToken }`,
       },
-      body: JSON.stringify({
-        "RelocateId": this.state.reloDetail.relocateId,
-        "pageNumber": 1,
-        "pageSize": 20,
-        "filterServices": [],
-        "serviceType": "origin",
-        "sortBy": "recently_added",
-        "sortByType": "desc"
-      })
+      body: JSON.stringify(this.state.bodyContent)
     })
     .then(response => response.json())
     .then(responseData => {
@@ -110,10 +152,53 @@ export default class Services extends React.Component {
           <View style={styles.container}>
             <Text allowFontScaling={false} style={styles.title}>Find the services you need in</Text>
             <View style={styles.countrySelection}>
-              <Text allowFontScaling={false} style={[styles.country, {color: '#FFF', backgroundColor: '#000'}]}>Singapore</Text>
-              <Text allowFontScaling={false} style={styles.country}>Boston</Text>
+              <TouchableHighlight underlayColor="none" activeOpacity={0.85} onPress={() => {
+                var bodyContent = this.state.bodyContent
+                bodyContent.serviceType = 'origin'
+                this.setState({ bodyContent })
+                this.fetchData()
+              }}>
+                <Text allowFontScaling={false} style={[styles.country, this.state.bodyContent.serviceType == 'origin' ? styles.activeCountry : '']}>{this.state.reloDetail && this.state.reloDetail.originCountryName}</Text>
+              </TouchableHighlight>
+              <TouchableHighlight underlayColor="none" activeOpacity={0.85} onPress={() => {
+                var bodyContent = this.state.bodyContent
+                bodyContent.serviceType = 'destination'
+                this.setState({ bodyContent })
+                this.fetchData()
+              }}>
+                <Text allowFontScaling={false} style={[styles.country, this.state.bodyContent.serviceType == 'destination' ? styles.activeCountry : '']}>{this.state.reloDetail && this.state.reloDetail.destCityName}</Text>
+              </TouchableHighlight>
             </View>
-            <View style={styles.vendoies}>
+
+            <View style={styles.tasksRow}>
+              <TouchableHighlight style={styles.tasks} underlayColor="rgba(255, 255, 255, 0.75)" activeOpacity={0.8} onPress={() => this.ActionSheet.show()}>
+                <>
+                  <Text allowFontScaling={false} style={{color: '#909194'}}>Filters</Text>
+                  <Image resizeMode='cover' style={{width: 14, height: 14}} source={{uri: icons.addEmpty}} />
+                </>
+              </TouchableHighlight>
+              <TouchableHighlight style={styles.tasks} underlayColor="rgba(255, 255, 255, 0.75)" activeOpacity={0.8} onPress={() => this.ActionSheet.show()}>
+                <>
+                  <Text allowFontScaling={false} style={{color: '#909194'}}>{this.state.list.type[this.state.list.index].text}</Text>
+                  <Image resizeMode='cover' style={styles.tasksIconArrowDown} source={{uri: icons.arrowDown}} />
+                  <ActionSheet ref={o => this.ActionSheet = o} title={'Select ...'} options={['Recently Added', 'A - Z', 'Z - A', '$ - $$$', '$$$ - $', 'Cancel']} cancelButtonIndex={5} onPress={(index) => {
+                    if (index == 5) {
+                      return
+                    } else {
+                      this.state.list.index = index
+                      this.state.list.active = this.state.list.type[index].text
+                      this.state.bodyContent.sortBy = this.state.list.type[index].sortBy
+                      this.state.bodyContent.sortByType = this.state.list.type[index].sortByType
+
+                      this.setState({list: this.state.list, bodyContent: this.state.bodyContent})
+                      this.fetchData()
+                    }
+                  }} />
+                </>
+              </TouchableHighlight>
+            </View>
+
+            <View style={[styles.vendoies, {display: this.state.vendor.length ? 'flex' : 'none'}]}>
             {
               this.state.vendor.map((item, key) => {
                 return (
@@ -121,9 +206,12 @@ export default class Services extends React.Component {
                     <View style={styles.vendorRow}>
                       <Image resizeMode='cover' style={styles.vendorImage} source={{uri: 'https://staging-customerportal.moovaz.com/logo192.png'}} />
                       <View style={styles.vendorContent}>
-                        <Text allowFontScaling={false} style={styles.servicesName}>{item.services[0]['name'].toUpperCase()}</Text>
+                        <Text allowFontScaling={false} style={styles.servicesName}>{item.services[0] && item.services[0]['name'].toUpperCase()}</Text>
                         <Text allowFontScaling={false} style={styles.companyName}>{item.companyName}</Text>
-                        <Text allowFontScaling={false} style={styles.companyName}>{item.priceTierName}</Text>
+                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                          <Image resizeMode='cover' style={{width: 21, height: 21, marginRight: 5}} source={{uri: icons.money}} />
+                          <Text allowFontScaling={false} style={styles.companyName}>{item.priceTierName}</Text>
+                        </View>
                       </View>
                     </View>
                     <Text allowFontScaling={false} style={styles.shortDescription}>{item.shortDescription}</Text>
@@ -137,6 +225,13 @@ export default class Services extends React.Component {
               })
             }
             </View>
+            {
+              !this.state.vendor.length ? (
+                <View style={{ height: 450, justifyContent: 'center', alignItems: 'center' }}>
+                  <Image resizeMode='cover' style={{width: 88, height: 88}} source={{uri: 'https://staging-customerportal.moovaz.com/static/media/loading.b5201de1.gif'}} />
+                </View>
+              ): <></>
+            }
           </View>
           <Footer />
         </ScrollView>
@@ -173,9 +268,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     alignItems: 'center',
     width: 160,
-    borderRadius: 20,
+    borderRadius: 25,
     overflow: 'hidden',
-    padding: 10,
+    padding: 15,
+  },
+  activeCountry: {
+    color: '#FFF', backgroundColor: '#000'
   },
   vendoies: {
     marginTop: 20,
@@ -225,5 +323,51 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     textAlign: 'center'
-  }
+  },
+
+  // Recently Added
+  tasksRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    margin: 15,
+  },
+  tasks: {
+    flex: 1,
+    backgroundColor: '#FFF',
+    borderRadius: 5,
+    marginLeft: 8,
+    marginRight: 8,
+    padding: 13,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  taskView: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 13,
+    borderColor: '#f4f4f4',
+    borderRightWidth: 1,
+  },
+  taskTimeline: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 13,
+    borderColor: '#f4f4f4',
+    borderRightWidth: 1
+  },
+  tasksIcon: {
+    width: 16,
+    height: 16,
+    marginLeft: 10,
+    marginRight: 10
+  },
+  tasksIconArrowDown: {
+    width: 18,
+    height: 18
+  },
 });

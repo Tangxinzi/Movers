@@ -111,6 +111,12 @@ const App = createStackNavigator({
   //     header: null
   //   }
   // },
+  HomeScreen: {
+    screen: HomeScreen,
+    navigationOptions: {
+      header: null
+    }
+  },
   IndexScreen: {
     screen: IndexScreen,
     navigationOptions: {
@@ -119,12 +125,6 @@ const App = createStackNavigator({
   },
   FolderScreen: {
     screen: FolderScreen,
-    navigationOptions: {
-      header: null
-    }
-  },
-  HomeScreen: {
-    screen: HomeScreen,
     navigationOptions: {
       header: null
     }

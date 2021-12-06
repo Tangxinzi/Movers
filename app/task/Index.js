@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import RenderHtml from 'react-native-render-html';
 import icons from '../Icons';
 import {
   Text,

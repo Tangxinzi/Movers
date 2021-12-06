@@ -349,7 +349,7 @@ class Home extends React.Component {
     .done();
   }
 
-  renderRows = (tasks, index) => {
+  renderRows = (tasks, taskIndex) => {
     if (tasks) {
       return (
         <>
@@ -357,20 +357,24 @@ class Home extends React.Component {
             <View style={styles.rowHead}>
               <View style={styles.columnHeadCon}>
                 <View style={styles.rowHeadDot}></View>
-                <Text style={styles.columnHeadTitle} allowFontScaling={false}>{ index == 0 ? 'Dated Tasks' : index == 1 ? 'Undated Tasks' : '' }</Text>
+                <Text style={styles.columnHeadTitle} allowFontScaling={false}>{ taskIndex == 0 ? 'Dated Tasks' : taskIndex == 1 ? 'Undated Tasks' : '' }</Text>
               </View>
               <View style={styles.columnHeadCon}>
                 <View style={styles.columnHeadCountCon}>
                   <Text style={styles.columnHeadCount} allowFontScaling={false}>{tasks.totalItemCount}</Text>
                 </View>
-                <Image resizeMode='cover' style={{width: 28, height: 28}} source={{uri: icons.add}} />
+                <TouchableHighlight underlayColor="none" activeOpacity={0.85} onPress={() => {
+                  this.props.navigation.navigate('TaskCreate', {taskIndex})
+                }}>
+                  <Image resizeMode='cover' style={{width: 28, height: 28}} source={{uri: icons.add}} />
+                </TouchableHighlight>
               </View>
             </View>
             {
               tasks.items.map((item, key) => {
                 return (
                   <TouchableHighlight key={key} activeOpacity={0.9} underlayColor="none">
-                    <View style={[styles.column, {backgroundColor: item.statusText == 'Task/Note' ? '#FFF5F8' : '#FFF'}]} key={index}>
+                    <View style={[styles.column, {backgroundColor: item.statusText == 'Task/Note' ? '#FFF5F8' : '#FFF'}]}>
                       <View style={styles.columnStatusCon}>
                         <View style={[styles.columnStatusTextCon, {backgroundColor: item.statusText == 'New Task' ? '#ffaf00' : '' || item.statusText == 'Task/Note' ? '#e89cae' : '' || item.statusText == 'In Progress' ? '#448de3' : '' || item.statusText == 'Suggested Task' ? '#d3d6d9' : '' || item.statusText == 'Completed' ? '#00bd9d' : ''}]}>
                           <Text style={styles.columnStatusText} allowFontScaling={false}>{item.statusText}</Text>
