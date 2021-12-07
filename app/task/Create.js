@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import icons from '../Icons';
+import icons from '../icons/Icons';
 import Axios from 'react-native-axios';
 import DatePicker from 'react-native-datepicker';
 import ActionSheet from 'react-native-actionsheet';

@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import icons from './Icons';
+import icons from './icons/Icons';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Bottom from './components/Bottom';
@@ -20,7 +20,8 @@ import {
   Text,
   View,
   Alert,
-  Appearance
+  Appearance,
+  DeviceEventEmitter
 } from 'react-native';
 
 export default class Services extends React.Component {
@@ -73,30 +74,40 @@ export default class Services extends React.Component {
       },
     }
 
-    this.storage()
+    this.bearer()
   }
 
-  storage () {
+  componentDidMount() {
+    this.listener = DeviceEventEmitter.addListener('Change', () => {
+      this.bearer()
+    })
+  }
+
+  bearer () {
     AsyncStorage.getItem('bearer')
     .then((response) => {
-      this.setState({
-        bearer: JSON.parse(response)
-      })
-      AsyncStorage.getItem('reloDetail')
-      .then((response) => {
-        response = JSON.parse(response)
-        var bodyContent = this.state.bodyContent
-        bodyContent.relocateId = response.relocateId
+      if (response == null) {
+        this.props.navigation.navigate('Login')
+      } else {
         this.setState({
-          bodyContent,
-          reloDetail: response
+          bearer: JSON.parse(response)
         })
-        this.fetchData()
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      .done()
+        AsyncStorage.getItem('reloDetail')
+        .then((response) => {
+          response = JSON.parse(response)
+          var bodyContent = this.state.bodyContent
+          bodyContent.relocateId = response.relocateId
+          this.setState({
+            bodyContent,
+            reloDetail: response
+          })
+          this.fetchData()
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .done()
+      }
     })
     .catch((error) => {
       console.log(error);

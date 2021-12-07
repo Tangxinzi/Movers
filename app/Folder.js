@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import icons from './Icons';
+import icons from './icons/Icons';
 import Bottom from './components/Bottom';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -20,7 +20,8 @@ import {
   Text,
   View,
   Alert,
-  Appearance
+  Appearance,
+  DeviceEventEmitter
 } from 'react-native';
 
 export default class Folder extends React.Component {
@@ -38,22 +39,36 @@ export default class Folder extends React.Component {
       }
     }
 
+    this.bearer()
+  }
+
+  componentDidMount() {
+    this.listener = DeviceEventEmitter.addListener('Change', () => {
+      this.bearer()
+    })
+  }
+
+  bearer () {
     AsyncStorage.getItem('bearer')
     .then((response) => {
-      this.setState({
-        bearer: JSON.parse(response)
-      })
-      AsyncStorage.getItem('reloDetail')
-      .then((response) => {
+      if (response == null) {
+        this.props.navigation.navigate('Login')
+      } else {
         this.setState({
-          reloDetail: JSON.parse(response)
+          bearer: JSON.parse(response)
         })
-        this.fetchData()
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      .done()
+        AsyncStorage.getItem('reloDetail')
+        .then((response) => {
+          this.setState({
+            reloDetail: JSON.parse(response)
+          })
+          this.fetchData()
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .done()
+      }
     })
     .catch((error) => {
       console.log(error);

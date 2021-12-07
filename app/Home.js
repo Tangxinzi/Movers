@@ -7,7 +7,7 @@
  */
 
 import React, { Component } from 'react';
-import icons from './Icons';
+import icons from './icons/Icons';
 import iconsBottom from './icons/iconsBottom';
 import Header from './components/Header';
 import Bottom from './components/Bottom';
@@ -29,7 +29,8 @@ import {
   Text,
   View,
   Alert,
-  Appearance
+  Appearance,
+  DeviceEventEmitter
 } from 'react-native';
 
 const colorScheme = Appearance.getColorScheme();
@@ -87,32 +88,31 @@ class Home extends React.Component {
     this.bearer()
   }
 
-  bearer () {
-    fetch(`https://api-staging-c.moovaz.com/api/Account/authenticate`, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        "email": 'mrsjanesmith@yopmail.com',
-        "password": 'MasterPassword'
-        // "email": 'jjhubspottest11@yopmail.com',
-        // "password": '12345678'
-      })
+  componentDidMount() {
+    this.listener = DeviceEventEmitter.addListener('Change', () => {
+      this.bearer()
     })
-    .then(response => response.json())
-    .then(responseData => {
-      AsyncStorage.setItem('bearer', JSON.stringify(responseData.data))
-      this.setState({
-        bearer: responseData.data
-      })
-      this.getReloDetail()
-      this.reloDetail()
-      this.fetchDataListColumn()
+  }
+
+  bearer () {
+    AsyncStorage.getItem('bearer')
+    .then((response) => {
+      if (response == null) {
+        console.log(response);
+        this.props.navigation.navigate('Login')
+      } else {
+        this.setState({
+          bearer: JSON.parse(response)
+        })
+
+        this.getReloDetail()
+        this.reloDetail()
+        this.fetchDataListColumn()
+      }
     })
     .catch((error) => {
-      console.log('err: ', error)
+      console.log(error)
+      // this.props.navigation.navigate('Login')
     })
     .done()
   }

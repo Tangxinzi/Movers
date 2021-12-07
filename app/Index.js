@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import icons from './Icons';
+import icons from './icons/Icons';
 import Header from './components/Header';
 import Bottom from './components/Bottom';
 import Footer from './components/Footer';
