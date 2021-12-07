@@ -6,6 +6,7 @@ import {
   View,
   Image,
   Alert,
+  Linking,
   StatusBar,
   ScrollView,
   Dimensions,
@@ -158,7 +159,18 @@ class Login extends React.Component {
                   secureTextEntry
                   onChangeText={(password) => this.setState({ password })}
                 />
-                <Text allowFontScaling={false} style={{marginTop: 15, color: '#e89cae', fontWeight: '700'}}>Forgot password?</Text>
+                <TouchableHighlight underlayColor='transparent' onPress={() => {
+                  var url = 'https://staging-customerportal.moovaz.com/login/forgot-password'
+                  Linking.canOpenURL(url).then(supported => {
+                    if (!supported) {
+                      console.warn('Can\'t handle url: ' + url);
+                    } else {
+                      return Linking.openURL(url)
+                    }
+                  }).catch(err => console.error('An error occurred', url))
+                }}>
+                  <Text allowFontScaling={false} style={{marginTop: 15, color: '#e89cae', fontWeight: '700'}}>Forgot password?</Text>
+                </TouchableHighlight>
               </View>
               <View style={styles.textSubmitFoot}>
                 <TouchableHighlight

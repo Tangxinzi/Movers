@@ -17,6 +17,7 @@ import {
   FlatList,
   Dimensions,
   Image,
+  Modal,
   Text,
   View,
   Alert,
@@ -31,6 +32,7 @@ export default class Services extends React.Component {
     this.state = {
       bearer: null,
       reloDetail: null,
+      modalVisible: false,
       vendor: [],
       bodyContent: {
         "RelocateId": "",
@@ -72,6 +74,55 @@ export default class Services extends React.Component {
           },
         ]
       },
+      filter: [
+        {
+          title: 'Housing & Home',
+          check: false,
+          services: [
+            {
+              serviceId: 1,
+              serviceText: 'Air-cooler Services',
+              serviceCheck: false,
+            },
+            {
+              serviceId: 2,
+              serviceText: 'Curtain Cleaning',
+              serviceCheck: false,
+            },
+            {
+              serviceId: 2,
+              serviceText: 'Furniture Disposal',
+              serviceCheck: false,
+            },
+            {
+              serviceId: 2,
+              serviceText: 'Handyman',
+              serviceCheck: false,
+            },
+            {
+              serviceId: 2,
+              serviceText: 'House Cleaning',
+              serviceCheck: false,
+            },
+            {
+              serviceId: 2,
+              serviceText: 'Short-term Property Rental',
+              serviceCheck: false,
+            },
+          ]
+        },
+        {
+          title: 'Family',
+          check: false,
+          services: [
+            {
+              serviceId: 1,
+              serviceText: 'Housemaid Assistance',
+              serviceCheck: false,
+            },
+          ]
+        }
+      ]
     }
 
     this.bearer()
@@ -182,7 +233,7 @@ export default class Services extends React.Component {
             </View>
 
             <View style={styles.tasksRow}>
-              <TouchableHighlight style={styles.tasks} underlayColor="rgba(255, 255, 255, 0.75)" activeOpacity={0.8} onPress={() => this.ActionSheet.show()}>
+              <TouchableHighlight style={styles.tasks} underlayColor="rgba(255, 255, 255, 0.75)" activeOpacity={0.8} onPress={() => this.setState({modalVisible: true})}>
                 <>
                   <Text allowFontScaling={false} style={{color: '#909194'}}>Filters</Text>
                   <Image resizeMode='cover' style={{width: 14, height: 14}} source={{uri: icons.addEmpty}} />
@@ -246,6 +297,38 @@ export default class Services extends React.Component {
           </View>
           <Footer />
         </ScrollView>
+
+        <Modal animationType="slide" visible={this.state.modalVisible} transparent={true}>
+          <View style={{flex: 1, backgroundColor: '#FFF'}}>
+            <View style={styles.modal}>
+              {
+                this.state.filter.map((item, key) => {
+                  return (
+                    <View key={key} style={styles.filter}>
+                      <View key={key} style={{...styles.serviceItem, justifyContent: 'space-between'}}>
+                        <Text allowFontScaling={false} style={styles.filterText}>{item.title}</Text>
+                        <Image resizeMode='cover' style={{width: 16, height: 16, marginBottom: 5}} source={{uri: icons.addEmpty}} />
+                      </View>
+                      {
+                        item.services.map((item, key) => {
+                          return (
+                            <View key={key} style={styles.serviceItem}>
+                              <Image resizeMode='cover' style={styles.serviceItemIcon} source={{uri: icons.checkedEmpty}} />
+                              <Text allowFontScaling={false} style={styles.serviceText}>{item.serviceText}</Text>
+                            </View>
+                          )
+                        })
+                      }
+                    </View>
+                  )
+                })
+              }
+              <TouchableHighlight underlayColor="none" activeOpacity={0.5} style={styles.touch} onPress={() => this.setState({modalVisible: false})}>
+                <Text allowFontScaling={false} style={{textAlign: 'center'}}>Close Modal</Text>
+              </TouchableHighlight>
+            </View>
+          </View>
+        </Modal>
         <Bottom {...this.props} type="services" />
       </SafeAreaView>
     )
@@ -253,6 +336,50 @@ export default class Services extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  // filter
+  filter: {
+    borderColor: '#d3d6d9',
+    borderBottomWidth: 1,
+    paddingBottom: 16,
+    marginBottom: 16,
+    margin: 20
+  },
+  filterText: {
+    fontWeight: '700',
+    fontSize: 18,
+    justifyContent: 'space-between',
+    marginBottom: 8
+  },
+  serviceItem: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  serviceItemIcon: {
+    width: 22,
+    height: 22,
+    marginRight: 10,
+  },
+  serviceText: {
+    color: '#101820',
+    fontSize: 18,
+    paddingLeft: 0,
+    paddingTop: 8,
+    paddingBottom: 8
+  },
+
+  // modal
+  modal: {
+    padding: 15,
+    marginTop: 80
+  },
+  modalTitle: {
+    fontWeight: '800',
+    fontSize: 24,
+    textAlign: 'center',
+    marginBottom: 10
+  },
+  touch: { backgroundColor: '#FFF', borderWidth: 1, borderColor: 'rgba(204, 204, 204, 0.5)', padding: 15, borderRadius: 5 },
+
   container: {
     padding: 15,
   },

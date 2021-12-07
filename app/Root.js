@@ -99,7 +99,7 @@ const BottomNavigatorScreen = createBottomTabNavigator({
   Home: {
      screen: HomeStack,
      navigationOptions: {
-        tabBarLabel: '首页',
+        tabBarLabel: 'Home',
      },
   }
 });
