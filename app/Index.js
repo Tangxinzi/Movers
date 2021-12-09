@@ -78,7 +78,7 @@ export default class Index extends React.Component {
   render() {
     return (
       <SafeAreaView>
-        <ScrollView>
+        <ScrollView stickyHeaderIndices={[0]}>
           <Header />
           <View style={styles.container}>
             <Text allowFontScaling={false} style={styles.title}>Who you chatting with</Text>

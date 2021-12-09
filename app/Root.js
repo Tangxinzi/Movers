@@ -19,6 +19,7 @@ import Folder from './Folder'
 import Services from './Services'
 import Web from './Web'
 import Login from './Login'
+import Boarding from './Boarding'
 
 import TaskIndex from './task/Index'
 import TaskCreate from './task/Create'
@@ -145,6 +146,9 @@ const App = createStackNavigator({
         shadowOpacity: 0
       }
     }
+  },
+  Boarding: {
+    screen: Boarding,
   },
   DetailsScreen: { screen: DetailsScreen },
   Web: {

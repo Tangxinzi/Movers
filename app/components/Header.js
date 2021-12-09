@@ -19,7 +19,7 @@ import {
   Appearance
 } from 'react-native';
 
-export default class Footer extends React.Component {
+export default class Header extends React.Component {
   constructor(props) {
     super(props);
 
@@ -42,9 +42,13 @@ export default class Footer extends React.Component {
   render() {
     return (
       <>
+        <StatusBar backgroundColor="#ffffff" barStyle="dark-content" />
+        <View style={{backgroundColor: 'rgb(255, 185, 0)', height: 8}}></View>
         <View style={styles.header}>
-          <Text style={styles.headerIcon}></Text>
-          <Image resizeMode='cover' style={styles.headerImage} source={{uri: iconsHeader.logo}} />
+          <Text style={styles.headerIcon} onPress={() => this.props.navigation.navigate('Boarding')}>Board</Text>
+          <View style={styles.headerImageContent}>
+            <Image resizeMode='cover' style={styles.headerImage} source={{uri: iconsHeader.logo}} />
+          </View>
           <Image resizeMode='cover' style={styles.headerIcon} source={{uri: iconsHeader.icon}} />
         </View>
         <View style={styles.bar}>
@@ -66,6 +70,10 @@ export default class Footer extends React.Component {
 
 const styles = StyleSheet.create({
   header: {
+    // display: 'none',
+    // position: 'absolute',
+    // top: 0,
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -73,7 +81,12 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 15,
-    paddingBottom: 15
+    paddingBottom: 15,
+    zIndex: 1
+  },
+  headerImageContent: {
+    flex: 1,
+    alignItems: 'center'
   },
   headerImage: {
     width: 76,

@@ -99,8 +99,8 @@ export default class Folder extends React.Component {
   render() {
     return (
       <SafeAreaView>
-        <ScrollView>
-          <Header />
+        <ScrollView stickyHeaderIndices={[0]}>
+          <Header {...this.props} />
           <View style={styles.container}>
             <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
               <Text allowFontScaling={false} style={styles.title}>My Folder</Text>
@@ -180,6 +180,10 @@ export default class Folder extends React.Component {
                   }}>
                     <View style={styles.documentsRow}>
                       <View style={styles.documentsContent}>
+                        <View style={styles.images}>
+                          <Image resizeMode='contain' style={styles.image} source={{uri: icons.download}} />
+                          <Image resizeMode='contain' style={styles.image} source={{uri: icons.delete}} />
+                        </View>
                         <Text allowFontScaling={false} style={styles.companyName}>{item.originalFilename}</Text>
                         <Text allowFontScaling={false} style={styles.uploadedText}>Uploaded by</Text>
                         <Text allowFontScaling={false} style={styles.companyName}>{item.accountFirstName} {item.accountLastName}</Text>
@@ -258,7 +262,8 @@ const styles = StyleSheet.create({
     marginRight: 10
   },
   documentsContent: {
-    flex: 1
+    flex: 1,
+    position: 'relative'
   },
   touchButton: {
     marginTop: 18,
@@ -324,4 +329,16 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20
   },
+  images: {
+    position: 'absolute',
+    flexDirection: 'row',
+    alignItems: 'center',
+    right: 0,
+    bottom: 5
+  },
+  image: {
+    width: 22,
+    height: 22,
+    marginLeft: 15
+  }
 });

@@ -416,8 +416,8 @@ class Home extends React.Component {
   render() {
     return (
       <SafeAreaView>
-        <ScrollView contentInsetAdjustmentBehavior="automatic">
-          <Header />
+        <ScrollView contentInsetAdjustmentBehavior="automatic" stickyHeaderIndices={[0]}>
+          <Header {...this.props} />
           <View style={styles.container}>
             <View style={styles.backgroundContainer}>
               <Image resizeMode='cover' style={styles.backgroundContainerImage} source={{uri: icons.headbg}} />
@@ -545,7 +545,7 @@ class Home extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colorScheme === 'dark' ? '#111' : '#f4f4f4'
+    backgroundColor: '#f4f4f4'
   },
 
   // backgroundContainer
@@ -707,7 +707,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   columnHeadTitle: {
-    color: colorScheme === 'dark' ? '#f4f4f4' : '#111',
+    color: '#111',
     fontFamily: 'Baskerville',
     fontSize: 24,
     marginLeft: 10,

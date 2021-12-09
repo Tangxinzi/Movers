@@ -76,6 +76,7 @@ export default class Services extends React.Component {
       },
       filter: [
         {
+          index: 0,
           title: 'Housing & Home',
           check: false,
           services: [
@@ -85,17 +86,17 @@ export default class Services extends React.Component {
               serviceCheck: false,
             },
             {
-              serviceId: 2,
+              serviceId: 3,
               serviceText: 'Curtain Cleaning',
               serviceCheck: false,
             },
             {
-              serviceId: 2,
+              serviceId: 4,
               serviceText: 'Furniture Disposal',
               serviceCheck: false,
             },
             {
-              serviceId: 2,
+              serviceId: 31,
               serviceText: 'Handyman',
               serviceCheck: false,
             },
@@ -105,23 +106,101 @@ export default class Services extends React.Component {
               serviceCheck: false,
             },
             {
-              serviceId: 2,
+              serviceId: 21,
               serviceText: 'Short-term Property Rental',
               serviceCheck: false,
             },
           ]
         },
         {
+          index: 1,
           title: 'Family',
           check: false,
           services: [
             {
-              serviceId: 1,
+              serviceId: 13,
               serviceText: 'Housemaid Assistance',
               serviceCheck: false,
             },
           ]
-        }
+        },
+        {
+          index: 2,
+          title: 'Pets',
+          check: false,
+          services: [
+            {
+              serviceId: 17,
+              serviceText: 'Pet Relocation',
+              serviceCheck: false,
+            },
+          ]
+        },
+        {
+          index: 3,
+          title: 'Money & Finance',
+          check: false,
+          services: [
+            {
+              serviceId: 14,
+              serviceText: 'Money Transfer / Remittance',
+              serviceCheck: false,
+            },
+          ]
+        },
+        {
+          index: 4,
+          title: 'Settling in',
+          check: false,
+          services: [
+            {
+              serviceId: 18,
+              serviceText: 'Private Transport Hiring',
+              serviceCheck: false,
+            },
+            {
+              serviceId: 23,
+              serviceText: 'Vehicle Renting',
+              serviceCheck: false,
+            },
+          ]
+        },
+        {
+          index: 5,
+          title: 'Moving Services',
+          check: false,
+          services: [
+            {
+              serviceId: 32,
+              serviceText: 'Baggage & Box Shipping',
+              serviceCheck: false,
+            },
+          ]
+        },
+        {
+          index: 6,
+          title: 'Lifestyle & Leisure',
+          check: false,
+          services: [
+            {
+              serviceId: 30,
+              serviceText: 'Vehicle Selling',
+              serviceCheck: false,
+            },
+          ]
+        },
+        {
+          index: 7,
+          title: 'Concierge',
+          check: false,
+          services: [
+            {
+              serviceId: 28,
+              serviceText: 'Relocation Concierge',
+              serviceCheck: false,
+            },
+          ]
+        },
       ]
     }
 
@@ -206,11 +285,35 @@ export default class Services extends React.Component {
     .done()
   }
 
+  service (id, check) {
+    var filter = this.state.filter, bodyContent = this.state.bodyContent
+    for (var i = 0; i < filter.length; i++) {
+      for (var j = 0; j < filter[i].services.length; j++) {
+        if (filter[i].services[j].serviceId == id) {
+          filter[i].services[j].serviceCheck = !check
+        }
+      }
+    }
+
+    for (var i = 0; i < filter.length; i++) {
+      for (var j = 0; j < filter[i].services.length; j++) {
+        if (filter[i].services[j].serviceCheck) {
+          bodyContent.filterServices.push({
+            serviceId: filter[i].services[j].serviceId
+          })
+        }
+      }
+    }
+
+    this.setState({ filter, bodyContent })
+    this.fetchData()
+  }
+
   render() {
     return (
       <SafeAreaView>
-        <ScrollView>
-          <Header />
+        <ScrollView stickyHeaderIndices={[0]}>
+          <Header {...this.props} />
           <View style={styles.container}>
             <Text allowFontScaling={false} style={styles.title}>Find the services you need in</Text>
             <View style={styles.countrySelection}>
@@ -298,27 +401,36 @@ export default class Services extends React.Component {
           <Footer />
         </ScrollView>
 
-        <Modal animationType="slide" visible={this.state.modalVisible} transparent={true}>
-          <View style={{flex: 1, backgroundColor: '#FFF'}}>
+        <Modal animationType="fade" visible={this.state.modalVisible} transparent={true}>
+          <ScrollView style={{flex: 1, backgroundColor: '#FFF'}}>
             <View style={styles.modal}>
               {
                 this.state.filter.map((item, key) => {
                   return (
                     <View key={key} style={styles.filter}>
-                      <View key={key} style={{...styles.serviceItem, justifyContent: 'space-between'}}>
-                        <Text allowFontScaling={false} style={styles.filterText}>{item.title}</Text>
-                        <Image resizeMode='cover' style={{width: 16, height: 16, marginBottom: 5}} source={{uri: icons.addEmpty}} />
-                      </View>
+                      <TouchableHighlight underlayColor="none" activeOpacity={0.85} onPress={() => {
+                        this.state.filter[key].check = !this.state.filter[key].check
+                        this.setState({ filter: this.state.filter })
+                      }}>
+                        <View key={key} style={{...styles.serviceItem, justifyContent: 'space-between'}}>
+                          <Text allowFontScaling={false} style={styles.filterText}>{item.title}</Text>
+                          <Image resizeMode='cover' style={{width: 16, height: this.state.filter[key].check ? 2 : 16, marginBottom: 5}} source={{uri: this.state.filter[key].check ? icons.minus : icons.addEmpty}} />
+                        </View>
+                      </TouchableHighlight>
+                      <View style={{display: item.check ? 'flex' : 'none'}}>
                       {
                         item.services.map((item, key) => {
                           return (
-                            <View key={key} style={styles.serviceItem}>
-                              <Image resizeMode='cover' style={styles.serviceItemIcon} source={{uri: icons.checkedEmpty}} />
-                              <Text allowFontScaling={false} style={styles.serviceText}>{item.serviceText}</Text>
-                            </View>
+                            <TouchableHighlight underlayColor="none" activeOpacity={0.85} onPress={() => this.service(item.serviceId, item.serviceCheck)}>
+                              <View key={key} style={styles.serviceItem}>
+                                <Image resizeMode='cover' style={styles.serviceItemIcon} source={{uri: item.serviceCheck ? icons.checkedBlack : icons.checkedEmpty}} />
+                                <Text allowFontScaling={false} style={styles.serviceText}>{item.serviceText}</Text>
+                              </View>
+                            </TouchableHighlight>
                           )
                         })
                       }
+                      </View>
                     </View>
                   )
                 })
@@ -327,7 +439,7 @@ export default class Services extends React.Component {
                 <Text allowFontScaling={false} style={{textAlign: 'center'}}>Close Modal</Text>
               </TouchableHighlight>
             </View>
-          </View>
+          </ScrollView>
         </Modal>
         <Bottom {...this.props} type="services" />
       </SafeAreaView>
@@ -341,8 +453,8 @@ const styles = StyleSheet.create({
     borderColor: '#d3d6d9',
     borderBottomWidth: 1,
     paddingBottom: 16,
-    marginBottom: 16,
-    margin: 20
+    margin: 20,
+    marginTop: 0
   },
   filterText: {
     fontWeight: '700',
