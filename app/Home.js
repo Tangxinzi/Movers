@@ -26,6 +26,7 @@ import {
   FlatList,
   Dimensions,
   Image,
+  Modal,
   Text,
   View,
   Alert,
@@ -60,6 +61,7 @@ class Home extends React.Component {
       tasks: {},
       reloDetail: null,
       currency: null,
+      modalVisible: false,
       bearer: {},
       list: {
         index: 0,
@@ -486,9 +488,9 @@ class Home extends React.Component {
                   <Text allowFontScaling={false} style={{color: this.state.list.active == 'Timeline View' ? '#E89CAE' : '#909194'}}>Timeline View</Text>
                 </>
               </TouchableHighlight>
-              <ModalDropdown options={['option 1', 'option 2']}>
+              <TouchableHighlight underlayColor="none" activeOpacity={0.5} onPress={() => this.setState({modalVisible: true})}>
                 <Image resizeMode='cover' style={[styles.tasksIcon, {marginRight: 13, width: 20, height: 20}]} source={{uri: icons.theme}} />
-              </ModalDropdown>
+              </TouchableHighlight>
             </View>
             <ActionSheet
               ref={o => this.ActionSheetAction = o}
@@ -537,6 +539,19 @@ class Home extends React.Component {
           </View>
           <Footer />
         </ScrollView>
+        <Modal animationType="slide" visible={this.state.modalVisible} transparent={false}>
+          <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-around', marginTop: '15%' }}>
+            <Text allowFontScaling={false} style={styles.modalTitle}>Select mood background</Text>
+          </View>
+          <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-around', marginBottom: '15%' }}>
+            <TouchableHighlight underlayColor="none" activeOpacity={0.5} style={styles.reject} onPress={() => this.setState({modalVisible: false})}>
+              <Text allowFontScaling={false}>Cancel</Text>
+            </TouchableHighlight>
+            <TouchableHighlight underlayColor="none" activeOpacity={0.5} style={styles.accept} onPress={() => this.setState({modalVisible: false})}>
+              <Text allowFontScaling={false}>Select</Text>
+            </TouchableHighlight>
+          </View>
+        </Modal>
         <Bottom {...this.props} type="home" />
       </SafeAreaView>
     )

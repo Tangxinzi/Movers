@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF'
   },
   iconsBottomHome: {
-    shadowColor: 'rgba(0, 0, 0, 0.2)',
+    shadowColor: 'rgba(0, 0, 0, 0.4)',
     shadowOffset: {h: 10, w: 10},
     shadowRadius: 8,
     shadowOpacity: 0.3,
@@ -107,11 +107,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#FFFFFF',
-    boxShadow: '0 4px 10px rgb(167, 167, 167)',
+    boxShadow: '0 4px 10px rgb(106, 105, 105)',
     borderRadius: 70,
-    bottom: 35,
-    margin: 7,
-    marginBottom: 0
+    bottom: 30,
+    marginLeft: 7,
+    marginRight: 7
   },
   iconsBottom: {
     flex: 1,

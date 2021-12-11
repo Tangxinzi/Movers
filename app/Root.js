@@ -141,9 +141,7 @@ const App = createStackNavigator({
     navigationOptions: {
       headerBackTitleVisible: false,
       headerStyle: {
-        borderBottomWidth: 0,
-        elevation: 0,
-        shadowOpacity: 0
+        elevation: 1,
       }
     }
   },
@@ -198,9 +196,7 @@ const Root = createStackNavigator(
       navigationOptions: {
         headerBackTitleVisible: false,
         headerStyle: {
-          borderBottomWidth: 0,
-          elevation: 0,
-          shadowOpacity: 0
+          elevation: 1,
         }
       }
     },
@@ -209,9 +205,7 @@ const Root = createStackNavigator(
       navigationOptions: {
         headerBackTitleVisible: false,
         headerStyle: {
-          borderBottomWidth: 0,
-          elevation: 0,
-          shadowOpacity: 0
+          elevation: 1,
         }
       }
     },

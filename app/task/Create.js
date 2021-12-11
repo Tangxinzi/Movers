@@ -75,7 +75,8 @@ class Login extends React.Component {
         index: '',
         action: false,
         text: ['SGD', 'AUD', 'Cancel']
-      }
+      },
+      bodyContent: {}
     };
 
     AsyncStorage.getItem('bearer')
@@ -93,6 +94,27 @@ class Login extends React.Component {
     .then((response) => {
       this.setState({
         reloDetail: JSON.parse(response)
+      })
+
+      this.setState({
+        bodyContent: {
+          "TaskData": {
+            "taskType": "destination",
+            "countryCityName": "Sydney"
+          },
+          "taskType": "destination",
+          "chooseCategory": "0",
+          "serviceId": null,
+          "title": this.state.title || '',
+          "description": this.state.description || '',
+          "note": "testing...testing...testing...testing...testing...",
+          "startDate": "2021-11-29",
+          "isImportant": false,
+          "dueDate": "2021-11-29",
+          "budgetType": 129,
+          "budgetAmount": 1121,
+          "relocateId": this.state.reloDetail.relocateId
+        }
       })
     })
     .catch((error) => {
@@ -113,24 +135,7 @@ class Login extends React.Component {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${ this.state.bearer.jwToken }`
       },
-      body: JSON.stringify({
-        "TaskData": {
-          "taskType": "destination",
-          "countryCityName": "Sydney"
-        },
-        "taskType": "destination",
-        "chooseCategory": "0",
-        "serviceId": null,
-        "title": this.state.title || '',
-        "description": this.state.description || '',
-        "note": "testing...testing...testing...testing...testing...",
-        "startDate": "2021-11-29",
-        "isImportant": false,
-        "dueDate": "2021-11-29",
-        "budgetType": 129,
-        "budgetAmount": 1121,
-        "relocateId": this.state.reloDetail.relocateId
-      })
+      body: JSON.stringify(this.state.bodyContent)
     })
     .then(response => response.json())
     .then(responseData => {
@@ -274,14 +279,14 @@ class Login extends React.Component {
                 mode="date"
                 placeholder="select date"
                 format="DD/MM/YYYY"
-                minDate=""
-                maxDate=""
+                minDate="2021/01/01"
+                maxDate="2023/01/01"
                 confirmBtnText="Confirm"
                 cancelBtnText="Cancel"
                 showIcon={false}
-                onDateChange={(datetime) => {
-                  console.log(datetime)
-                  this.setState({startdate: datetime})
+                onDateChange={(startdate) => {
+                  console.log(startdate)
+                  this.setState({startdate})
                 }}
               />
               <Image resizeMode='cover' style={styles.calendar} source={{uri: icons.calendar}} />
@@ -301,12 +306,12 @@ class Login extends React.Component {
                 mode="datetime"
                 placeholder="select date"
                 format="DD/MM/YYYY"
-                minDate=""
-                maxDate=""
+                minDate="2021/01/01"
+                maxDate="2023/01/01"
                 confirmBtnText="Confirm"
                 cancelBtnText="Cancel"
                 showIcon={false}
-                onDateChange={(datetime) => {this.setState({duetime: datetime})}}
+                onDateChange={(duetime) => this.setState({duetime})}
               />
               <Image resizeMode='cover' style={styles.calendar} source={{uri: icons.calendar}} />
             </View>
@@ -334,11 +339,7 @@ class Login extends React.Component {
                   clearButtonMode="while-editing"
                   defaultValue={this.state.budgetValue}
                   placeholderTextColor="#CCC"
-                  onChangeText={(params) => {
-                    this.setState({
-                      budgetValue: params
-                    })
-                  }}
+                  onChangeText={(budgetValue) => this.setState({ budgetValue })}
                 />
               </View>
             </View>

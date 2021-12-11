@@ -517,13 +517,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
     alignItems: 'center',
-    width: 160,
+    width: 180,
     borderRadius: 25,
     overflow: 'hidden',
     padding: 15,
   },
   activeCountry: {
-    color: '#FFF', backgroundColor: '#000'
+    color: '#FFF',
+    backgroundColor: '#000'
   },
   vendoies: {
     marginTop: 20,
