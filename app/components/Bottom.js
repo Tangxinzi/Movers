@@ -88,30 +88,27 @@ const styles = StyleSheet.create({
   // iconsBottomContainer
   iconsBottomContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     position: 'absolute',
     bottom: 0,
-    padding: 10,
-    paddingBottom: 0,
+    paddingTop: 10,
     backgroundColor: '#FFF'
   },
   iconsBottomHome: {
-    shadowColor: 'rgba(0, 0, 0, 0.4)',
-    shadowOffset: {h: 10, w: 10},
-    shadowRadius: 8,
-    shadowOpacity: 0.3,
-    elevation: 5,
+    shadowColor: 'rgba(87, 87, 87, 0.8)',
+    elevation: 10,
 
-    width: 70,
-    height: 70,
+    width: 65,
+    height: 65,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#FFFFFF',
-    boxShadow: '0 4px 10px rgb(106, 105, 105)',
-    borderRadius: 70,
-    bottom: 30,
-    marginLeft: 7,
-    marginRight: 7
+    boxShadow: '4px 4px 20px rgb(74, 74, 74)',
+    borderRadius: 65,
+    bottom: 15,
+    marginLeft: 10,
+    marginRight: 10
   },
   iconsBottom: {
     flex: 1,
