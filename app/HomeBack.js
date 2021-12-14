@@ -112,7 +112,7 @@ class Home extends React.Component {
     })
     .catch((error) => {
       console.log('error', error)
-      this.props.navigation.navigate('Login')
+      // this.props.navigation.navigate('Login')
     })
     .done()
   }
@@ -226,99 +226,71 @@ class Home extends React.Component {
   }
 
   renderColumns = (tasks, taskIndex) => {
-    if (tasks) {
+    if (tasks && tasks.items.length) {
       return (
-        <>
-          <View style={styles.columnHead}>
-            <View style={styles.columnHeadCon}>
-              <Image resizeMode='contain' style={[styles.columnHeadIcon, {width: 36, height: 30}]} source={{uri: icons.head[taskIndex]}} />
-              <Text style={styles.columnHeadTitle} allowFontScaling={false}>{ taskIndex == 0 ? 'Singapore' : taskIndex == 1 ? 'Sydney' : taskIndex == 2 ? 'My Memos' : '' }</Text>
-            </View>
-            <View style={styles.columnHeadCon}>
-              <View style={styles.columnHeadCountCon}>
-                <Text style={styles.columnHeadCount} allowFontScaling={false}>{tasks.totalItemCount}</Text>
+        tasks.items.map((item, index) => {
+          {
+            return index == tasks.items.length - 1 ? (
+              <View>
+                <View style={[styles.column, {backgroundColor: item.statusText == 'Task/Note' ? '#FFF5F8' : '#FFF'}]} key={index}>
+                  <View style={styles.columnStatusCon}>
+                    <View style={[styles.columnStatusTextCon, {backgroundColor: item.statusText == 'New Task' ? '#ffaf00' : '' || item.statusText == 'Task/Note' ? '#e89cae' : '' || item.statusText == 'In Progress' ? '#448de3' : '' || item.statusText == 'Suggested Task' ? '#d3d6d9' : '' || item.statusText == 'Completed' ? '#00bd9d' : ''}]}>
+                      <Text style={styles.columnStatusText} allowFontScaling={false}>{item.statusText}</Text>
+                    </View>
+                    <View style={styles.columnStatusHeadCon}>
+                      <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: false ? icons.starred : icons.star}} />
+                      <TouchableHighlight underlayColor="none" activeOpacity={0.85} onPress={() => {
+                        this.setState({taskId: item.taskId})
+                        this.ActionSheetAction.show()
+                      }}>
+                        <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: icons.more}} />
+                      </TouchableHighlight>
+                    </View>
+                  </View>
+                  <Image resizeMode='cover' style={[styles.columnHeadIcon, {position: 'absolute', left: 10, top: 55}]} source={{uri: icons.checkedEmpty}} />
+                  <TouchableHighlight style={{marginLeft: 30}} underlayColor="none" activeOpacity={0.85} onPress={() => this.props.navigation.navigate('TaskIndex', {taskIndex, taskId: item.taskId})}>
+                    <>
+                      <Text style={styles.columnTitle} allowFontScaling={false}>{item.title}</Text>
+                      <Text style={styles.columnDescription} allowFontScaling={false}>{item.description}</Text>
+                    </>
+                  </TouchableHighlight>
+                </View>
+                <View style={[styles.column, {borderTopLeftRadius: 24, backgroundColor: '#ffefcb', borderColor: '#ffaf00', borderWidth: 1}]} key={tasks.items.length}>
+                  <View style={[styles.columnStatusCon, {marginTop: 10, marginBottom: 10}]}>
+                    <Image resizeMode='contain' style={styles.columnFoot} source={{uri: icons.foot[taskIndex]}} />
+                    <Image resizeMode='contain' style={styles.columnFootComment} source={{uri: icons.comment}} />
+                  </View>
+                  <Text style={styles.columnTitle} allowFontScaling={false}>All you need to know about relocating!</Text>
+                  <Text style={styles.columnDescription} allowFontScaling={false}>Here's what you need to think about and know when you're relocating!</Text>
+                </View>
               </View>
-              <TouchableHighlight underlayColor="none" activeOpacity={0.85} onPress={() => {
-                this.props.navigation.navigate('TaskCreate', {taskIndex})
-              }}>
-                <Image resizeMode='cover' style={{width: 28, height: 28}} source={{uri: icons.add}} />
-              </TouchableHighlight>
-            </View>
-          </View>
-          <View style={styles.columns}>
-            <FlatList
-              data={tasks.items}
-              horizontal={false}
-              numColumns={1}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({item, index}) =>
-                <>
-                  {
-                    index == tasks.items.length - 1 ? (
-                      <View>
-                        <View style={[styles.column, {backgroundColor: item.statusText == 'Task/Note' ? '#FFF5F8' : '#FFF'}]} key={index}>
-                          <View style={styles.columnStatusCon}>
-                            <View style={[styles.columnStatusTextCon, {backgroundColor: item.statusText == 'New Task' ? '#ffaf00' : '' || item.statusText == 'Task/Note' ? '#e89cae' : '' || item.statusText == 'In Progress' ? '#448de3' : '' || item.statusText == 'Suggested Task' ? '#d3d6d9' : '' || item.statusText == 'Completed' ? '#00bd9d' : ''}]}>
-                              <Text style={styles.columnStatusText} allowFontScaling={false}>{item.statusText}</Text>
-                            </View>
-                            <View style={styles.columnStatusHeadCon}>
-                              <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: false ? icons.starred : icons.star}} />
-                              <TouchableHighlight underlayColor="none" activeOpacity={0.85} onPress={() => {
-                                this.setState({taskId: item.taskId})
-                                this.ActionSheetAction.show()
-                              }}>
-                                <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: icons.more}} />
-                              </TouchableHighlight>
-                            </View>
-                          </View>
-                          <Image resizeMode='cover' style={[styles.columnHeadIcon, {position: 'absolute', left: 10, top: 56}]} source={{uri: icons.checkedEmpty}} />
-                          <TouchableHighlight style={{marginLeft: 30}} underlayColor="none" activeOpacity={0.85} onPress={() => this.props.navigation.navigate('TaskIndex', {taskIndex, taskId: item.taskId})}>
-                            <>
-                              <Text style={styles.columnTitle} allowFontScaling={false}>{item.title}</Text>
-                              <Text style={styles.columnDescription} allowFontScaling={false}>{item.description}</Text>
-                            </>
-                          </TouchableHighlight>
-                        </View>
-                        <View style={[styles.column, {borderTopLeftRadius: 24, backgroundColor: '#ffefcb', borderColor: '#ffaf00', borderWidth: 1}]} key={tasks.items.length}>
-                          <View style={[styles.columnStatusCon, {marginTop: 10, marginBottom: 10}]}>
-                            <Image resizeMode='contain' style={styles.columnFoot} source={{uri: icons.foot[taskIndex]}} />
-                            <Image resizeMode='contain' style={styles.columnFootComment} source={{uri: icons.comment}} />
-                          </View>
-                          <Text style={styles.columnTitle} allowFontScaling={false}>All you need to know about relocating!</Text>
-                          <Text style={styles.columnDescription} allowFontScaling={false}>Here's what you need to think about and know when you're relocating!</Text>
-                        </View>
-                      </View>
-                    ) : (
-                      <View style={[styles.column, {backgroundColor: item.statusText == 'Task/Note' ? '#FFF5F8' : '#FFF'}]} key={index}>
-                        <View style={styles.columnStatusCon}>
-                          <View style={[styles.columnStatusTextCon, {backgroundColor: item.statusText == 'New Task' ? '#ffaf00' : '' || item.statusText == 'Task/Note' ? '#e89cae' : '' || item.statusText == 'In Progress' ? '#448de3' : '' || item.statusText == 'Suggested Task' ? '#d3d6d9' : '' || item.statusText == 'Completed' ? '#00bd9d' : ''}]}>
-                            <Text style={styles.columnStatusText} allowFontScaling={false}>{item.statusText}</Text>
-                          </View>
-                          <View style={styles.columnStatusHeadCon}>
-                            <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: false ? icons.starred : icons.star}} />
-                            <TouchableHighlight underlayColor="none" activeOpacity={0.85} onPress={() => {
-                              this.setState({taskId: item.taskId})
-                              this.ActionSheetAction.show()
-                            }}>
-                              <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: icons.more}} />
-                            </TouchableHighlight>
-                          </View>
-                        </View>
-                        <Image resizeMode='cover' style={[styles.columnHeadIcon, {position: 'absolute', left: 10, top: 55}]} source={{uri: icons.checkedEmpty}} />
-                        <TouchableHighlight style={{marginLeft: 30}} underlayColor="none" activeOpacity={0.85} onPress={() => this.props.navigation.navigate('TaskIndex', {taskIndex, taskId: item.taskId})}>
-                          <>
-                            <Text style={styles.columnTitle} allowFontScaling={false}>{item.title}</Text>
-                            <Text style={styles.columnDescription} allowFontScaling={false}>{item.description}</Text>
-                          </>
-                        </TouchableHighlight>
-                      </View>
-                    )
-                  }
-                </>
-              }
-            />
-          </View>
-        </>
+            ) : (
+              <View style={[styles.column, {backgroundColor: item.statusText == 'Task/Note' ? '#FFF5F8' : '#FFF'}]} key={index}>
+                <View style={styles.columnStatusCon}>
+                  <View style={[styles.columnStatusTextCon, {backgroundColor: item.statusText == 'New Task' ? '#ffaf00' : '' || item.statusText == 'Task/Note' ? '#e89cae' : '' || item.statusText == 'In Progress' ? '#448de3' : '' || item.statusText == 'Suggested Task' ? '#d3d6d9' : '' || item.statusText == 'Completed' ? '#00bd9d' : ''}]}>
+                    <Text style={styles.columnStatusText} allowFontScaling={false}>{item.statusText}</Text>
+                  </View>
+                  <View style={styles.columnStatusHeadCon}>
+                    <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: false ? icons.starred : icons.star}} />
+                    <TouchableHighlight underlayColor="none" activeOpacity={0.85} onPress={() => {
+                      this.setState({taskId: item.taskId})
+                      this.ActionSheetAction.show()
+                    }}>
+                      <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: icons.more}} />
+                    </TouchableHighlight>
+                  </View>
+                </View>
+                <Image resizeMode='cover' style={[styles.columnHeadIcon, {position: 'absolute', left: 10, top: 55}]} source={{uri: icons.checkedEmpty}} />
+                <TouchableHighlight style={{marginLeft: 30}} underlayColor="none" activeOpacity={0.85} onPress={() => this.props.navigation.navigate('TaskIndex', {taskIndex, taskId: item.taskId})}>
+                  <>
+                    <Text style={styles.columnTitle} allowFontScaling={false}>{item.title}</Text>
+                    <Text style={styles.columnDescription} allowFontScaling={false}>{item.description}</Text>
+                  </>
+                </TouchableHighlight>
+              </View>
+            )
+          }
+        })
       )
     } else {
       return (
@@ -498,7 +470,7 @@ class Home extends React.Component {
               onPress={(index) => {
                 switch (index) {
                   case 0:
-                    this.props.navigation.navigate('TaskEdit', {TaskId: this.state.taskId || ''})
+
                     break;
                   case 1:
                     Alert.alert('Delete Task?', 'Are you sure you want to delete this task?',
@@ -520,13 +492,73 @@ class Home extends React.Component {
             <View style={[styles.taskview, {display: this.state.list.active == 'Task View' ? 'flex' : 'none'}]}>
               <Swiper autoplay={false} height={1000} showsButtons={false} showPagination={false} index={0} dot={<></>} activeDot={<></>}>
                 <View style={styles.slide}>
-                  {this.renderColumns(this.state.tasks && this.state.tasks.origin, 0)}
+                  <View style={styles.columnHead}>
+                    <View style={styles.columnHeadCon}>
+                      <Image resizeMode='contain' style={[styles.columnHeadIcon, {width: 36, height: 30}]} source={{uri: icons.head[0]}} />
+                      <Text style={styles.columnHeadTitle} allowFontScaling={false}>Singapore</Text>
+                    </View>
+                    <View style={styles.columnHeadCon}>
+                      <View style={styles.columnHeadCountCon}>
+                        <Text style={styles.columnHeadCount} allowFontScaling={false}>{this.state.tasks.origin && this.state.tasks.origin.totalItemCount}</Text>
+                      </View>
+                      <TouchableHighlight underlayColor="none" activeOpacity={0.85} onPress={() => {
+                        this.props.navigation.navigate('TaskCreate', {taskIndex: 0})
+                      }}>
+                        <Image resizeMode='cover' style={{width: 28, height: 28}} source={{uri: icons.add}} />
+                      </TouchableHighlight>
+                    </View>
+                  </View>
+                  <View style={styles.columns}>
+                    <ScrollView nestedScrollEnabled={true}>
+                      {this.renderColumns(this.state.tasks && this.state.tasks.origin, 0)}
+                    </ScrollView>
+                  </View>
                 </View>
                 <View style={styles.slide}>
-                  {this.renderColumns(this.state.tasks && this.state.tasks.destination, 1)}
+                <View style={styles.columnHead}>
+                  <View style={styles.columnHeadCon}>
+                    <Image resizeMode='contain' style={[styles.columnHeadIcon, {width: 36, height: 30}]} source={{uri: icons.head[0]}} />
+                    <Text style={styles.columnHeadTitle} allowFontScaling={false}>Singapore</Text>
+                  </View>
+                  <View style={styles.columnHeadCon}>
+                    <View style={styles.columnHeadCountCon}>
+                      <Text style={styles.columnHeadCount} allowFontScaling={false}>{this.state.tasks.origin && this.state.tasks.origin.totalItemCount}</Text>
+                    </View>
+                    <TouchableHighlight underlayColor="none" activeOpacity={0.85} onPress={() => {
+                      this.props.navigation.navigate('TaskCreate', {taskIndex: 0})
+                    }}>
+                      <Image resizeMode='cover' style={{width: 28, height: 28}} source={{uri: icons.add}} />
+                    </TouchableHighlight>
+                  </View>
+                </View>
+                <View style={styles.columns}>
+                  <ScrollView nestedScrollEnabled={true}>
+                    {this.renderColumns(this.state.tasks && this.state.tasks.origin, 1)}
+                  </ScrollView>
+                </View>
                 </View>
                 <View style={styles.slide}>
-                  {this.renderColumns(this.state.tasks && this.state.tasks.taskNote, 2)}
+                <View style={styles.columnHead}>
+                  <View style={styles.columnHeadCon}>
+                    <Image resizeMode='contain' style={[styles.columnHeadIcon, {width: 36, height: 30}]} source={{uri: icons.head[0]}} />
+                    <Text style={styles.columnHeadTitle} allowFontScaling={false}>Singapore</Text>
+                  </View>
+                  <View style={styles.columnHeadCon}>
+                    <View style={styles.columnHeadCountCon}>
+                      <Text style={styles.columnHeadCount} allowFontScaling={false}>{this.state.tasks.origin && this.state.tasks.origin.totalItemCount}</Text>
+                    </View>
+                    <TouchableHighlight underlayColor="none" activeOpacity={0.85} onPress={() => {
+                      this.props.navigation.navigate('TaskCreate', {taskIndex: 0})
+                    }}>
+                      <Image resizeMode='cover' style={{width: 28, height: 28}} source={{uri: icons.add}} />
+                    </TouchableHighlight>
+                  </View>
+                </View>
+                <View style={styles.columns}>
+                  <ScrollView nestedScrollEnabled={true}>
+                    {this.renderColumns(this.state.tasks && this.state.tasks.origin, 2)}
+                  </ScrollView>
+                </View>
                 </View>
               </Swiper>
             </View>

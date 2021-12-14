@@ -23,6 +23,7 @@ import Boarding from './Boarding'
 
 import TaskIndex from './task/Index'
 import TaskCreate from './task/Create'
+import TaskEdit from './task/Edit'
 
 class SettingsScreen extends React.Component {
   render() {
@@ -202,6 +203,15 @@ const Root = createStackNavigator(
     },
     TaskCreate: {
       screen: TaskCreate,
+      navigationOptions: {
+        headerBackTitleVisible: false,
+        headerStyle: {
+          elevation: 1,
+        }
+      }
+    },
+    TaskEdit: {
+      screen: TaskEdit,
       navigationOptions: {
         headerBackTitleVisible: false,
         headerStyle: {

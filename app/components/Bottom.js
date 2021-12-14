@@ -93,11 +93,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     paddingTop: 10,
+    paddingBottom: 10,
     backgroundColor: '#FFF'
   },
   iconsBottomHome: {
     shadowColor: 'rgba(87, 87, 87, 0.8)',
     elevation: 10,
+    shadowOffset: {h: 10, w: 10},
+    shadowRadius: 8,
+    shadowOpacity: 0.3,
 
     width: 65,
     height: 65,

@@ -23,7 +23,7 @@ import {
   TouchableHighlight,
 } from 'react-native';
 
-class Create extends React.Component {
+class Edit extends React.Component {
   static navigationOptions = ({navigation, screenProps}) => ({
     headerTitle: (
       <TouchableHighlight
@@ -36,7 +36,7 @@ class Create extends React.Component {
             color: 'rgba(0, 0, 0, .9)',
             textAlign: 'center',
             marginHorizontal: 0
-          }}>Add A Task</Text>
+          }}>Edit A Task</Text>
         </>
       </TouchableHighlight>
     ),
@@ -58,6 +58,8 @@ class Create extends React.Component {
   constructor(props) {
     super(props);
 
+    console.log(props.navigation.state.params);
+
     this.state = {
       params: props.navigation.state.params,
       reloDetail: {},
@@ -78,7 +80,10 @@ class Create extends React.Component {
         budgetId: [129, 149, ],
         text: ['SGD', 'AUD', 'Cancel'],
       },
-      bodyContent: {}
+      bodyContent: {
+        description: '',
+        note: ''
+      }
     };
 
     AsyncStorage.getItem('bearer')
@@ -86,6 +91,47 @@ class Create extends React.Component {
       this.setState({
         bearer: JSON.parse(response)
       })
+
+      console.log(this.state.params.TaskId);
+      fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-task-detail?TaskId=${ this.state.params.TaskId }`, {
+      // fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-task-detail?TaskId=2f801916-4876-4471-8069-be04179765f3`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${ this.state.bearer.jwToken }`
+          // 'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmMGYwNTM0Zi01NGEzLTQ2NzAtODViZS04ZmIyNmM4NTc2MDciLCJlbWFpbCI6Im1yc2phbmVzbWl0aEB5b3BtYWlsLmNvbSIsInVpZCI6IkxDR1VtTWxhaDdHMUQ3N1ZXSFFjSjZoOW1yWVpKYlFBaUpYNU9PczFsZlU4TEpIV21BbGpXQzY0dUx1NHQ4MGciLCJpcCI6IjE3Mi4zMS40MC4xOTQiLCJyb2xlIjoiY3VzdG9tZXIiLCJleHAiOjE2Mzk1MzY2NTEsImlzcyI6Ik1vb3ZheklkZW50aXR5IiwiYXVkIjoiTW9vdmF6V2ViQXBwIn0.Ujr-4bIwTrKVWE_QtUjmlrQKtXEi79Ii-FmiEW8jdX4`
+        }
+      })
+      .then(response => response.json())
+      .then(responseData => {
+        responseData = responseData.data
+        // console.log(responseData);
+        this.setState({
+          bodyContent: {
+            "TaskData": {
+              "taskType": responseData.taskTypeText,
+              "countryCityName": this.state.params.taskIndex == 0 ? 'Singapore' : this.state.params.taskIndex == 1 ? 'Sydney' : this.state.params.taskIndex == 2 ? 'My Memos' : ''
+            },
+            "taskType": "origin",
+            // "chooseCategory": "1",
+            "title": responseData.title || '',
+            "description": responseData.description || '',
+            "note": responseData.note || '',
+            "startDate": responseData.startDate || '',
+            "isImportant": responseData.isImportant,
+            "dueDate": responseData.dueDate || '',
+            "budgetType": responseData.budgetType,
+            "budgetAmount": responseData.budgetAmount,
+            "serviceId": 13,
+            "relocateId": this.state.reloDetail.relocateId
+          }
+        })
+      })
+      .catch((error) => {
+        console.log('err: ', error)
+      })
+      .done()
     })
     .catch((error) => {
       console.log(error);
@@ -96,27 +142,6 @@ class Create extends React.Component {
     .then((response) => {
       this.setState({
         reloDetail: JSON.parse(response)
-      })
-
-      this.setState({
-        bodyContent: {
-          "TaskData": {
-            "taskType": "origin",
-            "countryCityName": this.state.params.taskIndex == 0 ? 'Singapore' : this.state.params.taskIndex == 1 ? 'Sydney' : this.state.params.taskIndex == 2 ? 'My Memos' : ''
-          },
-          "taskType": "origin",
-          "chooseCategory": "1",
-          "title": this.state.title || '',
-          "description": this.state.description || '',
-          "note": this.state.note || '',
-          "startDate": this.state.startDate || '',
-          "isImportant": false,
-          "dueDate": this.state.dueDate || '',
-          "budgetType": this.state.budgetType,
-          "budgetAmount": this.state.budgetAmount || 0,
-          "serviceId": 13,
-          "relocateId": this.state.reloDetail.relocateId
-        }
       })
     })
     .catch((error) => {
@@ -285,7 +310,7 @@ class Create extends React.Component {
                     alignItems: 'flex-start'
                   }
                 }}
-                date={this.state.startDate}
+                // date={this.state.bodyContent.startDate}
                 mode="date"
                 placeholder="select date"
                 format="DD/MM/YYYY"
@@ -295,8 +320,8 @@ class Create extends React.Component {
                 cancelBtnText="Cancel"
                 showIcon={false}
                 onDateChange={(startDate) => {
-                  console.log(startDate)
-                  this.setState({startDate})
+                  this.state.bodyContent.startDate = startDate
+                  this.setState({bodyContent: this.state.bodyContent})
                 }}
               />
               <Image resizeMode='cover' style={styles.calendar} source={{uri: icons.calendar}} />
@@ -312,7 +337,7 @@ class Create extends React.Component {
                     alignItems: 'flex-start'
                   }
                 }}
-                date={this.state.dueDate}
+                date={this.state.bodyContent.dueDate}
                 mode="datetime"
                 placeholder="select date"
                 format="DD/MM/YYYY"
@@ -321,7 +346,10 @@ class Create extends React.Component {
                 confirmBtnText="Confirm"
                 cancelBtnText="Cancel"
                 showIcon={false}
-                onDateChange={(dueDate) => this.setState({dueDate})}
+                onDateChange={(dueDate) => {
+                  this.state.bodyContent.dueDate = dueDate
+                  this.setState({bodyContent: this.state.bodyContent})
+                }}
               />
               <Image resizeMode='cover' style={styles.calendar} source={{uri: icons.calendar}} />
             </View>
@@ -347,9 +375,12 @@ class Create extends React.Component {
                   placeholder=""
                   keyboardType="numeric"
                   clearButtonMode="while-editing"
-                  defaultValue={this.state.budgetAmount}
+                  defaultValue={this.state.bodyContent.budgetAmount}
                   placeholderTextColor="#CCC"
-                  onChangeText={(budgetAmount) => this.setState({ budgetAmount })}
+                  onChangeText={(budgetAmount) => {
+                    this.state.bodyContent.budgetAmount = budgetAmount
+                    this.setState({ bodyContent: this.state.bodyContent })
+                  }}
                 />
               </View>
             </View>
@@ -357,7 +388,7 @@ class Create extends React.Component {
               <TouchableHighlight
                 underlayColor='transparent'
                 style={{backgroundColor: '#E89CAE', padding: 15, borderRadius: 20}}
-                onPress={() => this.fetchCreateTask()}
+                // onPress={() => this.fetchCreateTask()}
               >
                 <>
                   <Text allowFontScaling={false} numberOfLines={1} style={{
@@ -366,7 +397,7 @@ class Create extends React.Component {
                     color: 'rgba(255, 255, 255, 0.9)',
                     textAlign: 'center',
                     marginHorizontal: 16
-                  }}>CREATE</Text>
+                  }}>SAVE</Text>
                 </>
               </TouchableHighlight>
             </View>
@@ -535,4 +566,4 @@ const styles = {
   }
 }
 
-module.exports = Create;
+module.exports = Edit;

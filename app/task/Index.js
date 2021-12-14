@@ -136,14 +136,26 @@ class Index extends React.Component {
               <Text style={styles.columnStatusText} allowFontScaling={false}>{this.state.task.statusText}</Text>
             </View>
             <View>
-              <View style={[styles.row, {marginTop: 15, marginBottom: 15}]}>
+              <Text allowFontScaling={false} style={styles.serviceName}>{this.state.task.serviceName}</Text>
+              <View style={[styles.row, {marginTop: 10, marginBottom: 15}]}>
                 <Text allowFontScaling={false} style={styles.columnTitle}>{this.state.task.title}</Text>
                 <View>
-                  <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: false ? icons.starred : icons.star}} />
+                  <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: this.state.task.isImportant ? icons.starred : icons.star}} />
                 </View>
               </View>
               <Text allowFontScaling={false} style={styles.rowText}>{this.state.task.description}</Text>
             </View>
+            {
+              this.state.task.note ? (
+                <>
+                  <View style={styles.br}></View>
+                  <View style={styles.row}>
+                    <Text allowFontScaling={false} style={[styles.rowText, {color: '#75787b'}]}>Additional Notes</Text>
+                    <Text allowFontScaling={false} style={styles.rowText}>{this.state.task.note}</Text>
+                  </View>
+                </>
+              ) : (<></>)
+            }
             {
               this.state.task.startDate ? (
                 <>
@@ -248,6 +260,13 @@ const styles = {
     fontWeight: '700',
     color: '#FFF',
     display: 'flex'
+  },
+  serviceName: {
+    textTransform: 'uppercase',
+    fontWeight: '700',
+    color: 'grey',
+    fontSize: 14,
+    marginTop: 18,
   },
   columnTitle: {
     fontSize: 24,
