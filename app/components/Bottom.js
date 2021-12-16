@@ -111,8 +111,8 @@ const styles = StyleSheet.create({
     boxShadow: '4px 4px 20px rgb(74, 74, 74)',
     borderRadius: 65,
     bottom: 15,
-    marginLeft: 10,
-    marginRight: 10
+    marginLeft: 5,
+    marginRight: 5
   },
   iconsBottom: {
     flex: 1,

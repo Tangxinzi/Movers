@@ -25,6 +25,9 @@ import TaskIndex from './task/Index'
 import TaskCreate from './task/Create'
 import TaskEdit from './task/Edit'
 
+import MusicEvent from './music/Event'
+import MusicSearch from './music/Search'
+
 class SettingsScreen extends React.Component {
   render() {
     return (
@@ -113,6 +116,12 @@ const App = createStackNavigator({
   //     header: null
   //   }
   // },
+  MusicEvent: {
+    screen: MusicEvent
+  },
+  MusicSearch: {
+    screen: MusicSearch
+  },
   HomeScreen: {
     screen: HomeScreen,
     navigationOptions: {

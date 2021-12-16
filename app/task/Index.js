@@ -139,8 +139,14 @@ class Index extends React.Component {
               <Text allowFontScaling={false} style={styles.serviceName}>{this.state.task.serviceName}</Text>
               <View style={[styles.row, {marginTop: 10, marginBottom: 15}]}>
                 <Text allowFontScaling={false} style={styles.columnTitle}>{this.state.task.title}</Text>
-                <View>
+                <View style={{flexDirection: 'row'}}>
                   <Image resizeMode='cover' style={styles.columnHeadIcon} source={{uri: this.state.task.isImportant ? icons.starred : icons.star}} />
+                  <TouchableHighlight underlayColor="none" activeOpacity={0.85} onPress={() => {
+                      this.props.navigation.navigate('TaskEdit', {TaskId: this.state.task.taskId || ''})
+                    }}
+                  >
+                    <Image resizeMode='cover' style={{...styles.columnHeadIcon, marginLeft: 10, width: 25, height: 25}} source={{uri: icons.edit}} />
+                  </TouchableHighlight>
                 </View>
               </View>
               <Text allowFontScaling={false} style={styles.rowText}>{this.state.task.description}</Text>
@@ -272,7 +278,7 @@ const styles = {
     fontSize: 24,
     fontWeight: '600',
     lineHeight: 34,
-    width: '86%'
+    width: '80%'
   },
   columnDescription: {
     fontSize: 14,

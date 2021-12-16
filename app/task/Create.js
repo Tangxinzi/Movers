@@ -57,9 +57,9 @@ class Create extends React.Component {
 
   constructor(props) {
     super(props);
-
+    var params = props.navigation.state.params
     this.state = {
-      params: props.navigation.state.params,
+      params,
       reloDetail: {},
       radio: true,
       title: '',
@@ -78,8 +78,33 @@ class Create extends React.Component {
         budgetId: [129, 149, ],
         text: ['SGD', 'AUD', 'Cancel'],
       },
-      bodyContent: {}
+      bodyContent: {
+        TaskData: {
+          taskType: "origin",
+          countryCityName: params.taskIndex == 0 ? 'Singapore' : params.taskIndex == 1 ? 'Sydney' : params.taskIndex == 2 ? 'My Memos' : ''
+        },
+        taskType: "origin",
+        chooseCategory: "1",
+        description: '',
+        note: ''
+      }
     };
+
+
+    // this.setState({
+    //   bodyContent: {
+    //     "title": this.state.title || '',
+    //     "description": this.state.description || '',
+    //     "note": this.state.note || '',
+    //     "startDate": this.state.startDate || '',
+    //     "isImportant": false,
+    //     "dueDate": this.state.dueDate || '',
+    //     "budgetType": this.state.budgetType,
+    //     "budgetAmount": this.state.budgetAmount || 0,
+    //     "serviceId": 13,
+    //     "relocateId": this.state.reloDetail.relocateId
+    //   }
+    // })
 
     AsyncStorage.getItem('bearer')
     .then((response) => {
@@ -96,27 +121,6 @@ class Create extends React.Component {
     .then((response) => {
       this.setState({
         reloDetail: JSON.parse(response)
-      })
-
-      this.setState({
-        bodyContent: {
-          "TaskData": {
-            "taskType": "origin",
-            "countryCityName": this.state.params.taskIndex == 0 ? 'Singapore' : this.state.params.taskIndex == 1 ? 'Sydney' : this.state.params.taskIndex == 2 ? 'My Memos' : ''
-          },
-          "taskType": "origin",
-          "chooseCategory": "1",
-          "title": this.state.title || '',
-          "description": this.state.description || '',
-          "note": this.state.note || '',
-          "startDate": this.state.startDate || '',
-          "isImportant": false,
-          "dueDate": this.state.dueDate || '',
-          "budgetType": this.state.budgetType,
-          "budgetAmount": this.state.budgetAmount || 0,
-          "serviceId": 13,
-          "relocateId": this.state.reloDetail.relocateId
-        }
       })
     })
     .catch((error) => {
@@ -265,8 +269,8 @@ class Create extends React.Component {
                 clearButtonMode="while-editing"
                 defaultValue={this.state.bodyContent.note}
                 placeholderTextColor="#CCC"
-                onChangeText={(notes) => {
-                  if (this.state.bodyContent.notes.length <= 500) {
+                onChangeText={(note) => {
+                  if (this.state.bodyContent.note.length <= 500) {
                     this.state.bodyContent.note = note
                     this.setState({ bodyContent: this.state.bodyContent })
                   }
@@ -285,18 +289,18 @@ class Create extends React.Component {
                     alignItems: 'flex-start'
                   }
                 }}
-                date={this.state.startDate}
+                date={this.state.bodyContent.startDate}
                 mode="date"
                 placeholder="select date"
                 format="DD/MM/YYYY"
-                minDate="2021/01/01"
-                maxDate="2023/01/01"
+                minDate=""
+                maxDate=""
                 confirmBtnText="Confirm"
                 cancelBtnText="Cancel"
                 showIcon={false}
                 onDateChange={(startDate) => {
-                  console.log(startDate)
-                  this.setState({startDate})
+                  this.state.bodyContent.startDate = startDate
+                  this.setState({bodyContent: this.state.bodyContent})
                 }}
               />
               <Image resizeMode='cover' style={styles.calendar} source={{uri: icons.calendar}} />
@@ -312,16 +316,19 @@ class Create extends React.Component {
                     alignItems: 'flex-start'
                   }
                 }}
-                date={this.state.dueDate}
-                mode="datetime"
+                date={this.state.bodyContent.dueDate}
+                mode="date"
                 placeholder="select date"
                 format="DD/MM/YYYY"
-                minDate="2021/01/01"
-                maxDate="2023/01/01"
+                minDate=""
+                maxDate=""
                 confirmBtnText="Confirm"
                 cancelBtnText="Cancel"
                 showIcon={false}
-                onDateChange={(dueDate) => this.setState({dueDate})}
+                onDateChange={(dueDate) => {
+                  this.state.bodyContent.dueDate = dueDate
+                  this.setState({bodyContent: this.state.bodyContent})
+                }}
               />
               <Image resizeMode='cover' style={styles.calendar} source={{uri: icons.calendar}} />
             </View>
@@ -329,9 +336,14 @@ class Create extends React.Component {
               <Text allowFontScaling={false}>Budget</Text>
               <ActionSheet ref={o => this.ActionSheet = o} title={'Select ...'} options={this.state.budget.text} cancelButtonIndex={2} onPress={(index) => {
                 if (index < 2) {
+                  this.state.bodyContent.budgetType = this.state.budget.budgetId[index]
                   this.state.budget.action = true
                   this.state.budget.index = index
-                  this.setState({budgetType: this.state.budget.budgetId[index], budget: this.state.budget})
+                  this.setState({
+                    budgetType: this.state.budget.budgetId[index],
+                    budget: this.state.budget,
+                    bodyContent: this.state.bodyContent
+                  })
                 }
               }} />
               <View style={{flexDirection: 'row'}}>
@@ -347,9 +359,12 @@ class Create extends React.Component {
                   placeholder=""
                   keyboardType="numeric"
                   clearButtonMode="while-editing"
-                  defaultValue={this.state.budgetAmount}
+                  defaultValue={this.state.bodyContent.budgetAmount}
                   placeholderTextColor="#CCC"
-                  onChangeText={(budgetAmount) => this.setState({ budgetAmount })}
+                  onChangeText={(budgetAmount) => {
+                    this.state.bodyContent.budgetAmount = budgetAmount
+                    this.setState({bodyContent: this.state.bodyContent})
+                  }}
                 />
               </View>
             </View>

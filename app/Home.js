@@ -112,7 +112,6 @@ class Home extends React.Component {
     })
     .catch((error) => {
       console.log('error', error)
-      this.props.navigation.navigate('Login')
     })
     .done()
   }
@@ -135,6 +134,7 @@ class Home extends React.Component {
     })
     .catch((error) => {
       console.log('err: ', error)
+      this.props.navigation.navigate('Login')
     })
     .done()
   }
@@ -540,6 +540,16 @@ class Home extends React.Component {
         <Modal animationType="slide" visible={this.state.modalVisible} transparent={false}>
           <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-around', marginTop: '15%' }}>
             <Text allowFontScaling={false} style={styles.modalTitle}>Select mood background</Text>
+            <View style={styles.modalThemes}>
+              <Image resizeMode='cover' style={styles.modalTheme} source={{uri: 'https://staging-customerportal.moovaz.com/static/media/1.2551a1ae.jpg'}} />
+              <Image resizeMode='cover' style={styles.modalTheme} source={{uri: 'https://staging-customerportal.moovaz.com/static/media/2.e21e4e11.jpg'}} />
+              <Image resizeMode='cover' style={styles.modalTheme} source={{uri: 'https://staging-customerportal.moovaz.com/static/media/3.c8a057a3.jpg'}} />
+              <Image resizeMode='cover' style={styles.modalTheme} source={{uri: 'https://staging-customerportal.moovaz.com/static/media/4.484120a0.jpg'}} />
+              <Image resizeMode='cover' style={styles.modalTheme} source={{uri: 'https://staging-customerportal.moovaz.com/static/media/5.31befa6f.jpg'}} />
+              <Image resizeMode='cover' style={styles.modalTheme} source={{uri: 'https://staging-customerportal.moovaz.com/static/media/6.6ecfe9bc.jpg'}} />
+              <Image resizeMode='cover' style={styles.modalTheme} source={{uri: 'https://staging-customerportal.moovaz.com/static/media/7.8ff86142.jpg'}} />
+              <Image resizeMode='cover' style={styles.modalTheme} source={{uri: 'https://staging-customerportal.moovaz.com/static/media/8.9712c87f.jpg'}} />
+            </View>
           </View>
           <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-around', marginBottom: '15%' }}>
             <TouchableHighlight underlayColor="none" activeOpacity={0.5} style={styles.reject} onPress={() => this.setState({modalVisible: false})}>
@@ -559,6 +569,15 @@ class Home extends React.Component {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#f4f4f4'
+  },
+
+  // modal
+  modalTitle: {
+
+  },
+  modalTheme: {
+    width: 320,
+    height: 80
   },
 
   // backgroundContainer
