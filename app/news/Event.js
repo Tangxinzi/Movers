@@ -60,13 +60,10 @@ class Event extends React.Component {
     super(props);
 
     this.state = {
-      lists: Posts,
-      image: [
-        'https://ninghao.net/files/styles/course_cover/public/showcase/xb2-flutter-18-showcase.jpg?itok=9ls6JbA2',
-        'https://ninghao.net/files/styles/course_cover/public/showcase/xb2-flutter-17-showcase.jpg?itok=RVm-lUjG',
-        'https://ninghao.net/files/styles/course_cover/public/showcase/xb2-flutter-16-showcase.jpg?itok=0SKV5dMK'
-      ]
+      lists: Posts
     }
+
+    // console.log(Posts());
 
     // AsyncStorage.removeItem('collections')
   }
