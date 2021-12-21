@@ -13,19 +13,11 @@ import {
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator, CardStyleInterpolators } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
-import Index from './Index'
-import Home from './Home'
-import Folder from './Folder'
-import Services from './Services'
-import Web from './Web'
-import Login from './Login'
-import Boarding from './Boarding'
-
-import TaskIndex from './task/Index'
-import TaskCreate from './task/Create'
-import TaskEdit from './task/Edit'
-
-import NewsRoot from './news/Root'
+import Icons from './Icons'
+import Event from './Event'
+import Detail from './Detail'
+import Collection from './Collection'
+import Search from './Search'
 
 class SettingsScreen extends React.Component {
   render() {
@@ -63,104 +55,51 @@ class DetailsScreen extends React.Component {
   }
 }
 
-class HomeScreen extends React.Component {
-  render() {
-    return (
-      <Home {...this.props} />
-    );
-  }
-}
+const EventStack = createStackNavigator({
+  Event: Event
+})
 
-class IndexScreen extends React.Component {
-  render() {
-    return (
-      <Index {...this.props} />
-    );
-  }
-}
-
-class FolderScreen extends React.Component {
-  render() {
-    return (
-      <Folder {...this.props} />
-    );
-  }
-}
-
-class ServiceScreen extends React.Component {
-  render() {
-    return (
-      <Services {...this.props} />
-    );
-  }
-}
-
-const HomeStack = createStackNavigator({
-  Home: Home
+const CollectionStack = createStackNavigator({
+  Event: Collection
 })
 
 const BottomNavigatorScreen = createBottomTabNavigator({
-  Home: {
-     screen: HomeStack,
+  EventStack: {
+    screen: EventStack,
+    navigationOptions: {
+      tabBarLabel: 'Posts',
+      tabBarIcon: ({tintColor, focused}) => (
+        <Image style={{color: tintColor, width: 24, height: 24}} source={{uri: !focused ? Icons.event : Icons.eventFocused}} />
+      ),
+    },
+  },
+  CollectionStack: {
+     screen: CollectionStack,
      navigationOptions: {
-        tabBarLabel: 'Home',
+        tabBarLabel: 'Collections',
+        tabBarIcon: ({tintColor, focused}) => (
+          <Image style={{color: tintColor, width: 24, height: 24}} source={{uri: !focused ? Icons.collection : Icons.collectionFocused}} />
+        ),
      },
-  }
+  },
 });
 
 const App = createStackNavigator({
-  // BottomNavigatorScreen: {
-  //   screen: BottomNavigatorScreen,
-  //   navigationOptions: {
-  //     header: null
-  //   }
-  // },
-  // NewsRoot: {
-  //   screen: NewsRoot,
-  //   navigationOptions: {
-  //     header: null
-  //   }
-  // },
-  HomeScreen: {
-    screen: HomeScreen,
+  BottomNavigatorScreen: {
+    screen: BottomNavigatorScreen,
     navigationOptions: {
       header: null
     }
   },
-  IndexScreen: {
-    screen: IndexScreen,
-    navigationOptions: {
-      header: null
-    }
+  Event: {
+    screen: Event
   },
-  FolderScreen: {
-    screen: FolderScreen,
-    navigationOptions: {
-      header: null
-    }
+  Detail: {
+    screen: Detail
   },
-  ServiceScreen: {
-    screen: ServiceScreen,
-    navigationOptions: {
-      header: null
-    }
+  Collection: {
+    screen: Collection
   },
-  TaskIndex: {
-    screen: TaskIndex,
-    navigationOptions: {
-      headerBackTitleVisible: false,
-      headerStyle: {
-        elevation: 1,
-      }
-    }
-  },
-  Boarding: {
-    screen: Boarding,
-  },
-  DetailsScreen: { screen: DetailsScreen },
-  Web: {
-    screen: Web
-  }
 }, {
   mode: 'card',
   // headerMode: 'none',
@@ -200,32 +139,11 @@ const Root = createStackNavigator(
         }
       }
     },
-    Login: {
-      screen: Login,
-      navigationOptions: {
-        headerBackTitleVisible: false,
-        headerStyle: {
-          elevation: 1,
-        }
-      }
-    },
-    TaskCreate: {
-      screen: TaskCreate,
-      navigationOptions: {
-        headerBackTitleVisible: false,
-        headerStyle: {
-          elevation: 1,
-        }
-      }
-    },
-    TaskEdit: {
-      screen: TaskEdit,
-      navigationOptions: {
-        headerBackTitleVisible: false,
-        headerStyle: {
-          elevation: 1,
-        }
-      }
+    Search: {
+       screen: Search,
+       navigationOptions: {
+          tabBarLabel: '搜索',
+       },
     },
   },
   {

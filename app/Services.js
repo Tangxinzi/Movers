@@ -6,6 +6,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import Bottom from './components/Bottom';
 import ActionSheet from 'react-native-actionsheet';
+import ReadMore from '@fawazahmed/react-native-read-more';
 import {
   SafeAreaView,
   ScrollView,
@@ -232,6 +233,7 @@ export default class Services extends React.Component {
             reloDetail: response
           })
           this.fetchData()
+          this.fetchImage()
         })
         .catch((error) => {
           console.log(error);
@@ -267,15 +269,16 @@ export default class Services extends React.Component {
   }
 
   fetchImage (Id) {
-    fetch(`https://api-staging-c.moovaz.com/api/v1/Component/get-file?Id=${ Id }&code=gUIBXx9vpSgY%2F5d0Hunrzw%3D%3D&tick=637740781865806378&type=USERS`, {
+    // fetch(`https://api-staging-c.moovaz.com/api/v1/Component/get-file?Id=${ Id }&code=gUIBXx9vpSgY%2F5d0Hunrzw%3D%3D&tick=637740781865806378&type=USERS`, {
+    fetch(`https://api-staging-c.moovaz.com/api/v1/Component/get-file?Id=bLEN4vDXCaDMmAAwyxeLTg%3D%3D&code=i%2BCG%2BOT0DG3bTBXeCTe0gg%3D%3D&tick=637755452271914518&type=USERS`, {
       method: 'GET',
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
+        // 'Accept': 'application/json',
+        'Content-Type': 'image/png',
         'Authorization': `Bearer ${ this.state.bearer.jwToken }`,
       }
     })
-    .then(response => response.json())
+    // .then(response => response.json())
     .then(responseData => {
       console.log(responseData)
     })
@@ -308,6 +311,20 @@ export default class Services extends React.Component {
     this.setState({ filter, bodyContent })
     this.fetchData()
   }
+
+  renderTruncatedFooter = (handlePress) => {
+    return (
+      <Text allowFontScaling={false} style={{color: '#e89cae'}} onPress={handlePress}>Read more</Text>
+    );
+  }
+
+  renderRevealedFooter = (handlePress) => {
+    return (
+      <Text allowFontScaling={false} style={{color: '#e89cae'}} onPress={handlePress}>Show less</Text>
+    );
+  }
+
+  handleTextReady = () => {}
 
   render() {
     return (
@@ -379,7 +396,9 @@ export default class Services extends React.Component {
                         </View>
                       </View>
                     </View>
-                    <Text allowFontScaling={false} style={styles.shortDescription}>{item.shortDescription}</Text>
+                    <ReadMore numberOfLines={4} animate={false} style={{marginTop: 5, fontSize: 14.5, lineHeight: 20}} underlayColor="none" seeMoreText={'read more'} seeMoreStyle={{color: '#e89cae'}} seeLessText={'show less'} seeLessStyle={{color: '#e89cae'}}>
+                      {item.shortDescription.replace(/<[^>]+>/g,"")}
+                    </ReadMore>
                     <TouchableHighlight style={styles.touchButton} underlayColor="none" activeOpacity={0.85} onPress={() => {
 
                     }}>
@@ -503,6 +522,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Baskerville',
   },
   countrySelection: {
+    width: 320,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -517,13 +537,18 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
     alignItems: 'center',
-    width: 180,
+    width: 160,
     borderRadius: 25,
     overflow: 'hidden',
     padding: 15,
   },
   activeCountry: {
     color: '#FFF',
+    textAlign: 'center',
+    alignItems: 'center',
+    width: 160,
+    display: 'flex',
+    justifyContent: 'center',
     backgroundColor: '#000'
   },
   vendoies: {

@@ -86,7 +86,9 @@ class Create extends React.Component {
         taskType: "origin",
         chooseCategory: "1",
         description: '',
-        note: ''
+        note: '',
+        serviceId: null,
+        relocateId: ''
       }
     };
 
@@ -119,8 +121,11 @@ class Create extends React.Component {
 
     AsyncStorage.getItem('reloDetail')
     .then((response) => {
+      response = JSON.parse(response)
+      this.state.bodyContent.relocateId = response.relocateId
       this.setState({
-        reloDetail: JSON.parse(response)
+        reloDetail: response,
+        bodyContent: this.state.bodyContent
       })
     })
     .catch((error) => {
@@ -130,10 +135,11 @@ class Create extends React.Component {
   }
 
   componentWillUnmount() {
-
+    DeviceEventEmitter.emit('Change')
   }
 
   fetchCreateTask() {
+    console.log(this.state.bodyContent);
     fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/create-task`, {
       method: 'POST',
       headers: {
@@ -146,6 +152,9 @@ class Create extends React.Component {
     .then(response => response.json())
     .then(responseData => {
       console.log(responseData)
+      if (responseData.succeeded) {
+        this.props.navigation.goBack()
+      }
     })
     .catch((error) => {
       console.log('err: ', error)
@@ -292,7 +301,7 @@ class Create extends React.Component {
                 date={this.state.bodyContent.startDate}
                 mode="date"
                 placeholder="select date"
-                format="DD/MM/YYYY"
+                format="YYYY-MM-DD"
                 minDate=""
                 maxDate=""
                 confirmBtnText="Confirm"
@@ -319,7 +328,7 @@ class Create extends React.Component {
                 date={this.state.bodyContent.dueDate}
                 mode="date"
                 placeholder="select date"
-                format="DD/MM/YYYY"
+                format="YYYY-MM-DD"
                 minDate=""
                 maxDate=""
                 confirmBtnText="Confirm"
@@ -362,7 +371,7 @@ class Create extends React.Component {
                   defaultValue={this.state.bodyContent.budgetAmount}
                   placeholderTextColor="#CCC"
                   onChangeText={(budgetAmount) => {
-                    this.state.bodyContent.budgetAmount = budgetAmount
+                    this.state.bodyContent.budgetAmount = parseInt(budgetAmount)
                     this.setState({bodyContent: this.state.bodyContent})
                   }}
                 />

@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
   footerImage: {
     width: '100%',
     height: 180,
+    marginTop: 100,
     marginBottom: 40
   }
 });

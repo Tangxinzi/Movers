@@ -13,6 +13,7 @@ import Header from './components/Header';
 import Bottom from './components/Bottom';
 import Footer from './components/Footer';
 import Swiper from 'react-native-swiper';
+import Carousel from "./components/react-native-carousel-control";
 import ActionSheet from 'react-native-actionsheet';
 import ModalDropdown from 'react-native-modal-dropdown';
 import {
@@ -25,6 +26,7 @@ import {
   TouchableHighlight,
   FlatList,
   Dimensions,
+  ImageBackground,
   Image,
   Modal,
   Text,
@@ -35,6 +37,7 @@ import {
 } from 'react-native';
 
 const colorScheme = Appearance.getColorScheme();
+let { width, height } = Dimensions.get('window');
 
 class Home extends React.Component {
   constructor(props) {
@@ -85,7 +88,25 @@ class Home extends React.Component {
           },
         ]
       },
+      backgroundImageUrl: '',
+      backgroundImage: [
+        'https://staging-customerportal.moovaz.com/static/media/1.2551a1ae.jpg',
+        'https://staging-customerportal.moovaz.com/static/media/2.e21e4e11.jpg',
+        'https://staging-customerportal.moovaz.com/static/media/3.c8a057a3.jpg',
+        'https://staging-customerportal.moovaz.com/static/media/4.484120a0.jpg',
+        'https://staging-customerportal.moovaz.com/static/media/5.31befa6f.jpg',
+        'https://staging-customerportal.moovaz.com/static/media/6.6ecfe9bc.jpg',
+        'https://staging-customerportal.moovaz.com/static/media/7.8ff86142.jpg',
+        'https://staging-customerportal.moovaz.com/static/media/8.9712c87f.jpg'
+      ]
     }
+
+    AsyncStorage.getItem('backgroundImageUrl')
+    .then((response) => {
+      this.setState({
+        backgroundImageUrl: response || ''
+      })
+    }).done()
 
     this.bearer()
   }
@@ -416,148 +437,166 @@ class Home extends React.Component {
   render() {
     return (
       <SafeAreaView>
-        <ScrollView contentInsetAdjustmentBehavior="automatic" stickyHeaderIndices={[0]} nestedScrollEnabled={true}>
-          <Header {...this.props} />
-          <View style={styles.container}>
-            <View style={styles.backgroundContainer}>
-              <Image resizeMode='cover' style={styles.backgroundContainerImage} source={{uri: icons.headbg}} />
-              <View style={styles.backgroundContainerText}>
-                <View style={styles.backgroundContainerHead}>
-                  <View style={styles.backgroundContainerDotLine}></View>
-                  <View style={styles.backgroundContainerDot}>
-                    <Text allowFontScaling={false} style={styles.countryName}>{this.state.currency && this.state.currency.origination.countryName}</Text>
-                  </View>
-                  <View style={styles.backgroundContainerIconCon}>
-                    <Image resizeMode='contain' style={styles.backgroundContainerIcon} source={{uri: icons.logo}} />
-                  </View>
-                  <View style={[styles.backgroundContainerDot]}>
-                    <Text allowFontScaling={false} style={styles.countryName}>{this.state.currency && this.state.currency.destination.countryName}</Text>
+        <ImageBackground source={{uri: this.state.backgroundImageUrl}}>
+          <ScrollView contentInsetAdjustmentBehavior="automatic" stickyHeaderIndices={[0]} nestedScrollEnabled={true}>
+            <Header {...this.props} />
+            <View style={styles.container}>
+              <View style={styles.backgroundContainer}>
+                <Image resizeMode='cover' style={styles.backgroundContainerImage} source={{uri: icons.headbg}} />
+                <View style={styles.backgroundContainerText}>
+                  <View style={styles.backgroundContainerHead}>
+                    <View style={styles.backgroundContainerDotLine}></View>
+                    <View style={styles.backgroundContainerDot}>
+                      <Text allowFontScaling={false} style={styles.countryName}>{this.state.currency && this.state.currency.origination.countryName}</Text>
+                    </View>
+                    <View style={styles.backgroundContainerIconCon}>
+                      <Image resizeMode='contain' style={styles.backgroundContainerIcon} source={{uri: icons.logo}} />
+                    </View>
+                    <View style={[styles.backgroundContainerDot]}>
+                      <Text allowFontScaling={false} style={styles.countryName}>{this.state.currency && this.state.currency.destination.countryName}</Text>
+                    </View>
                   </View>
                 </View>
               </View>
-            </View>
-            <View style={styles.numberBox}>
-              {
-                this.state.numberBox.map((item, key) => {
-                  return (
-                    <View key={key} style={styles.numberBoxItem}>
-                      <View style={[styles.numberBoxItemBar, {backgroundColor: item.color}]}></View>
-                      <Text allowFontScaling={false} style={[styles.numberBoxItemNum, {color: item.color}]}>{item.num}</Text>
-                      <Text allowFontScaling={false} numberOfLines={2} style={[styles.numberBoxItemText, {color: item.color}]}>{item.text}</Text>
-                    </View>
-                  )
-                })
-              }
-            </View>
-            <TouchableHighlight style={styles.tasks} underlayColor="rgba(255, 255, 255, 0.75)" activeOpacity={0.8} onPress={() => this.ActionSheet.show()}>
-              <>
-                <Text allowFontScaling={false} style={{color: '#909194'}}>{this.state.list.type[this.state.list.index].text}</Text>
-                <Image resizeMode='cover' style={styles.tasksIconArrowDown} source={{uri: icons.arrowDown}} />
-                <ActionSheet ref={o => this.ActionSheet = o} title={'Select ...'} options={['All Tasks', 'Starred', 'In Progress', 'Completed', 'Cancel']} cancelButtonIndex={4} onPress={(index) => {
-                  if (index == 4) {
-                    return
-                  } else {
-                    this.state.list.index = index
-                    this.setState({list: this.state.list})
-                    this.fetchDataListRow()
-                    this.fetchDataListColumn()
-                  }
-                }} />
-              </>
-            </TouchableHighlight>
-            <View style={[styles.tasks, {marginTop: 0, padding: 0}]}>
-              <TouchableHighlight style={styles.taskView} underlayColor="rgba(255, 255, 255, 0.75)" activeOpacity={0.8} onPress={() => {
-                this.fetchDataListColumn()
-                this.state.list.active = 'Task View'
-                this.setState({list: this.state.list})
-              }}>
-                <>
-                  <Image resizeMode='cover' style={styles.tasksIcon} source={{uri: this.state.list.active == 'Task View' ? icons.taskActive : icons.task}} />
-                  <Text allowFontScaling={false} style={{color: this.state.active == 'Task View' ? '#E89CAE' : '#909194'}}>Task View</Text>
-                </>
-              </TouchableHighlight>
-              <TouchableHighlight style={styles.taskTimeline} underlayColor="rgba(255, 255, 255, 0.75)" activeOpacity={0.8} onPress={() => {
-                this.fetchDataListRow()
-                this.state.list.active = 'Timeline View'
-                this.setState({list: this.state.list})
-              }}>
-                <>
-                  <Image resizeMode='cover' style={styles.tasksIcon} source={{uri: this.state.list.active == 'Timeline View' ? icons.timelineActive : icons.timeline}} />
-                  <Text allowFontScaling={false} style={{color: this.state.list.active == 'Timeline View' ? '#E89CAE' : '#909194'}}>Timeline View</Text>
-                </>
-              </TouchableHighlight>
-              <TouchableHighlight underlayColor="none" activeOpacity={0.5} onPress={() => this.setState({modalVisible: true})}>
-                <Image resizeMode='cover' style={[styles.tasksIcon, {marginRight: 13, width: 20, height: 20}]} source={{uri: icons.theme}} />
-              </TouchableHighlight>
-            </View>
-            <ActionSheet
-              ref={o => this.ActionSheetAction = o}
-              title={'Action'}
-              options={['Edit', 'Delete', 'Cancel']}
-              cancelButtonIndex={2}
-              onPress={(index) => {
-                switch (index) {
-                  case 0:
-                    this.props.navigation.navigate('TaskEdit', {TaskId: this.state.taskId || ''})
-                    break;
-                  case 1:
-                    Alert.alert('Delete Task?', 'Are you sure you want to delete this task?',
-                      [
-                        {
-                          text: "CANCEL", onPress: () => {}
-                        },
-                        {
-                          text: "DELETE", onPress: () => this.deleteTask(this.state.taskId)
-                        }
-                      ]
+              <View style={styles.numberBox}>
+                {
+                  this.state.numberBox.map((item, key) => {
+                    return (
+                      <View key={key} style={styles.numberBoxItem}>
+                        <View style={[styles.numberBoxItemBar, {backgroundColor: item.color}]}></View>
+                        <Text allowFontScaling={false} style={[styles.numberBoxItemNum, {color: item.color}]}>{item.num}</Text>
+                        <Text allowFontScaling={false} numberOfLines={2} style={[styles.numberBoxItemText, {color: item.color}]}>{item.text}</Text>
+                      </View>
                     )
-                    break;
-                  default:
-
+                  })
                 }
-              }}
-            />
-            <View style={[styles.taskview, {display: this.state.list.active == 'Task View' ? 'flex' : 'none'}]}>
-              <Swiper autoplay={false} height={1000} showsButtons={false} showPagination={false} index={0} dot={<></>} activeDot={<></>}>
-                <View style={styles.slide}>
-                  {this.renderColumns(this.state.tasks && this.state.tasks.origin, 0)}
-                </View>
-                <View style={styles.slide}>
-                  {this.renderColumns(this.state.tasks && this.state.tasks.destination, 1)}
-                </View>
-                <View style={styles.slide}>
-                  {this.renderColumns(this.state.tasks && this.state.tasks.taskNote, 2)}
-                </View>
-              </Swiper>
+              </View>
+              <TouchableHighlight style={styles.tasks} underlayColor="rgba(255, 255, 255, 0.75)" activeOpacity={0.8} onPress={() => this.ActionSheet.show()}>
+                <>
+                  <Text allowFontScaling={false} style={{color: '#909194'}}>{this.state.list.type[this.state.list.index].text}</Text>
+                  <Image resizeMode='cover' style={styles.tasksIconArrowDown} source={{uri: icons.arrowDown}} />
+                  <ActionSheet ref={o => this.ActionSheet = o} title={'Select ...'} options={['All Tasks', 'Starred', 'In Progress', 'Completed', 'Cancel']} cancelButtonIndex={4} onPress={(index) => {
+                    if (index == 4) {
+                      return
+                    } else {
+                      this.state.list.index = index
+                      this.setState({list: this.state.list})
+                      this.fetchDataListRow()
+                      this.fetchDataListColumn()
+                    }
+                  }} />
+                </>
+              </TouchableHighlight>
+              <View style={[styles.tasks, {marginTop: 0, padding: 0}]}>
+                <TouchableHighlight style={styles.taskView} underlayColor="rgba(255, 255, 255, 0.75)" activeOpacity={0.8} onPress={() => {
+                  this.fetchDataListColumn()
+                  this.state.list.active = 'Task View'
+                  this.setState({list: this.state.list})
+                }}>
+                  <>
+                    <Image resizeMode='cover' style={styles.tasksIcon} source={{uri: this.state.list.active == 'Task View' ? icons.taskActive : icons.task}} />
+                    <Text allowFontScaling={false} style={{color: this.state.active == 'Task View' ? '#E89CAE' : '#909194'}}>Task View</Text>
+                  </>
+                </TouchableHighlight>
+                <TouchableHighlight style={styles.taskTimeline} underlayColor="rgba(255, 255, 255, 0.75)" activeOpacity={0.8} onPress={() => {
+                  this.fetchDataListRow()
+                  this.state.list.active = 'Timeline View'
+                  this.setState({list: this.state.list})
+                }}>
+                  <>
+                    <Image resizeMode='cover' style={styles.tasksIcon} source={{uri: this.state.list.active == 'Timeline View' ? icons.timelineActive : icons.timeline}} />
+                    <Text allowFontScaling={false} style={{color: this.state.list.active == 'Timeline View' ? '#E89CAE' : '#909194'}}>Timeline View</Text>
+                  </>
+                </TouchableHighlight>
+                <TouchableHighlight underlayColor="none" activeOpacity={0.5} onPress={() => this.setState({modalVisible: true})}>
+                  <Image resizeMode='cover' style={[styles.tasksIcon, {marginRight: 13, width: 20, height: 20}]} source={{uri: icons.theme}} />
+                </TouchableHighlight>
+              </View>
+              <ActionSheet
+                ref={o => this.ActionSheetAction = o}
+                title={'Action'}
+                options={['Edit', 'Delete', 'Cancel']}
+                cancelButtonIndex={2}
+                onPress={(index) => {
+                  switch (index) {
+                    case 0:
+                      this.props.navigation.navigate('TaskEdit', {TaskId: this.state.taskId || ''})
+                      break;
+                    case 1:
+                      Alert.alert('Delete Task?', 'Are you sure you want to delete this task?',
+                        [
+                          {
+                            text: "CANCEL", onPress: () => {}
+                          },
+                          {
+                            text: "DELETE", onPress: () => this.deleteTask(this.state.taskId)
+                          }
+                        ]
+                      )
+                      break;
+                    default:
+
+                  }
+                }}
+              />
+              <View style={[styles.taskview, {display: this.state.list.active == 'Task View' ? 'flex' : 'none'}]}>
+                <Carousel pageStyle={{backgroundColor: 'rgb(227, 215, 58)', justifyContent: 'flex-start', backgroundColor: "#f4f4f4", borderRadius: 10}}>
+                  <View style={styles.slide}>
+                    {this.renderColumns(this.state.tasks && this.state.tasks.origin, 0)}
+                  </View>
+                  <View style={styles.slide}>
+                    {this.renderColumns(this.state.tasks && this.state.tasks.destination, 1)}
+                  </View>
+                  <View style={styles.slide}>
+                    {this.renderColumns(this.state.tasks && this.state.tasks.taskNote, 2)}
+                  </View>
+                </Carousel>
+              </View>
+              <View style={[styles.timeline, {display: this.state.list.active == 'Timeline View' ? 'flex' : 'none'}]}>
+                {this.renderRows(this.state.tasks && this.state.tasks.dated, 0)}
+                {this.renderRows(this.state.tasks && this.state.tasks.unDated, 1)}
+              </View>
             </View>
-            <View style={[styles.timeline, {display: this.state.list.active == 'Timeline View' ? 'flex' : 'none'}]}>
-              {this.renderRows(this.state.tasks && this.state.tasks.dated, 0)}
-              {this.renderRows(this.state.tasks && this.state.tasks.unDated, 1)}
-            </View>
-          </View>
-          <Footer />
-        </ScrollView>
+            <Footer />
+          </ScrollView>
+        </ImageBackground>
         <Modal animationType="slide" visible={this.state.modalVisible} transparent={false}>
-          <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-around', marginTop: '15%' }}>
-            <Text allowFontScaling={false} style={styles.modalTitle}>Select mood background</Text>
-            <View style={styles.modalThemes}>
-              <Image resizeMode='cover' style={styles.modalTheme} source={{uri: 'https://staging-customerportal.moovaz.com/static/media/1.2551a1ae.jpg'}} />
-              <Image resizeMode='cover' style={styles.modalTheme} source={{uri: 'https://staging-customerportal.moovaz.com/static/media/2.e21e4e11.jpg'}} />
-              <Image resizeMode='cover' style={styles.modalTheme} source={{uri: 'https://staging-customerportal.moovaz.com/static/media/3.c8a057a3.jpg'}} />
-              <Image resizeMode='cover' style={styles.modalTheme} source={{uri: 'https://staging-customerportal.moovaz.com/static/media/4.484120a0.jpg'}} />
-              <Image resizeMode='cover' style={styles.modalTheme} source={{uri: 'https://staging-customerportal.moovaz.com/static/media/5.31befa6f.jpg'}} />
-              <Image resizeMode='cover' style={styles.modalTheme} source={{uri: 'https://staging-customerportal.moovaz.com/static/media/6.6ecfe9bc.jpg'}} />
-              <Image resizeMode='cover' style={styles.modalTheme} source={{uri: 'https://staging-customerportal.moovaz.com/static/media/7.8ff86142.jpg'}} />
-              <Image resizeMode='cover' style={styles.modalTheme} source={{uri: 'https://staging-customerportal.moovaz.com/static/media/8.9712c87f.jpg'}} />
+          <View style={{backgroundColor: '#FFF'}}>
+            <View style={styles.modalView}>
+              <Text allowFontScaling={false} style={styles.modalTitle}>Select mood background</Text>
+              <View style={styles.modalThemes}>
+                <TouchableHighlight underlayColor="none" activeOpacity={0.5} onPress={() => {
+                  this.setState({
+                    backgroundImageUrl: '',
+                    modalVisible: false
+                  })
+                  AsyncStorage.setItem('backgroundImageUrl', '')
+                }}>
+                  <View style={[styles.modalTheme, {backgroundColor: '#f4f4f4'}]}></View>
+                </TouchableHighlight>
+                {
+                  this.state.backgroundImage.map((item, key) => {
+                    return (
+                      <TouchableHighlight underlayColor="none" activeOpacity={0.5} onPress={() => {
+                        this.setState({
+                          backgroundImageUrl: item,
+                          modalVisible: false
+                        })
+                        AsyncStorage.setItem('backgroundImageUrl', item)
+                      }}>
+                        <Image resizeMode='cover' style={styles.modalTheme} source={{uri: item}} />
+                      </TouchableHighlight>
+                    )
+                  })
+                }
+                <View style={styles.modalTheme}></View>
+              </View>
+              <View style={styles.modalButtons}>
+                <TouchableHighlight underlayColor="none" activeOpacity={0.5} style={styles.modalCancel} onPress={() => this.setState({modalVisible: false})}>
+                  <Text allowFontScaling={false} style={styles.modalCancelText}>Cancel</Text>
+                </TouchableHighlight>
+              </View>
             </View>
-          </View>
-          <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-around', marginBottom: '15%' }}>
-            <TouchableHighlight underlayColor="none" activeOpacity={0.5} style={styles.reject} onPress={() => this.setState({modalVisible: false})}>
-              <Text allowFontScaling={false}>Cancel</Text>
-            </TouchableHighlight>
-            <TouchableHighlight underlayColor="none" activeOpacity={0.5} style={styles.accept} onPress={() => this.setState({modalVisible: false})}>
-              <Text allowFontScaling={false}>Select</Text>
-            </TouchableHighlight>
           </View>
         </Modal>
         <Bottom {...this.props} type="home" />
@@ -568,16 +607,56 @@ class Home extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#f4f4f4'
+    // backgroundColor: '#f4f4f4'
   },
 
   // modal
+  modalView: {
+    // flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    marginTop: '15%'
+  },
   modalTitle: {
-
+    fontSize: 18,
+    fontWeight: '600',
+    marginTop: 20,
+    marginBottom: 20
+  },
+  modalThemes: {
+    // flex: 1,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexWrap: 'wrap'
   },
   modalTheme: {
-    width: 320,
-    height: 80
+    width: 140,
+    height: 90,
+    margin: 10,
+    borderRadius: 5,
+    overflow: 'hidden'
+  },
+  modalButtons: {
+    marginTop: 70,
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-around',
+    marginBottom: '15%'
+  },
+  modalCancel: {
+    width: '60%',
+    borderRadius: 20,
+    backgroundColor: '#e4e1e1',
+  },
+  modalCancelText: {
+    textAlign: 'center',
+    height: 40,
+    lineHeight: 40,
+    fontSize: 14
   },
 
   // backgroundContainer
@@ -842,9 +921,8 @@ const styles = StyleSheet.create({
 
   // swiper
   slide: {
-    paddingBottom: 100,
-    // width: '80%',
-    // marginRight: 30
+    paddingBottom: 50,
+    // height: 800
   },
 });
 
