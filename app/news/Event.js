@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Posts from './Posts';
+import getPosts from './Posts';
 import ViewSwiper from 'react-native-swiper';
 import {
   Text,
@@ -60,10 +60,14 @@ class Event extends React.Component {
     super(props);
 
     this.state = {
-      lists: Posts
+      lists: []
     }
 
-    // console.log(Posts());
+    getPosts('http://127.0.0.1:3000/posts?type=json', (data) => {
+      this.setState({
+        lists: data
+      })
+    })
 
     // AsyncStorage.removeItem('collections')
   }

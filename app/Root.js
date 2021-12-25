@@ -115,12 +115,12 @@ const App = createStackNavigator({
   //     header: null
   //   }
   // },
-  NewsRoot: {
-    screen: NewsRoot,
-    navigationOptions: {
-      header: null
-    }
-  },
+  // NewsRoot: {
+  //   screen: NewsRoot,
+  //   navigationOptions: {
+  //     header: null
+  //   }
+  // },
   HomeScreen: {
     screen: HomeScreen,
     navigationOptions: {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Icons from './Icons';
-import Posts from './Posts';
+import getPosts from './Posts';
 import RenderHtml from 'react-native-render-html';
 import {
   Text,
@@ -74,8 +74,8 @@ class Detail extends React.Component {
     this.setState({ collection: this.props.navigation.state.params.collection })
 
     if (!this.props.navigation.state.params.collection) {
-      this.state.lists[this.state.params.index]['index'] = this.state.params.index
-      collections.push(this.state.lists[this.state.params.index])
+      this.state.lists[this.props.navigation.state.params.index]['index'] = this.props.navigation.state.params.index
+      collections.push(this.state.lists[this.props.navigation.state.params.index])
       AsyncStorage.setItem('collections', JSON.stringify(collections))
       Alert.alert('Tips', 'Post Collected',
         [
@@ -87,7 +87,7 @@ class Detail extends React.Component {
     } else {
       const _collections = []
       for (var i = 0; i < collections.length; i++) {
-        if (collections[i].title != this.state.lists[this.state.params.index].title) {
+        if (collections[i].title != this.state.lists[this.props.navigation.state.params.index].title) {
           _collections.push(collections[i])
         }
       }
@@ -120,37 +120,48 @@ class Detail extends React.Component {
       collection: false,
       collections: [],
       params: this.props.navigation.state.params,
-      lists: Posts,
-      source: {html: Posts[this.props.navigation.state.params.index].description}
+      lists: [],
+      source: null
     }
 
-    // AsyncStorage.removeItem('collections') // 清空收藏
-    AsyncStorage.getItem('collections').then(collections => {
-      collections = JSON.parse(collections)
-      this.setState({ collections })
-      for (var i = 0; i < collections.length; i++) {
-        if (collections[i].title == this.state.lists[this.state.params.index].title) {
-          this.props.navigation.setParams({
-            collection: true
-          })
+    getPosts('http://127.0.0.1:3000/posts?type=json', (data) => {
+      this.setState({
+        lists: data,
+        source: {html: data[this.props.navigation.state.params.index].content}
+      })
+
+      // AsyncStorage.removeItem('collections') // 清空收藏
+      AsyncStorage.getItem('collections').then(collections => {
+        collections = JSON.parse(collections)
+        this.setState({ collections })
+        for (var i = 0; i < collections.length; i++) {
+          if (collections[i].title == this.state.lists[this.props.navigation.state.params.index].title) {
+            this.props.navigation.setParams({
+              collection: true
+            })
+          }
         }
-      }
+      })
+      .catch((error) => {
+        console.log('error', error)
+      })
+      .done()
     })
-    .catch((error) => {
-      console.log('error', error)
-    })
-    .done()
   }
 
   render() {
     return (
       <ScrollView>
-        <View style={styles.container}>
-          <View style={{flex: 1, padding: 10}}>
-            <Text allowFontScaling={false} style={styles.title}>{this.state.lists[this.state.params.index].title}</Text>
-            <RenderHtml contentWidth={320} source={this.state.source} />
-          </View>
-        </View>
+        {
+          this.state.lists.length ? (
+            <View style={styles.container}>
+              <View style={{flex: 1, padding: 10}}>
+                <Text allowFontScaling={false} style={styles.title}>{this.state.lists[this.props.navigation.state.params.index].title}</Text>
+                <RenderHtml contentWidth={320} source={this.state.source} />
+              </View>
+            </View>
+          ) : (<></>)
+        }
       </ScrollView>
     );
   }
@@ -159,7 +170,7 @@ class Detail extends React.Component {
 const styles = {
   container: {backgroundColor: '#FFF', paddingBottom: 20},
   title: {marginTop: 10, marginBottom: 20, fontSize: 24, fontWeight: '600'},
-  description: {fontSize: 18, lineHeight: 26},
+  content: {fontSize: 18, lineHeight: 26},
   image: {width: width - 20, height: 200, marginBottom: 10},
   star: {width: 28, height: 28},
   p: {fontWeight: '800'}

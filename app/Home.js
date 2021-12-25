@@ -16,6 +16,7 @@ import Swiper from 'react-native-swiper';
 import Carousel from "./components/react-native-carousel-control";
 import ActionSheet from 'react-native-actionsheet';
 import ModalDropdown from 'react-native-modal-dropdown';
+import { SvgUri } from 'react-native-svg';
 import {
   SafeAreaView,
   ScrollView,
@@ -560,6 +561,7 @@ class Home extends React.Component {
             <Footer />
           </ScrollView>
         </ImageBackground>
+        <SvgUri style={{position: 'absolute', right: 20, bottom: 100, width: 60, height: 60}} uri="https://staging-customerportal.moovaz.com/static/media/CHAT.33de3928.svg" />
         <Modal animationType="slide" visible={this.state.modalVisible} transparent={false}>
           <View style={{backgroundColor: '#FFF'}}>
             <View style={styles.modalView}>

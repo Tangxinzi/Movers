@@ -240,7 +240,7 @@ export default class Carousel extends Component {
                     style={{ flexDirection: (I18nManager && I18nManager.isRTL) ? 'row-reverse' : 'row' }}
                     decelerationRate={ 0.9 }
                     horizontal
-                    pagingEnabled={true}
+                    // pagingEnabled={true}
                     onScrollEndDrag={ this._handleScrollEnd }
                     ref={ c => this.scrollView = c }
                     showsHorizontalScrollIndicator={ false }

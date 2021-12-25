@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Posts from './Posts';
+import getPosts from './Posts';
 import {
   Text,
   View,
@@ -48,9 +48,15 @@ class Search extends React.Component {
     super(props);
 
     this.state = {
-      lists: Posts,
+      lists: [],
       search: []
     }
+
+    getPosts('http://127.0.0.1:3000/posts?type=json', (data) => {
+      this.setState({
+        lists: data
+      })
+    })
   }
 
   render() {
@@ -89,7 +95,7 @@ class Search extends React.Component {
                   <>
                     <View style={{flex: 1}}>
                       <Text allowFontScaling={false} numberOfLines={1} style={styles.title}>{item.title}</Text>
-                      <Text allowFontScaling={false} numberOfLines={2} style={styles.description}>{item.description}</Text>
+                      <Text allowFontScaling={false} numberOfLines={2} style={styles.content}>{item.content}</Text>
                     </View>
                     <Image style={styles.image} source={{uri: item.image}} />
                   </>
@@ -112,7 +118,7 @@ const styles = {
   // lists
   title: {fontSize: 16, fontWeight: '600'},
   list: {display: 'flex', flexDirection: 'row', alignItems: 'center', margin: 15, marginBottom: 0, padding: 15, borderRadius: 5, backgroundColor: '#FFF'},
-  description: {display: 'none'},
+  content: {display: 'none'},
   image: {width: 60, height: 60, marginLeft: 10, borderRadius: 5}
 }
 
