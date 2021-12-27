@@ -57,17 +57,50 @@ export default class Inbox extends React.Component {
   }
 
   fetchData () {
+    const jwToken = this.state.bearer.jwToken
     fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-channels?RelocateId=${ this.state.reloDetail.relocateId }&PageSize=100`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${ this.state.bearer.jwToken }`,
+        'Authorization': `Bearer ${ jwToken }`,
       }
     })
     .then(response => response.json())
     .then(responseData => {
       this.setState({ channels: responseData.data })
+    })
+    .catch((error) => {
+      console.log('err: ', error)
+    })
+    .done()
+  }
+
+  getCompanyInfo (accountId, key) {
+    const channels = this.state.channels
+    const jwToken = this.state.bearer.jwToken
+
+    if (channels[key]['companyOpen']) {
+      channels[key]['companyOpen'] = false
+      this.setState({ channels })
+      return
+    } else {
+      channels[key]['companyOpen'] = true
+    }
+
+    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-company-info?PartnerId=${ accountId }`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${ jwToken }`,
+      }
+    })
+    .then(response => response.json())
+    .then(responseData => {
+      channels[key]['company'] = responseData.data
+      channels[key]['companyOpen'] = true
+      this.setState({ channels })
     })
     .catch((error) => {
       console.log('err: ', error)
@@ -85,17 +118,39 @@ export default class Inbox extends React.Component {
             <View style={styles.vendoies}>
             {
               this.state.channels.map((item, key) => {
-                return (
-                  <TouchableHighlight style={styles.channels} key={key} underlayColor="none" activeOpacity={0.85} onPress={() => {
-
-                  }}>
-                    <View style={styles.channelsRow}>
-                      <View style={styles.channelsContent}>
-                        <Text allowFontScaling={false} style={styles.companyName}>{item.groupName}</Text>
-                      </View>
+                if (item.statusValue) {
+                  return (
+                    <View style={styles.channelsRow} key={key}>
+                      <TouchableHighlight style={styles.channels} key={key} underlayColor="none" activeOpacity={0.85} onPress={() => this.getCompanyInfo(item.accountId, key)}>
+                        <View style={styles.channelsContent}>
+                          <Text allowFontScaling={false} style={styles.companyName}>{item.serviceName}</Text>
+                          <Image resizeMode='cover' style={{width: 14, height: 14}} source={{uri: !item.companyOpen ? icons.addEmpty : icons.minus}} />
+                        </View>
+                      </TouchableHighlight>
+                      {
+                        item.companyOpen ? (
+                          <View style={styles.channelsFoot}>
+                            <View style={styles.channelsFootRow}>
+                              <Image resizeMode='cover' style={styles.companyImage} source={{
+                                uri: item.company.profile.logo,
+                                method: 'GET',
+                                headers: {
+                                  'Content-Type': 'image/png',
+                                  'Authorization': `Bearer ${ this.state.bearer.jwToken }`,
+                                }
+                              }} />
+                              <View style={{flexDirection: 'column'}}>
+                                <Text allowFontScaling={false} style={[styles.companyText, {fontWeight: '700', marginBottom: 2}]}>{item.company.profile.firstName}</Text>
+                                <Text allowFontScaling={false} style={{fontSize: 13}}>{item.company.profile.name}</Text>
+                                <Text allowFontScaling={false} style={[styles.companyText, {fontSize: 13, color: 'gray'}]}>{item.messageLastModified}</Text>
+                              </View>
+                            </View>
+                          </View>
+                        ) : <></>
+                      }
                     </View>
-                  </TouchableHighlight>
-                )
+                  )
+                }
               })
             }
             </View>
@@ -126,11 +181,11 @@ const styles = StyleSheet.create({
   channels: {
     paddingTop: 15,
     paddingBottom: 15,
-    borderBottomWidth: 1,
-    borderColor: '#d3d6d9',
   },
   channelsRow: {
-    flexDirection: 'row'
+    borderBottomWidth: 1,
+    borderColor: '#000',
+    // flexDirection: 'row'
   },
   channelsImage: {
     width: 70,
@@ -138,7 +193,10 @@ const styles = StyleSheet.create({
     marginRight: 10
   },
   channelsContent: {
-    flex: 1
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
   },
   touchButton: {
     marginTop: 18,
@@ -166,43 +224,17 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
 
-  // All Tasks
-  tasks: {
-    backgroundColor: '#FFF',
-    borderRadius: 5,
-    marginTop: 10,
-    marginBottom: 15,
-    padding: 15,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
+  channelsFoot: {
+    paddingBottom: 15,
   },
-  taskView: {
-    flex: 1,
-    flexDirection: 'row',
+  channelsFootRow: {
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: 13,
-    borderColor: '#f4f4f4',
-    borderRightWidth: 1,
+    flexDirection: 'row'
   },
-  taskTimeline: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 13,
-    borderColor: '#f4f4f4',
-    borderRightWidth: 1
-  },
-  tasksIcon: {
-    width: 16,
-    height: 16,
-    marginLeft: 10,
+  companyImage: {
+    height: 40,
+    width: 40,
+    borderRadius: 40,
     marginRight: 10
-  },
-  tasksIconArrowDown: {
-    width: 20,
-    height: 20
-  },
+  }
 });
