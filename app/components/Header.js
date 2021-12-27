@@ -78,7 +78,7 @@ export default class Header extends React.Component {
           <Text style={styles.headerIcon} onPress={() => this.props.navigation.navigate('Boarding')}>Board</Text>
           <View style={styles.headerImageContent}>
             <Image resizeMode='cover' style={styles.headerImage} source={{
-              uri: this.state.reloDetail.partnerLogo,
+              uri: this.state.reloDetail && this.state.reloDetail.partnerLogo,
               method: 'GET',
               headers: {
                 'Content-Type': 'image/png',
