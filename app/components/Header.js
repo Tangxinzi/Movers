@@ -24,8 +24,38 @@ export default class Header extends React.Component {
     super(props);
 
     this.state = {
-      reloDetail: null
+      bearer: {
+        jwToken: ''
+      },
+      reloDetail: {
+        partnerLogo: ''
+      },
+      profile: {
+        userImg: ''
+      }
     }
+
+    AsyncStorage.getItem('bearer')
+    .then((response) => {
+      this.setState({
+        bearer: JSON.parse(response)
+      })
+    })
+    .catch((error) => {
+      console.log('error', error)
+    })
+    .done()
+
+    AsyncStorage.getItem('profile')
+    .then((response) => {
+      const profile = JSON.parse(response)
+      console.log('profile', profile.userImg)
+      this.setState({ profile })
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+    .done()
 
     AsyncStorage.getItem('reloDetail')
     .then((response) => {
@@ -47,9 +77,23 @@ export default class Header extends React.Component {
         <View style={styles.header}>
           <Text style={styles.headerIcon} onPress={() => this.props.navigation.navigate('Boarding')}>Board</Text>
           <View style={styles.headerImageContent}>
-            <Image resizeMode='cover' style={styles.headerImage} source={{uri: iconsHeader.logo}} />
+            <Image resizeMode='cover' style={styles.headerImage} source={{
+              uri: this.state.reloDetail.partnerLogo,
+              method: 'GET',
+              headers: {
+                'Content-Type': 'image/png',
+                'Authorization': `Bearer ${ this.state.bearer && this.state.bearer.jwToken }`,
+              }
+            }} />
           </View>
-          <Image resizeMode='cover' style={styles.headerIcon} source={{uri: iconsHeader.icon}} />
+          <Image resizeMode='cover' style={styles.headerIcon} source={{
+            uri: this.state.profile.userImg,
+            method: 'GET',
+            headers: {
+              'Content-Type': 'image/png',
+              'Authorization': `Bearer ${ this.state.bearer && this.state.bearer.jwToken }`,
+            }
+          }} />
         </View>
         <View style={styles.bar}>
           {

@@ -104,8 +104,27 @@ class Login extends React.Component {
     .then(response => response.json())
     .then(responseData => {
       if (responseData.errorCode == 0) {
-        AsyncStorage.setItem('bearer', JSON.stringify(responseData.data))
-        this.props.navigation.navigate('HomeScreen')
+        const bearer = responseData.data
+        AsyncStorage.setItem('bearer', JSON.stringify(bearer))
+
+        // set storage profile
+        fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-profile?`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${ bearer.jwToken }`,
+          }
+        })
+        .then(response => response.json())
+        .then(responseData => {
+          console.log('profile', JSON.stringify(responseData))
+          AsyncStorage.setItem('profile', JSON.stringify(responseData.data))
+
+          this.props.navigation.navigate('HomeScreen')
+        })
+        .catch((error) => {
+          console.log('err: ', error)
+        })
+        .done();
       } else {
         Alert.alert('Tips', responseData.message || '', [
           {

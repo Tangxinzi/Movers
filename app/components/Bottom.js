@@ -25,19 +25,56 @@ export default class Bottom extends React.Component {
     super(props);
 
     this.state = {
-      params: props.navigation.state.params
+      params: props.navigation.state.params,
+      bearer: {},
+      total: {
+        totalItemCount: 0
+      }
     }
+
+    AsyncStorage.getItem('bearer')
+    .then((response) => {
+      if (response == null) {
+        console.log(response);
+        this.props.navigation.navigate('Login')
+      } else {
+        this.setState({
+          bearer: JSON.parse(response)
+        })
+
+        fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-total-unread?`, {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${ this.state.bearer.jwToken }`,
+          }
+        })
+        .then(response => response.json())
+        .then(responseData => {
+          this.setState({total: responseData.data})
+        })
+        .catch((error) => {
+          console.log('err: ', error)
+        })
+        .done()
+      }
+    })
+    .catch((error) => {
+      console.log('error', error)
+    })
+    .done()
   }
 
   render() {
     return (
       <View style={styles.iconsBottomContainer}>
-        <TouchableHighlight style={styles.iconsBottom} underlayColor="none" activeOpacity={0.85} onPress={() => this.props.navigation.navigate('IndexScreen')}>
+        <TouchableHighlight style={styles.iconsBottom} underlayColor="none" activeOpacity={0.85} onPress={() => this.props.navigation.navigate('InboxScreen')}>
           <>
             <View style={styles.iconsContent}>
-              <Image resizeMode='cover' style={{...styles.iconBottom, height: this.props.type == 'index' ? 18 : 20 }} source={{uri: this.props.type == 'index' ? iconsBottom.indexActive : iconsBottom.index}} />
+              <Image resizeMode='cover' style={{...styles.iconBottom, height: this.props.type == 'inbox' ? 18 : 20 }} source={{uri: this.props.type == 'inbox' ? iconsBottom.inboxActive : iconsBottom.inbox}} />
             </View>
-            <Text style={styles.textBottom} allowFontScaling={false}>Index</Text>
+            <Text style={styles.textBottom} allowFontScaling={false}>Inbox</Text>
+            <Text style={styles.textBottomMark} allowFontScaling={false}>{this.state.total.totalItemCount}</Text>
           </>
         </TouchableHighlight>
         <TouchableHighlight style={styles.iconsBottom} underlayColor="none" activeOpacity={0.85} onPress={() => this.props.navigation.navigate('FolderScreen')}>
@@ -92,7 +129,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     position: 'absolute',
     bottom: 0,
-    paddingTop: 10,
+    paddingTop: 5,
     paddingBottom: 10,
     backgroundColor: '#FFF'
   },
@@ -121,7 +158,7 @@ const styles = StyleSheet.create({
   iconBottom: {
     width: 20,
     height: 20,
-    marginBottom: 5
+    marginBottom: 0
   },
   iconsContent: {
     height: 20,
@@ -132,5 +169,19 @@ const styles = StyleSheet.create({
   textBottom: {
     fontSize: 12,
     fontWeight: '700'
+  },
+  textBottomMark: {
+    position: 'absolute',
+    top: -14,
+    right: 12,
+    backgroundColor: '#e89cae',
+    color: '#fff',
+    padding: 4,
+    fontWeight: '500',
+    fontSize: 12,
+    borderRadius: 10,
+    minWidth: 20,
+    textAlign: 'center',
+    overflow: 'hidden'
   }
 });

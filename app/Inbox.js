@@ -23,7 +23,7 @@ import {
   Appearance
 } from 'react-native';
 
-export default class Index extends React.Component {
+export default class Inbox extends React.Component {
   constructor(props) {
     super(props);
 
@@ -102,7 +102,7 @@ export default class Index extends React.Component {
           </View>
           <Footer />
         </ScrollView>
-        <Bottom {...this.props} type="index" />
+        <Bottom {...this.props} type="inbox" />
       </SafeAreaView>
     )
   }

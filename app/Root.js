@@ -13,7 +13,7 @@ import {
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator, CardStyleInterpolators } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
-import Index from './Index'
+import Inbox from './Inbox'
 import Home from './Home'
 import Folder from './Folder'
 import Services from './Services'
@@ -25,44 +25,6 @@ import TaskIndex from './task/Index'
 import TaskCreate from './task/Create'
 import TaskEdit from './task/Edit'
 
-import NewsRoot from './news/Root'
-
-class SettingsScreen extends React.Component {
-  render() {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        {/* other code from before here */}
-        <Button
-          title="Go to Details"
-          onPress={() => this.props.navigation.navigate('DetailsScreen')}
-        />
-      </View>
-    );
-  }
-}
-
-class DetailsScreen extends React.Component {
-  static navigationOptions = ({navigation, screenProps}) => ({
-    header: null,
-    tabBarVisible: false,
-    headerTitleStyle: {color: '#000000'},
-    headerStyle: {
-      backgroundColor: '',
-      elevation: 0,
-      shadowOpacity: 0
-    },
-    headerBackTitle: null
-  })
-
-  render() {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Details!</Text>
-      </View>
-    );
-  }
-}
-
 class HomeScreen extends React.Component {
   render() {
     return (
@@ -71,10 +33,10 @@ class HomeScreen extends React.Component {
   }
 }
 
-class IndexScreen extends React.Component {
+class InboxScreen extends React.Component {
   render() {
     return (
-      <Index {...this.props} />
+      <Inbox {...this.props} />
     );
   }
 }
@@ -115,20 +77,14 @@ const App = createStackNavigator({
   //     header: null
   //   }
   // },
-  // NewsRoot: {
-  //   screen: NewsRoot,
-  //   navigationOptions: {
-  //     header: null
-  //   }
-  // },
   HomeScreen: {
     screen: HomeScreen,
     navigationOptions: {
       header: null
     }
   },
-  IndexScreen: {
-    screen: IndexScreen,
+  InboxScreen: {
+    screen: InboxScreen,
     navigationOptions: {
       header: null
     }
@@ -157,7 +113,6 @@ const App = createStackNavigator({
   Boarding: {
     screen: Boarding,
   },
-  DetailsScreen: { screen: DetailsScreen },
   Web: {
     screen: Web
   }

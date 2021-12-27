@@ -15,6 +15,7 @@ import Footer from './components/Footer';
 import Swiper from 'react-native-swiper';
 import Carousel from "./components/react-native-carousel-control";
 import ActionSheet from 'react-native-actionsheet';
+import WebView from 'react-native-webview';
 import ModalDropdown from 'react-native-modal-dropdown';
 import { SvgUri } from 'react-native-svg';
 import {
@@ -120,7 +121,6 @@ class Home extends React.Component {
     AsyncStorage.getItem('bearer')
     .then((response) => {
       if (response == null) {
-        console.log(response);
         this.props.navigation.navigate('Login')
       } else {
         this.setState({
@@ -561,7 +561,7 @@ class Home extends React.Component {
             <Footer />
           </ScrollView>
         </ImageBackground>
-        <SvgUri style={{position: 'absolute', right: 20, bottom: 100, width: 60, height: 60}} uri="https://staging-customerportal.moovaz.com/static/media/CHAT.33de3928.svg" />
+        <SvgUri onPress={() => this.props.navigation.navigate('Web')} style={{position: 'absolute', right: 20, bottom: 100, width: 60, height: 60}} uri="https://staging-customerportal.moovaz.com/static/media/CHAT.33de3928.svg" />
         <Modal animationType="slide" visible={this.state.modalVisible} transparent={false}>
           <View style={{backgroundColor: '#FFF'}}>
             <View style={styles.modalView}>
@@ -730,7 +730,7 @@ const styles = StyleSheet.create({
   },
   numberBoxItem: {
     width: '31%',
-    height: 80,
+    height: 90,
     backgroundColor: '#FFF',
     justifyContent: 'center',
     borderRadius: 5,

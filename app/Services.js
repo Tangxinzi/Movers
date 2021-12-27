@@ -386,7 +386,14 @@ export default class Services extends React.Component {
                 return (
                   <View style={styles.vendor} key={key}>
                     <View style={styles.vendorRow}>
-                      <Image resizeMode='cover' style={styles.vendorImage} source={{uri: 'https://staging-customerportal.moovaz.com/logo192.png'}} />
+                      <Image resizeMode='cover' style={styles.vendorImage} source={{
+                        uri: item.profileImg,
+                        method: 'GET',
+                        headers: {
+                          'Content-Type': 'image/png',
+                          'Authorization': `Bearer ${ this.state.bearer.jwToken }`,
+                        }
+                      }} />
                       <View style={styles.vendorContent}>
                         <Text allowFontScaling={false} style={styles.servicesName}>{item.services[0] && item.services[0]['name'].toUpperCase()}</Text>
                         <Text allowFontScaling={false} style={styles.companyName}>{item.companyName}</Text>
