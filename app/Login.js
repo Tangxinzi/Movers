@@ -119,7 +119,7 @@ class Login extends React.Component {
           console.log('profile', JSON.stringify(responseData))
           AsyncStorage.setItem('profile', JSON.stringify(responseData.data))
 
-          this.props.navigation.navigate('HomeScreen')
+          this.props.navigation.goBack()
         })
         .catch((error) => {
           console.log('err: ', error)

@@ -1,6 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
+import icons from '../icons/Icons';
 import iconsBottom from '../icons/iconsBottom';
 import {
   SafeAreaView,
@@ -66,6 +67,14 @@ export default class Bottom extends React.Component {
   }
 
   render() {
+    if (true) {
+      return (
+        <TouchableHighlight underlayColor="none" onPress={() => this.props.navigation.navigate('Web')} style={{position: 'absolute', right: 20, bottom: 40, width: 53, height: 50}}>
+          <Image style={{width: 53, height: 50}} resizeMode='cover' source={{uri: icons.chat}} />
+        </TouchableHighlight>
+      )
+    }
+
     return (
       <View style={styles.iconsBottomContainer}>
         <TouchableHighlight style={styles.iconsBottom} underlayColor="none" activeOpacity={0.85} onPress={() => this.props.navigation.navigate('InboxScreen')}>

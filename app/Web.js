@@ -45,6 +45,7 @@ class Web extends React.Component {
       this.setState({
         bearer: JSON.parse(response)
       })
+      console.log(this.state.bearer.jwToken);
     })
     .catch((error) => {
       console.log('error', error)

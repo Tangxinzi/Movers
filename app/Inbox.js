@@ -117,6 +117,13 @@ export default class Inbox extends React.Component {
             <Text allowFontScaling={false} style={styles.title}>Who you chatting with</Text>
             <View style={styles.vendoies}>
             {
+              !this.state.channels.length ? (
+                <View style={{ height: 350, justifyContent: 'center', alignItems: 'center' }}>
+                  <Image resizeMode='cover' style={{width: 88, height: 88}} source={{uri: 'https://staging-customerportal.moovaz.com/static/media/loading.b5201de1.gif'}} />
+                </View>
+              ): <></>
+            }
+            {
               this.state.channels.map((item, key) => {
                 if (item.statusValue) {
                   return (
@@ -174,7 +181,7 @@ const styles = StyleSheet.create({
   },
   vendoies: {
     marginTop: 20,
-    minHeight: 800,
+    minHeight: 400,
     overflow: 'hidden',
     borderRadius: 5
   },

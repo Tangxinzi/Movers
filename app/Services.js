@@ -269,7 +269,6 @@ export default class Services extends React.Component {
   }
 
   fetchImage (Id) {
-    // fetch(`https://api-staging-c.moovaz.com/api/v1/Component/get-file?Id=${ Id }&code=gUIBXx9vpSgY%2F5d0Hunrzw%3D%3D&tick=637740781865806378&type=USERS`, {
     fetch(`https://api-staging-c.moovaz.com/api/v1/Component/get-file?Id=bLEN4vDXCaDMmAAwyxeLTg%3D%3D&code=i%2BCG%2BOT0DG3bTBXeCTe0gg%3D%3D&tick=637755452271914518&type=USERS`, {
       method: 'GET',
       headers: {

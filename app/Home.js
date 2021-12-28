@@ -15,7 +15,6 @@ import Footer from './components/Footer';
 import Swiper from 'react-native-swiper';
 import Carousel from "./components/react-native-carousel-control";
 import ActionSheet from 'react-native-actionsheet';
-import WebView from 'react-native-webview';
 import ModalDropdown from 'react-native-modal-dropdown';
 import { SvgUri } from 'react-native-svg';
 import {
@@ -118,6 +117,7 @@ class Home extends React.Component {
   }
 
   bearer () {
+    // this.props.navigation.navigate('Login')
     AsyncStorage.getItem('bearer')
     .then((response) => {
       if (response == null) {
@@ -128,12 +128,31 @@ class Home extends React.Component {
         })
 
         this.getReloDetail()
+        this.getTotalUnread()
         this.reloDetail()
         this.fetchDataListColumn()
       }
     })
     .catch((error) => {
       console.log('error', error)
+    })
+    .done()
+  }
+
+  getTotalUnread () {
+    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-total-unread?`, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${ this.state.bearer.jwToken }`,
+      }
+    })
+    .then(response => response.json())
+    .then(responseData => {
+      AsyncStorage.setItem('totalUnread', JSON.stringify(responseData.data))
+    })
+    .catch((error) => {
+      console.log('err: ', error)
     })
     .done()
   }
@@ -541,7 +560,7 @@ class Home extends React.Component {
                 }}
               />
               <View style={[styles.taskview, {display: this.state.list.active == 'Task View' ? 'flex' : 'none'}]}>
-                <Carousel pageStyle={{backgroundColor: 'rgb(227, 215, 58)', justifyContent: 'flex-start', backgroundColor: "#f4f4f4", borderRadius: 10}}>
+                <Carousel pageStyle={{backgroundColor: 'rgb(227, 215, 58)', justifyContent: 'flex-start', backgroundColor: "#f4f4f4", borderRadius: 10}} swipeThreshold={0.2}>
                   <View style={styles.slide}>
                     {this.renderColumns(this.state.tasks && this.state.tasks.origin, 0)}
                   </View>
@@ -561,45 +580,46 @@ class Home extends React.Component {
             <Footer />
           </ScrollView>
         </ImageBackground>
-        <SvgUri onPress={() => this.props.navigation.navigate('Web')} style={{position: 'absolute', right: 20, bottom: 100, width: 60, height: 60}} uri="https://staging-customerportal.moovaz.com/static/media/CHAT.33de3928.svg" />
         <Modal animationType="slide" visible={this.state.modalVisible} transparent={false}>
-          <View style={{backgroundColor: '#FFF'}}>
-            <View style={styles.modalView}>
-              <Text allowFontScaling={false} style={styles.modalTitle}>Select mood background</Text>
-              <View style={styles.modalThemes}>
-                <TouchableHighlight underlayColor="none" activeOpacity={0.5} onPress={() => {
-                  this.setState({
-                    backgroundImageUrl: '',
-                    modalVisible: false
-                  })
-                  AsyncStorage.setItem('backgroundImageUrl', '')
-                }}>
-                  <View style={[styles.modalTheme, {backgroundColor: '#f4f4f4'}]}></View>
-                </TouchableHighlight>
-                {
-                  this.state.backgroundImage.map((item, key) => {
-                    return (
-                      <TouchableHighlight underlayColor="none" activeOpacity={0.5} onPress={() => {
-                        this.setState({
-                          backgroundImageUrl: item,
-                          modalVisible: false
-                        })
-                        AsyncStorage.setItem('backgroundImageUrl', item)
-                      }}>
-                        <Image resizeMode='cover' style={styles.modalTheme} source={{uri: item}} />
-                      </TouchableHighlight>
-                    )
-                  })
-                }
-                <View style={styles.modalTheme}></View>
-              </View>
-              <View style={styles.modalButtons}>
-                <TouchableHighlight underlayColor="none" activeOpacity={0.5} style={styles.modalCancel} onPress={() => this.setState({modalVisible: false})}>
-                  <Text allowFontScaling={false} style={styles.modalCancelText}>Cancel</Text>
-                </TouchableHighlight>
+          <ScrollView>
+            <View style={{backgroundColor: '#FFF'}}>
+              <View style={styles.modalView}>
+                <Text allowFontScaling={false} style={styles.modalTitle}>Select mood background</Text>
+                <View style={styles.modalThemes}>
+                  <TouchableHighlight underlayColor="none" activeOpacity={0.5} onPress={() => {
+                    this.setState({
+                      backgroundImageUrl: '',
+                      modalVisible: false
+                    })
+                    AsyncStorage.setItem('backgroundImageUrl', '')
+                  }}>
+                    <View style={[styles.modalTheme, {backgroundColor: '#f4f4f4'}]}></View>
+                  </TouchableHighlight>
+                  {
+                    this.state.backgroundImage.map((item, key) => {
+                      return (
+                        <TouchableHighlight underlayColor="none" activeOpacity={0.5} onPress={() => {
+                          this.setState({
+                            backgroundImageUrl: item,
+                            modalVisible: false
+                          })
+                          AsyncStorage.setItem('backgroundImageUrl', item)
+                        }}>
+                          <Image resizeMode='cover' style={styles.modalTheme} source={{uri: item}} />
+                        </TouchableHighlight>
+                      )
+                    })
+                  }
+                  <View style={styles.modalTheme}></View>
+                </View>
+                <View style={styles.modalButtons}>
+                  <TouchableHighlight underlayColor="none" activeOpacity={0.5} style={styles.modalCancel} onPress={() => this.setState({modalVisible: false})}>
+                    <Text allowFontScaling={false} style={styles.modalCancelText}>Cancel</Text>
+                  </TouchableHighlight>
+                </View>
               </View>
             </View>
-          </View>
+          </ScrollView>
         </Modal>
         <Bottom {...this.props} type="home" />
       </SafeAreaView>

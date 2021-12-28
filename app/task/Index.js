@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import icons from '../icons/Icons';
+import ReadMore from '@fawazahmed/react-native-read-more';
 import {
   Text,
   View,
@@ -205,13 +206,37 @@ class Index extends React.Component {
                 <Text allowFontScaling={false} style={[styles.rowText, {marginLeft: 10, color: '#e89cae', fontWeight: '600'}]}>ADD DUE DATE OR BUDGET</Text>
               </View>
             </TouchableHighlight>
-            <View style={{borderRadius: 5, overflow: 'hidden'}}>
+            <View style={{borderRadius: 5, backgroundColor: '#FFF', overflow: 'hidden'}}>
               {
                 this.state.taskVendor.map((item, key) => {
                   return (
                     <View style={styles.vendor} key={key}>
-                      <Text allowFontScaling={false} style={styles.vendorTitle}>{item.companyName}</Text>
-                      <Text allowFontScaling={false} style={styles.vendorTitle}>{item.priceTierName}</Text>
+                      <View style={styles.vendorRow}>
+                        <Image resizeMode='cover' style={styles.vendorImage} source={{
+                          uri: item.profileImg,
+                          method: 'GET',
+                          headers: {
+                            'Content-Type': 'image/png',
+                            'Authorization': `Bearer ${ this.state.bearer.jwToken }`,
+                          }
+                        }} />
+                        <View style={styles.vendorContent}>
+                          <Text allowFontScaling={false} style={styles.servicesName}>{item.services[0] && item.services[0]['name'].toUpperCase()}</Text>
+                          <Text allowFontScaling={false} style={styles.companyName}>{item.companyName}</Text>
+                          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            <Image resizeMode='cover' style={{width: 21, height: 21, marginRight: 5}} source={{uri: icons.money}} />
+                            <Text allowFontScaling={false} style={styles.companyName}>{item.priceTierName}</Text>
+                          </View>
+                        </View>
+                      </View>
+                      <ReadMore numberOfLines={4} animate={false} style={{marginTop: 5, fontSize: 14.5, lineHeight: 20}} underlayColor="none" seeMoreText={'read more'} seeMoreStyle={{color: '#e89cae'}} seeLessText={'show less'} seeLessStyle={{color: '#e89cae'}}>
+                        {item.shortDescription.replace(/<[^>]+>/g,"")}
+                      </ReadMore>
+                      <TouchableHighlight style={styles.touchButton} underlayColor="none" activeOpacity={0.85} onPress={() => {
+
+                      }}>
+                        <Text allowFontScaling={false} style={styles.statusText}>{item.statusText.toUpperCase()}</Text>
+                      </TouchableHighlight>
                     </View>
                   )
                 })
@@ -290,17 +315,29 @@ const styles = {
     height: 24,
     marginLeft: 3
   },
+  vendoies: {
+    marginTop: 20,
+    backgroundColor: '#FFF',
+    minHeight: 800,
+    overflow: 'hidden',
+    borderRadius: 5
+  },
   vendor: {
     padding: 15,
-    backgroundColor: '#FFF',
     borderBottomWidth: 1,
-    borderColor: '#f4f4f4'
+    borderColor: '#f2f2f2',
   },
-  vendorTitle: {
-    fontWeight: '600',
-    fontSize: 18,
-    marginBottom: 5
-  }
+  vendorRow: {
+    flexDirection: 'row'
+  },
+  vendorImage: {
+    width: 70,
+    height: 70,
+    marginRight: 10
+  },
+  vendorContent: {
+    flex: 1
+  },
 }
 
 module.exports = Index;
