@@ -21,6 +21,7 @@ import DeviceStorage from './DeviceStorage'
 import Inbox from './Inbox'
 import Home from './Home'
 import Folder from './Folder'
+import BrowseFile from './BrowseFile'
 import Services from './Services'
 import Web from './Web'
 import Login from './Login'
@@ -324,7 +325,10 @@ const App = createStackNavigator({
   },
   Web: {
     screen: Web
-  }
+  },
+  BrowseFile: {
+    screen: BrowseFile
+  },
 }, {
   mode: 'card',
   // headerMode: 'none',
