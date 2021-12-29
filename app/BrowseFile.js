@@ -53,6 +53,19 @@ class BrowseFile extends React.Component {
     .done()
   }
 
+  // LoadFile (url) {
+  //   return new Promise((RES, REJ) => {
+  //     fetch(url).then(response => response.blob()).then(blob => {
+  //       const reader = new FileReader();
+  //       reader.onload = (e) => {
+  //         const data = e.target.result;
+  //         RES(data.split('base64,')[1]);
+  //       }
+  //       reader.readAsDataURL(blob);
+  //     }).catch(REJ);
+  //   })
+  // }
+
   render() {
     if (this.state.bearer) {
       return (
@@ -60,7 +73,7 @@ class BrowseFile extends React.Component {
           <StatusBar backgroundColor="#ffffff" barStyle="dark-content" />
           <WebView
             source={{
-              uri: "https://api-staging-c.moovaz.com/api/v1/Component/get-file?tick=637764050137975571&Id=LGup6JMg8zHhEb0%2BqszFwj3XlENM%2FLL1uqe81OQnnLs%3D&code=opCT%2FXmUKekjsy3iur43Eg%3D%3D&KeyId=cQRMrkscsese02BVQ0YyvDCDtomM2ra%2F1DBN9HJLAqBviPpP5LI2rJTu8wEo3sWa&type=RELOCATES",
+              uri: "https://api-staging-c.moovaz.com/api/v1/Component/get-file?tick=637764106826616498&Id=5%2FwgkV64h8d8ommQbm7Zlxs8iWOxiDyy%2Bbf%2B56Ue54E%3D&code=opCT%2FXmUKekjsy3iur43Eg%3D%3D&KeyId=tMmY1K818OUkCBrr9xrir7jtFB28It1UZL6qB1eHJF4O%2FLMOrJU8tG0AXVt8kMTk&type=DOCUMENT_OF_CUSTOMER",
               method: 'GET',
               headers: {
                 'Accept': 'application/json, text/plain, */*',

@@ -274,7 +274,7 @@ const BottomNavigatorScreen = createBottomTabNavigator({
     this.navProps = props
 
     return (
-      <TabBarComponent {...props} style={{ paddingTop: 5, justifyContent: 'space-between' }} />
+      <TabBarComponent {...props} style={{ paddingTop: 3, justifyContent: 'space-between' }} />
     )
   },
   initialRouteName: "Home"

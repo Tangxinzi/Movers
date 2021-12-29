@@ -5,6 +5,7 @@ import icons from './icons/Icons';
 import Header from './components/Header';
 import Bottom from './components/Bottom';
 import Footer from './components/Footer';
+import DashLine from './components/DashLine';
 import ActionSheet from 'react-native-actionsheet';
 import {
   SafeAreaView,
@@ -155,6 +156,7 @@ export default class Inbox extends React.Component {
                           </View>
                         ) : <></>
                       }
+                      <DashLine style={{flex: 1}} lineWidth={1.8} />
                     </View>
                   )
                 }
@@ -190,8 +192,8 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   channelsRow: {
-    borderBottomWidth: 1,
-    borderColor: '#000',
+    // borderBottomWidth: 1,
+    // borderColor: '#000',
     // flexDirection: 'row'
   },
   channelsImage: {

@@ -175,15 +175,19 @@ export default class Folder extends React.Component {
             {
               this.state.documents.map((item, key) => {
                 return (
-                  <TouchableHighlight style={styles.documents} key={key} onPress={() => this.props.navigation.navigate('BrowseFile')}>
+                  <View style={styles.documents}>
                     <View style={styles.documentsRow}>
                       <View style={styles.documentsContent}>
                         <View style={styles.images}>
-                          <TouchableHighlight underlayColor="none" style={{backgroundColor: '#CCC'}} activeOpacity={0.85}>
-                            <Image resizeMode='contain' style={styles.image} source={{uri: icons.download}} />
+                          <TouchableHighlight underlayColor="none" activeOpacity={0.85} onPress={() => this.props.navigation.navigate('BrowseFile')}>
+                            <Image resizeMode='contain' style={styles.image} source={{uri: icons.download}} onPress={() => this.props.navigation.navigate('BrowseFile')} />
                           </TouchableHighlight>
                           {
-                            item.isOwner ? (<Image resizeMode='contain' style={styles.image} source={{uri: icons.delete}} />) : (<></>)
+                            item.isOwner ? (
+                              <TouchableHighlight underlayColor="none" activeOpacity={0.85} onPress={() => this.props.navigation.navigate('BrowseFile')}>
+                                <Image resizeMode='contain' style={styles.image} source={{uri: icons.delete}}  onPress={() => this.props.navigation.navigate('BrowseFile')} />
+                              </TouchableHighlight>
+                            ) : (<></>)
                           }
                         </View>
                         <Text allowFontScaling={false} numberOfLines={2} style={styles.companyName}>{item.originalFilename}</Text>
@@ -193,7 +197,7 @@ export default class Folder extends React.Component {
                         <Text allowFontScaling={false} style={styles.companyName}>{item.lastModified}</Text>
                       </View>
                     </View>
-                  </TouchableHighlight>
+                  </View>
                 )
               })
             }
@@ -338,7 +342,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     right: 0,
-    bottom: 5
+    bottom: 5,
+    zIndex: 1
   },
   image: {
     width: 22,

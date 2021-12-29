@@ -13,6 +13,7 @@ import Header from './components/Header';
 import Bottom from './components/Bottom';
 import Footer from './components/Footer';
 import Swiper from 'react-native-swiper';
+import DashLine from './components/DashLine';
 import Carousel from "./components/react-native-carousel-control";
 import ActionSheet from 'react-native-actionsheet';
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -474,7 +475,7 @@ class Home extends React.Component {
                 <Image resizeMode='cover' style={styles.backgroundContainerImage} source={{uri: icons.headbg}} />
                 <View style={styles.backgroundContainerText}>
                   <View style={styles.backgroundContainerHead}>
-                    <View style={styles.backgroundContainerDotLine}></View>
+                    <DashLine style={styles.backgroundContainerDotLine} color={'#FFF'} lineWidth={2} />
                     <View style={styles.backgroundContainerDot}>
                       <Text allowFontScaling={false} style={styles.countryName}>{this.state.currency && this.state.currency.origination.countryName}</Text>
                     </View>
@@ -729,9 +730,10 @@ const styles = StyleSheet.create({
   backgroundContainerDotLine: {
     position: 'absolute',
     width: '100%',
+    color: '#FFF'
     // left: 0,
-    borderColor: '#fff',
-    borderBottomWidth: 2,
+    // borderColor: '#fff',
+    // borderBottomWidth: 2,
   },
   backgroundContainerIcon: {
     width: 30,

@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react';
 import iconsHeader from '../icons/iconsHeader';
+import DashLine from './DashLine';
 import {
   SafeAreaView,
   ScrollView,
@@ -105,7 +106,10 @@ export default class Header extends React.Component {
               <Text style={styles.barDetail}>{this.state.reloDetail.moveDate}</Text>
             </View> : <View></View>
           }
-          <Text style={styles.barEdit}>EDIT</Text>
+          <View>
+            <Text style={styles.barEdit}>EDIT</Text>
+            <DashLine style={styles.dotLine} color={'#ffc0cb'} lineWidth={1.2} />
+          </View>
         </View>
       </>
     )
@@ -165,4 +169,7 @@ const styles = StyleSheet.create({
     color: 'pink',
     fontWeight: '800'
   },
+  dotLine: {
+    
+  }
 });
