@@ -117,6 +117,7 @@ class Home extends React.Component {
   }
 
   bearer () {
+    console.log('bearer');
     // this.props.navigation.navigate('Login')
     AsyncStorage.getItem('bearer')
     .then((response) => {
@@ -175,7 +176,6 @@ class Home extends React.Component {
     })
     .catch((error) => {
       console.log('err: ', error)
-      this.props.navigation.navigate('Login')
     })
     .done()
   }
@@ -454,12 +454,21 @@ class Home extends React.Component {
     }
   }
 
+  renderHeader () {
+    console.log('renderHeader');
+    return (
+      <Header {...this.props} />
+    )
+  }
+
   render() {
     return (
       <SafeAreaView>
         <ImageBackground source={{uri: this.state.backgroundImageUrl}}>
           <ScrollView contentInsetAdjustmentBehavior="automatic" stickyHeaderIndices={[0]} nestedScrollEnabled={true}>
-            <Header {...this.props} />
+            {
+              this.renderHeader()
+            }
             <View style={styles.container}>
               <View style={styles.backgroundContainer}>
                 <Image resizeMode='cover' style={styles.backgroundContainerImage} source={{uri: icons.headbg}} />
@@ -560,7 +569,7 @@ class Home extends React.Component {
                 }}
               />
               <View style={[styles.taskview, {display: this.state.list.active == 'Task View' ? 'flex' : 'none'}]}>
-                <Carousel pageStyle={{backgroundColor: 'rgb(227, 215, 58)', justifyContent: 'flex-start', backgroundColor: "#f4f4f4", borderRadius: 10}} swipeThreshold={0.2}>
+                <Carousel pageStyle={{backgroundColor: 'rgb(227, 215, 58)', justifyContent: 'flex-start', backgroundColor: "#f4f4f4", borderRadius: 10}} swipeThreshold={0.1}>
                   <View style={styles.slide}>
                     {this.renderColumns(this.state.tasks && this.state.tasks.origin, 0)}
                   </View>

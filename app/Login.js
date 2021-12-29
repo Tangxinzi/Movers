@@ -116,7 +116,7 @@ class Login extends React.Component {
         })
         .then(response => response.json())
         .then(responseData => {
-          console.log('profile', JSON.stringify(responseData))
+          // console.log('profile', JSON.stringify(responseData))
           AsyncStorage.setItem('profile', JSON.stringify(responseData.data))
 
           this.props.navigation.goBack()

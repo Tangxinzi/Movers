@@ -131,7 +131,7 @@ export default class Inbox extends React.Component {
                       <TouchableHighlight style={styles.channels} key={key} underlayColor="none" activeOpacity={0.85} onPress={() => this.getCompanyInfo(item.accountId, key)}>
                         <View style={styles.channelsContent}>
                           <Text allowFontScaling={false} style={styles.companyName}>{item.serviceName}</Text>
-                          <Image resizeMode='cover' style={{width: 14, height: !item.companyOpen ? 16 : 2}} source={{uri: !item.companyOpen ? icons.addEmpty : icons.minus}} />
+                          <Image resizeMode='cover' style={{width: 14, height: !item.companyOpen ? 14 : 2}} source={{uri: !item.companyOpen ? icons.addEmpty : icons.minus}} />
                         </View>
                       </TouchableHighlight>
                       {

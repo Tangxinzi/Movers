@@ -60,11 +60,17 @@ class Web extends React.Component {
           <StatusBar backgroundColor="#ffffff" barStyle="dark-content" />
           <WebView
             source={{
-              uri: "https://staging-customerportal.moovaz.com/forwardrelocation/inbox/2322",
+              uri: "https://api-staging-c.moovaz.com/api/v1/Customer/create-channel",
+              method: 'POST',
               headers: {
                 // 'Content-Type': 'image/png',
                 'Authorization': `Bearer ${ this.state.bearer.jwToken }`,
-              }
+              },
+              body: JSON.stringify({
+                "UserId": "51dbbcce-3f5b-4144-816c-06d1aca3c5df",
+                "RelocateId": "d5f20c36-d5ac-4088-b11d-6ce8c39f519d",
+                "IsFromCustomer": true
+              })
             }}
           />
         </>

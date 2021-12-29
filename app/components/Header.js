@@ -49,7 +49,7 @@ export default class Header extends React.Component {
     AsyncStorage.getItem('profile')
     .then((response) => {
       const profile = JSON.parse(response)
-      console.log('profile', profile.userImg)
+      console.log('HeaderProfile', profile.userImg)
       this.setState({ profile })
     })
     .catch((error) => {
