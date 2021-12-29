@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     paddingTop: 15,
     paddingBottom: 15,
-    zIndex: 1
+    zIndex: 9999
   },
   headerImageContent: {
     flex: 1,
@@ -170,6 +170,6 @@ const styles = StyleSheet.create({
     fontWeight: '800'
   },
   dotLine: {
-    
+
   }
 });

@@ -176,6 +176,7 @@ class Home extends React.Component {
       this.fetchDataListColumn()
     })
     .catch((error) => {
+      this.props.navigation.navigate('Login')
       console.log('err: ', error)
     })
     .done()
@@ -705,7 +706,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 130,
     paddingTop: 40,
-    zIndex: 111
+    zIndex: 0
   },
   backgroundContainerIconCon: {
     position: 'relative',
@@ -719,7 +720,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '80%',
-    marginLeft: '10%'
+    marginLeft: '10%',
+    zIndex: -1
   },
   backgroundContainerDot: {
     width: 15,

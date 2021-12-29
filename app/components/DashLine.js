@@ -13,7 +13,8 @@ import {View} from 'react-native';
 export default ({color = 'black', backgroundColor = 'white', lineWidth, style = {}}) => {
   let wrapperStyle = {
     height: lineWidth,
-    overflow: 'hidden'
+    overflow: 'hidden',
+    zIndex: 10
   };
   let lineStyle = {
     height: 0,
