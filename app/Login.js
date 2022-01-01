@@ -80,7 +80,7 @@ class Login extends React.Component {
       this.props.navigation.navigate('Login')
       console.log(error);
     })
-    .done()
+
 
     AsyncStorage.removeItem('bearer');
   }
@@ -124,7 +124,6 @@ class Login extends React.Component {
         .catch((error) => {
           console.log('err: ', error)
         })
-        .done();
       } else {
         Alert.alert('Tips', responseData.message || '', [
           {
@@ -136,7 +135,7 @@ class Login extends React.Component {
     .catch((error) => {
       console.log('err: ', error)
     })
-    .done();
+    ;
   }
 
   render() {

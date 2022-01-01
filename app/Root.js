@@ -91,7 +91,7 @@ class InboxTotalComponent extends React.Component {
         .catch((error) => {
           console.log('err: ', error)
         })
-        .done()
+        
       }
     })
   }
@@ -134,6 +134,7 @@ const styles = StyleSheet.create({
     marginRight: 5
   },
   iconsBottom: {
+    position: 'relative',
     flex: 1,
     alignItems: 'center'
   },
@@ -157,8 +158,8 @@ const styles = StyleSheet.create({
   },
   textBottomMark: {
     position: 'absolute',
-    top: -5,
-    right: 18,
+    top: -6,
+    right: 20,
     backgroundColor: '#e89cae',
     color: '#fff',
     padding: 2,

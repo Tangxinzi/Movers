@@ -114,7 +114,7 @@ class Home extends React.Component {
       console.log('error', error)
       // this.props.navigation.navigate('Login')
     })
-    .done()
+    
   }
 
   getReloDetail() {
@@ -136,7 +136,7 @@ class Home extends React.Component {
     .catch((error) => {
       console.log('err: ', error)
     })
-    .done()
+    
   }
 
   // delete task
@@ -159,7 +159,7 @@ class Home extends React.Component {
     .catch((error) => {
       console.log('err: ', error)
     })
-    .done()
+    
   }
 
   currency () {
@@ -178,7 +178,7 @@ class Home extends React.Component {
     .catch((error) => {
       console.log('err: ', error)
     })
-    .done()
+    
   }
 
   reloDetail () {
@@ -202,7 +202,7 @@ class Home extends React.Component {
     .catch((error) => {
       console.log('err: ', error)
     })
-    .done();
+    ;
   }
 
   fetchDataListColumn () {
@@ -222,7 +222,7 @@ class Home extends React.Component {
     .catch((error) => {
       console.log('err: ', error)
     })
-    .done();
+    ;
   }
 
   renderColumns = (tasks, taskIndex) => {
@@ -318,7 +318,7 @@ class Home extends React.Component {
     .catch((error) => {
       console.log('err: ', error)
     })
-    .done();
+    ;
   }
 
   renderRows = (tasks, taskIndex) => {

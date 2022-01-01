@@ -81,12 +81,12 @@ class Index extends React.Component {
       .catch((error) => {
         console.log(error);
       })
-      .done()
+      
     })
     .catch((error) => {
       console.log(error);
     })
-    .done()
+    
   }
 
   fetchData () {
@@ -104,7 +104,7 @@ class Index extends React.Component {
     .catch((error) => {
       console.log('err: ', error)
     })
-    .done()
+    
 
     fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-task-vendor?taskId=${ this.props.navigation.state.params.taskId || '' }&isQuoteForm=false&pageSize=5`, {
       headers: {
@@ -120,7 +120,7 @@ class Index extends React.Component {
     .catch((error) => {
       console.log('err: ', error)
     })
-    .done()
+    
   }
 
   renderColumns () {

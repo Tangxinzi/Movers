@@ -238,13 +238,13 @@ export default class Services extends React.Component {
         .catch((error) => {
           console.log(error);
         })
-        .done()
+
       }
     })
     .catch((error) => {
       console.log(error);
     })
-    .done()
+
   }
 
   fetchData () {
@@ -265,7 +265,7 @@ export default class Services extends React.Component {
     .catch((error) => {
       console.log('err: ', error)
     })
-    .done()
+
   }
 
   fetchImage (Id) {
@@ -284,7 +284,7 @@ export default class Services extends React.Component {
     .catch((error) => {
       console.log('err: ', error)
     })
-    .done()
+
   }
 
   service (id, check) {
@@ -385,14 +385,20 @@ export default class Services extends React.Component {
                 return (
                   <View style={styles.vendor} key={key}>
                     <View style={styles.vendorRow}>
-                      <Image resizeMode='cover' style={styles.vendorImage} source={{
-                        uri: item.profileImg,
-                        method: 'GET',
-                        headers: {
-                          'Content-Type': 'image/png',
-                          'Authorization': `Bearer ${ this.state.bearer.jwToken }`,
-                        }
-                      }} />
+                      {
+                        item.profileImg ? (
+                          <Image resizeMode='cover' style={styles.vendorImage} source={{
+                            uri: item.profileImg,
+                            method: 'GET',
+                            headers: {
+                              'Content-Type': 'image/png',
+                              'Authorization': `Bearer ${ this.state.bearer.jwToken }`,
+                            }
+                          }} />
+                        ) : (
+                          <Image resizeMode='cover' style={styles.vendorImage} source={{uri: icons.vendorImage}} />
+                        )
+                      }
                       <View style={styles.vendorContent}>
                         <Text allowFontScaling={false} style={styles.servicesName}>{item.services[0] && item.services[0]['name'].toUpperCase()}</Text>
                         <Text allowFontScaling={false} style={styles.companyName}>{item.companyName}</Text>
@@ -460,9 +466,11 @@ export default class Services extends React.Component {
                   )
                 })
               }
-              <TouchableHighlight underlayColor="none" activeOpacity={0.5} style={styles.touch} onPress={() => this.setState({modalVisible: false})}>
-                <Text allowFontScaling={false} style={{textAlign: 'center'}}>Close Modal</Text>
-              </TouchableHighlight>
+              <View style={styles.modalButtons}>
+                <TouchableHighlight underlayColor="none" activeOpacity={0.5} style={styles.modalCancel} onPress={() => this.setState({modalVisible: false})}>
+                  <Text allowFontScaling={false} style={styles.modalCancelText}>Close</Text>
+                </TouchableHighlight>
+              </View>
             </View>
           </ScrollView>
         </Modal>
@@ -515,7 +523,25 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 10
   },
-  touch: { backgroundColor: '#FFF', borderWidth: 1, borderColor: 'rgba(204, 204, 204, 0.5)', padding: 15, borderRadius: 5 },
+  modalButtons: {
+    marginTop: 70,
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-around',
+    marginBottom: '15%'
+  },
+  modalCancel: {
+    width: '60%',
+    borderRadius: 20,
+    backgroundColor: '#e4e1e1',
+  },
+  modalCancelText: {
+    textAlign: 'center',
+    height: 40,
+    lineHeight: 40,
+    fontSize: 14
+  },
 
   container: {
     padding: 15,

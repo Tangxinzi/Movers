@@ -6,6 +6,7 @@ import Bottom from './components/Bottom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ActionSheet from 'react-native-actionsheet';
+import Moment from 'moment';
 import {
   SafeAreaView,
   ScrollView,
@@ -67,13 +68,13 @@ export default class Folder extends React.Component {
         .catch((error) => {
           console.log(error);
         })
-        .done()
+        
       }
     })
     .catch((error) => {
       console.log(error);
     })
-    .done()
+    
   }
 
   fetchData (sortByColumn) {
@@ -93,7 +94,26 @@ export default class Folder extends React.Component {
     .catch((error) => {
       console.log('err: ', error)
     })
-    .done()
+    
+  }
+
+  deleteDocument (id) {
+    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/delete-document`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${ this.state.bearer.jwToken }`,
+      },
+      body: JSON.stringify({
+        "documentId": id
+      })
+    })
+    .then(response => response.json())
+    .then(responseData => {
+      console.log(responseData);
+      this.fetchData()
+    })
   }
 
   render() {
@@ -184,7 +204,18 @@ export default class Folder extends React.Component {
                           </TouchableHighlight>
                           {
                             item.isOwner ? (
-                              <TouchableHighlight underlayColor="none" activeOpacity={0.85} onPress={() => this.props.navigation.navigate('BrowseFile')}>
+                              <TouchableHighlight underlayColor="none" activeOpacity={0.85} onPress={() =>
+                                Alert.alert('Delete File?', `Are you sure you want to delete ${ item.originalFilename } ?`,
+                                  [
+                                    {
+                                      text: "CANCEL", onPress: () => {}
+                                    },
+                                    {
+                                      text: "DELETE", onPress: () => this.deleteDocument(item.id)
+                                    }
+                                  ]
+                                )
+                              }>
                                 <Image resizeMode='contain' style={styles.image} source={{uri: icons.delete}}  onPress={() => this.props.navigation.navigate('BrowseFile')} />
                               </TouchableHighlight>
                             ) : (<></>)
@@ -194,7 +225,7 @@ export default class Folder extends React.Component {
                         <Text allowFontScaling={false} style={styles.uploadedText}>Uploaded by</Text>
                         <Text allowFontScaling={false} style={styles.companyName}>{item.accountFirstName} {item.accountLastName}</Text>
                         <Text allowFontScaling={false} style={styles.uploadedText}>Last updated on</Text>
-                        <Text allowFontScaling={false} style={styles.companyName}>{item.lastModified}</Text>
+                        <Text allowFontScaling={false} style={styles.companyName}>{Moment(item.lastModified).format("DD MMM YYYY, HH:mm")}</Text>
                       </View>
                     </View>
                   </View>

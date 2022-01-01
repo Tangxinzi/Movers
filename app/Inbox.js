@@ -7,6 +7,7 @@ import Bottom from './components/Bottom';
 import Footer from './components/Footer';
 import DashLine from './components/DashLine';
 import ActionSheet from 'react-native-actionsheet';
+import Moment from 'moment';
 import {
   SafeAreaView,
   ScrollView,
@@ -49,12 +50,12 @@ export default class Inbox extends React.Component {
       .catch((error) => {
         console.log(error);
       })
-      .done()
+
     })
     .catch((error) => {
       console.log(error);
     })
-    .done()
+
   }
 
   fetchData () {
@@ -74,7 +75,7 @@ export default class Inbox extends React.Component {
     .catch((error) => {
       console.log('err: ', error)
     })
-    .done()
+
   }
 
   getCompanyInfo (accountId, key) {
@@ -85,8 +86,12 @@ export default class Inbox extends React.Component {
       channels[key]['companyOpen'] = false
       this.setState({ channels })
       return
-    } else {
+    }
+
+    if (channels[key]['company']) {
       channels[key]['companyOpen'] = true
+      this.setState({ channels })
+      return
     }
 
     fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-company-info?PartnerId=${ accountId }`, {
@@ -106,7 +111,7 @@ export default class Inbox extends React.Component {
     .catch((error) => {
       console.log('err: ', error)
     })
-    .done()
+
   }
 
   render() {
@@ -129,7 +134,7 @@ export default class Inbox extends React.Component {
                 if (item.statusValue) {
                   return (
                     <View style={styles.channelsRow} key={key}>
-                      <TouchableHighlight style={styles.channels} key={key} underlayColor="none" activeOpacity={0.85} onPress={() => this.getCompanyInfo(item.accountId, key)}>
+                      <TouchableHighlight style={styles.channels} key={key} underlayColor="none" activeOpacity={0.5} onPress={() => this.getCompanyInfo(item.accountId, key)}>
                         <View style={styles.channelsContent}>
                           <Text allowFontScaling={false} style={styles.companyName}>{item.serviceName}</Text>
                           <Image resizeMode='cover' style={{width: 14, height: !item.companyOpen ? 14 : 2}} source={{uri: !item.companyOpen ? icons.addEmpty : icons.minus}} />
@@ -150,13 +155,13 @@ export default class Inbox extends React.Component {
                               <View style={{flexDirection: 'column'}}>
                                 <Text allowFontScaling={false} style={[styles.companyText, {fontWeight: '700', marginBottom: 2}]}>{item.company.profile.firstName}</Text>
                                 <Text allowFontScaling={false} style={{fontSize: 13}}>{item.company.profile.name}</Text>
-                                <Text allowFontScaling={false} style={[styles.companyText, {fontSize: 13, color: 'gray'}]}>{item.messageLastModified}</Text>
+                                <Text allowFontScaling={false} style={[styles.companyText, {fontSize: 13, color: 'gray', letterSpacing: 1}]}>{Moment(item.messageLastModified).format("DD/MM/YYYY")}</Text>
                               </View>
                             </View>
                           </View>
                         ) : <></>
                       }
-                      <DashLine style={{flex: 1}} lineWidth={1.8} />
+                      <DashLine lineWidth={1.8} />
                     </View>
                   )
                 }

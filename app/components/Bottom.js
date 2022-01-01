@@ -57,13 +57,13 @@ export default class Bottom extends React.Component {
         .catch((error) => {
           console.log('err: ', error)
         })
-        .done()
+        
       }
     })
     .catch((error) => {
       console.log('error', error)
     })
-    .done()
+    
   }
 
   render() {

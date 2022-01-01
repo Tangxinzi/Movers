@@ -50,7 +50,7 @@ class Web extends React.Component {
     .catch((error) => {
       console.log('error', error)
     })
-    .done()
+    
   }
 
   render() {

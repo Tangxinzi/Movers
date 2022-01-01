@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import iconsHeader from '../icons/iconsHeader';
 import DashLine from './DashLine';
+import Moment from 'moment';
 import {
   SafeAreaView,
   ScrollView,
@@ -45,7 +46,7 @@ export default class Header extends React.Component {
     .catch((error) => {
       console.log('error', error)
     })
-    .done()
+
 
     AsyncStorage.getItem('profile')
     .then((response) => {
@@ -56,7 +57,7 @@ export default class Header extends React.Component {
     .catch((error) => {
       console.log(error);
     })
-    .done()
+
 
     AsyncStorage.getItem('reloDetail')
     .then((response) => {
@@ -67,7 +68,7 @@ export default class Header extends React.Component {
     .catch((error) => {
       console.log(error);
     })
-    .done()
+
   }
 
   render() {
@@ -103,7 +104,7 @@ export default class Header extends React.Component {
               <Text style={styles.barText}> to </Text>
               <Text style={styles.barDetail}>{this.state.reloDetail.destCityName}</Text>
               <Text style={styles.barText}> on </Text>
-              <Text style={styles.barDetail}>{this.state.reloDetail.moveDate}</Text>
+              <Text style={styles.barDetail}>{Moment(this.state.reloDetail.moveDate).format("DD MMM YYYY")}</Text>
             </View> : <View></View>
           }
           <View>

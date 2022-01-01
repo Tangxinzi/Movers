@@ -131,12 +131,12 @@ class Edit extends React.Component {
       .catch((error) => {
         console.log('err: ', error)
       })
-      .done()
+      
     })
     .catch((error) => {
       console.log(error);
     })
-    .done()
+    
 
     AsyncStorage.getItem('reloDetail')
     .then((response) => {
@@ -147,7 +147,7 @@ class Edit extends React.Component {
     .catch((error) => {
       console.log(error);
     })
-    .done()
+    
   }
 
   componentWillUnmount() {
@@ -171,7 +171,7 @@ class Edit extends React.Component {
     .catch((error) => {
       console.log('err: ', error)
     })
-    .done()
+    
   }
 
   render() {

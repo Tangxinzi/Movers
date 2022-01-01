@@ -108,7 +108,7 @@ class Home extends React.Component {
       this.setState({
         backgroundImageUrl: response || ''
       })
-    }).done()
+    })
 
     this.bearer()
   }
@@ -138,7 +138,7 @@ class Home extends React.Component {
     .catch((error) => {
       console.log('error', error)
     })
-    .done()
+
   }
 
   getTotalUnread () {
@@ -156,7 +156,7 @@ class Home extends React.Component {
     .catch((error) => {
       console.log('err: ', error)
     })
-    .done()
+
   }
 
   getReloDetail() {
@@ -179,7 +179,7 @@ class Home extends React.Component {
       this.props.navigation.navigate('Login')
       console.log('err: ', error)
     })
-    .done()
+
   }
 
   // delete task
@@ -202,7 +202,7 @@ class Home extends React.Component {
     .catch((error) => {
       console.log('err: ', error)
     })
-    .done()
+
   }
 
   currency () {
@@ -221,7 +221,7 @@ class Home extends React.Component {
     .catch((error) => {
       console.log('err: ', error)
     })
-    .done()
+
   }
 
   reloDetail () {
@@ -245,7 +245,7 @@ class Home extends React.Component {
     .catch((error) => {
       console.log('err: ', error)
     })
-    .done();
+    ;
   }
 
   fetchDataListColumn () {
@@ -265,7 +265,7 @@ class Home extends React.Component {
     .catch((error) => {
       console.log('err: ', error)
     })
-    .done();
+    ;
   }
 
   renderColumns = (tasks, taskIndex) => {
@@ -389,7 +389,7 @@ class Home extends React.Component {
     .catch((error) => {
       console.log('err: ', error)
     })
-    .done();
+    ;
   }
 
   renderRows = (tasks, taskIndex) => {
@@ -457,7 +457,6 @@ class Home extends React.Component {
   }
 
   renderHeader () {
-    console.log('renderHeader');
     return (
       <Header {...this.props} />
     )
@@ -468,9 +467,7 @@ class Home extends React.Component {
       <SafeAreaView>
         <ImageBackground source={{uri: this.state.backgroundImageUrl}}>
           <ScrollView contentInsetAdjustmentBehavior="automatic" stickyHeaderIndices={[0]} nestedScrollEnabled={true}>
-            {
-              this.renderHeader()
-            }
+            {this.renderHeader()}
             <View style={styles.container}>
               <View style={styles.backgroundContainer}>
                 <Image resizeMode='cover' style={styles.backgroundContainerImage} source={{uri: icons.headbg}} />
@@ -712,7 +709,13 @@ const styles = StyleSheet.create({
     position: 'relative',
     padding: 5,
     backgroundColor: '#FFF',
-    borderRadius: 40
+    borderRadius: 40,
+    zIndex: 100
+  },
+  backgroundContainerIcon: {
+    width: 30,
+    height: 30,
+    // backgroundColor: '#E89CAE'
   },
   backgroundContainerHead: {
     position: 'relative',
@@ -736,10 +739,6 @@ const styles = StyleSheet.create({
     // left: 0,
     // borderColor: '#fff',
     // borderBottomWidth: 2,
-  },
-  backgroundContainerIcon: {
-    width: 30,
-    height: 30,
   },
   countryName: {
     fontWeight: '800',
