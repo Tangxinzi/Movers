@@ -118,7 +118,7 @@ class Home extends React.Component {
   }
 
   getReloDetail() {
-    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-relo-detail`, {
+    fetch(`https://relo-api.moovaz.com/api/v1/Customer/get-relo-detail`, {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ class Home extends React.Component {
 
   // delete task
   deleteTask (taskId) {
-    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/delete-task`, {
+    fetch(`https://relo-api.moovaz.com/api/v1/Customer/delete-task`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -163,7 +163,7 @@ class Home extends React.Component {
   }
 
   currency () {
-    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-relo-currency?RelocateID=${ this.state.reloDetail.relocateId }`, {
+    fetch(`https://relo-api.moovaz.com/api/v1/Customer/get-relo-currency?RelocateID=${ this.state.reloDetail.relocateId }`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -182,7 +182,7 @@ class Home extends React.Component {
   }
 
   reloDetail () {
-    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-relo-detail`, {
+    fetch(`https://relo-api.moovaz.com/api/v1/Customer/get-relo-detail`, {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -206,7 +206,7 @@ class Home extends React.Component {
   }
 
   fetchDataListColumn () {
-    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-task-list-column?relocateId=${ this.state.reloDetail.relocateId }&status=${ this.state.list.type[this.state.list.index].status }`, {
+    fetch(`https://relo-api.moovaz.com/api/v1/Customer/get-task-list-column?relocateId=${ this.state.reloDetail.relocateId }&status=${ this.state.list.type[this.state.list.index].status }`, {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -302,7 +302,7 @@ class Home extends React.Component {
   }
 
   fetchDataListRow() {
-    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-task-list-row?relocateId=${ this.state.reloDetail.relocateId }&status=${ this.state.list.type[this.state.list.index].status }`, {
+    fetch(`https://relo-api.moovaz.com/api/v1/Customer/get-task-list-row?relocateId=${ this.state.reloDetail.relocateId }&status=${ this.state.list.type[this.state.list.index].status }`, {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',

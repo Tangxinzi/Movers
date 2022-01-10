@@ -26,6 +26,7 @@ import Services from './Services'
 import Web from './Web'
 import Login from './Login'
 import Boarding from './Boarding'
+import Quote from './Quote'
 
 import TaskIndex from './task/Index'
 import TaskCreate from './task/Create'
@@ -75,7 +76,7 @@ class InboxTotalComponent extends React.Component {
     .then((response) => {
       if (response) {
         const bearer = JSON.parse(response)
-        fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-total-unread?`, {
+        fetch(`https://relo-api.moovaz.com/api/v1/Customer/get-total-unread?`, {
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
@@ -91,7 +92,7 @@ class InboxTotalComponent extends React.Component {
         .catch((error) => {
           console.log('err: ', error)
         })
-        
+
       }
     })
   }
@@ -319,6 +320,12 @@ const App = createStackNavigator({
       headerStyle: {
         elevation: 1,
       }
+    }
+  },
+  Quote: {
+    screen: Quote,
+    navigationOptions: {
+      header: null
     }
   },
   Boarding: {

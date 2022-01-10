@@ -68,7 +68,7 @@ class Login extends React.Component {
     super(props);
 
     this.state = {
-      email: "mrsjanesmith@yopmail.com",
+      email: "jjtestprodcustomer@yopmail.com",
       password: "MasterPassword"
     };
 
@@ -90,7 +90,7 @@ class Login extends React.Component {
   }
 
   fetchLogin() {
-    fetch(`https://api-staging-c.moovaz.com/api/Account/authenticate`, {
+    fetch(`https://relo-api.moovaz.com/api/Account/authenticate`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -108,7 +108,7 @@ class Login extends React.Component {
         AsyncStorage.setItem('bearer', JSON.stringify(bearer))
 
         // set storage profile
-        fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-profile?`, {
+        fetch(`https://relo-api.moovaz.com/api/v1/Customer/get-profile?`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${ bearer.jwToken }`,

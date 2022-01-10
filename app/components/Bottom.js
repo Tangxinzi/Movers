@@ -43,7 +43,7 @@ export default class Bottom extends React.Component {
           bearer: JSON.parse(response)
         })
 
-        fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-total-unread?`, {
+        fetch(`https://relo-api.moovaz.com/api/v1/Customer/get-total-unread?`, {
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',

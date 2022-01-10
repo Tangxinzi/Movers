@@ -79,7 +79,7 @@ export default class Folder extends React.Component {
 
   fetchData (sortByColumn) {
     this.setState({documents: []})
-    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-all-documents?RelocateId=${ this.state.reloDetail.relocateId }&pageNumber=0&pageSize=20&sortByColumn=${ sortByColumn || 'uploaded_on' }&sortByType=desc&FileByType=${ this.state.fileByType || 'FileByType' }`, {
+    fetch(`https://relo-api.moovaz.com/api/v1/Customer/get-all-documents?RelocateId=${ this.state.reloDetail.relocateId }&pageNumber=0&pageSize=20&sortByColumn=${ sortByColumn || 'uploaded_on' }&sortByType=desc&FileByType=${ this.state.fileByType || 'FileByType' }`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -98,7 +98,7 @@ export default class Folder extends React.Component {
   }
 
   deleteDocument (id) {
-    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/delete-document`, {
+    fetch(`https://relo-api.moovaz.com/api/v1/Customer/delete-document`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

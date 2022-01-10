@@ -73,7 +73,7 @@ class BrowseFile extends React.Component {
           <StatusBar backgroundColor="#ffffff" barStyle="dark-content" />
           <WebView
             source={{
-              uri: "https://api-staging-c.moovaz.com/api/v1/Component/get-file?tick=637764106826616498&Id=5%2FwgkV64h8d8ommQbm7Zlxs8iWOxiDyy%2Bbf%2B56Ue54E%3D&code=opCT%2FXmUKekjsy3iur43Eg%3D%3D&KeyId=tMmY1K818OUkCBrr9xrir7jtFB28It1UZL6qB1eHJF4O%2FLMOrJU8tG0AXVt8kMTk&type=DOCUMENT_OF_CUSTOMER",
+              uri: "https://relo-api.moovaz.com/api/v1/Component/get-file?tick=637764106826616498&Id=5%2FwgkV64h8d8ommQbm7Zlxs8iWOxiDyy%2Bbf%2B56Ue54E%3D&code=opCT%2FXmUKekjsy3iur43Eg%3D%3D&KeyId=tMmY1K818OUkCBrr9xrir7jtFB28It1UZL6qB1eHJF4O%2FLMOrJU8tG0AXVt8kMTk&type=DOCUMENT_OF_CUSTOMER",
               method: 'GET',
               headers: {
                 'Accept': 'application/json, text/plain, */*',

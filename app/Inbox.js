@@ -60,7 +60,7 @@ export default class Inbox extends React.Component {
 
   fetchData () {
     const jwToken = this.state.bearer.jwToken
-    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-channels?RelocateId=${ this.state.reloDetail.relocateId }&PageSize=100`, {
+    fetch(`https://relo-api.moovaz.com/api/v1/Customer/get-channels?RelocateId=${ this.state.reloDetail.relocateId }&PageSize=100`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -94,7 +94,7 @@ export default class Inbox extends React.Component {
       return
     }
 
-    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-company-info?PartnerId=${ accountId }`, {
+    fetch(`https://relo-api.moovaz.com/api/v1/Customer/get-company-info?PartnerId=${ accountId }`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',

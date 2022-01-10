@@ -140,7 +140,7 @@ class Create extends React.Component {
 
   fetchCreateTask() {
     console.log(this.state.bodyContent);
-    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/create-task`, {
+    fetch(`https://relo-api.moovaz.com/api/v1/Customer/create-task`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

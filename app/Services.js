@@ -39,7 +39,7 @@ export default class Services extends React.Component {
         "RelocateId": "",
         "pageNumber": 1,
         "pageSize": 20,
-        "filterServices": [],
+        "filterServices": [{serviceId: 7}],
         "serviceType": "origin",
         "sortBy": "recently_added",
         "sortByType": "desc"
@@ -227,13 +227,12 @@ export default class Services extends React.Component {
         .then((response) => {
           response = JSON.parse(response)
           var bodyContent = this.state.bodyContent
-          bodyContent.relocateId = response.relocateId
+          bodyContent.RelocateId = response.relocateId
           this.setState({
             bodyContent,
             reloDetail: response
           })
           this.fetchData()
-          this.fetchImage()
         })
         .catch((error) => {
           console.log(error);
@@ -249,7 +248,8 @@ export default class Services extends React.Component {
 
   fetchData () {
     this.setState({vendor: []})
-    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-vendor`, {
+    console.log(this.state.bodyContent);
+    fetch(`https://relo-api.moovaz.com/api/v1/Customer/get-vendor`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -265,26 +265,6 @@ export default class Services extends React.Component {
     .catch((error) => {
       console.log('err: ', error)
     })
-
-  }
-
-  fetchImage (Id) {
-    fetch(`https://api-staging-c.moovaz.com/api/v1/Component/get-file?Id=bLEN4vDXCaDMmAAwyxeLTg%3D%3D&code=i%2BCG%2BOT0DG3bTBXeCTe0gg%3D%3D&tick=637755452271914518&type=USERS`, {
-      method: 'GET',
-      headers: {
-        // 'Accept': 'application/json',
-        'Content-Type': 'image/png',
-        'Authorization': `Bearer ${ this.state.bearer.jwToken }`,
-      }
-    })
-    // .then(response => response.json())
-    .then(responseData => {
-      console.log(responseData)
-    })
-    .catch((error) => {
-      console.log('err: ', error)
-    })
-
   }
 
   service (id, check) {
@@ -412,7 +392,7 @@ export default class Services extends React.Component {
                       {item.shortDescription.replace(/<[^>]+>/g,"")}
                     </ReadMore>
                     <TouchableHighlight style={styles.touchButton} underlayColor="none" activeOpacity={0.85} onPress={() => {
-
+                      this.props.navigation.navigate('Quote')
                     }}>
                       <Text allowFontScaling={false} style={styles.statusText}>{item.statusText.toUpperCase()}</Text>
                     </TouchableHighlight>
@@ -613,7 +593,7 @@ const styles = StyleSheet.create({
   },
   servicesName: {
     color: '#75787b',
-    fontsize: 12
+    fontSize: 12
   },
   shortDescription: {
     marginTop: 10

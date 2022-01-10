@@ -93,8 +93,8 @@ class Edit extends React.Component {
       })
 
       console.log(this.state.params.TaskId);
-      fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-task-detail?TaskId=${ this.state.params.TaskId }`, {
-      // fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-task-detail?TaskId=2f801916-4876-4471-8069-be04179765f3`, {
+      fetch(`https://relo-api.moovaz.com/api/v1/Customer/get-task-detail?TaskId=${ this.state.params.TaskId }`, {
+      // fetch(`https://relo-api.moovaz.com/api/v1/Customer/get-task-detail?TaskId=2f801916-4876-4471-8069-be04179765f3`, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -155,7 +155,7 @@ class Edit extends React.Component {
   }
 
   fetchCreateTask() {
-    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/create-task`, {
+    fetch(`https://relo-api.moovaz.com/api/v1/Customer/create-task`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

@@ -90,7 +90,7 @@ class Index extends React.Component {
   }
 
   fetchData () {
-    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-task-detail?taskId=${ this.props.navigation.state.params.taskId || '' }`, {
+    fetch(`https://relo-api.moovaz.com/api/v1/Customer/get-task-detail?taskId=${ this.props.navigation.state.params.taskId || '' }`, {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -106,7 +106,7 @@ class Index extends React.Component {
     })
     
 
-    fetch(`https://api-staging-c.moovaz.com/api/v1/Customer/get-task-vendor?taskId=${ this.props.navigation.state.params.taskId || '' }&isQuoteForm=false&pageSize=5`, {
+    fetch(`https://relo-api.moovaz.com/api/v1/Customer/get-task-vendor?taskId=${ this.props.navigation.state.params.taskId || '' }&isQuoteForm=false&pageSize=5`, {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
