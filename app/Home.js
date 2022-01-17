@@ -138,7 +138,6 @@ class Home extends React.Component {
     .catch((error) => {
       console.log('error', error)
     })
-
   }
 
   getTotalUnread () {
@@ -156,7 +155,6 @@ class Home extends React.Component {
     .catch((error) => {
       console.log('err: ', error)
     })
-
   }
 
   getReloDetail() {
@@ -197,6 +195,7 @@ class Home extends React.Component {
     })
     .then(response => response.json())
     .then(responseData => {
+      this.bearer()
       this.currency()
     })
     .catch((error) => {
@@ -360,6 +359,7 @@ class Home extends React.Component {
                 </>
               }
             />
+            {tasks.items.length == 0 && taskIndex == 2 ? this.renderMyMemos() : <></>}
           </View>
         </>
       )
@@ -459,6 +459,29 @@ class Home extends React.Component {
   renderHeader () {
     return (
       <Header {...this.props} />
+    )
+  }
+
+  renderMyMemos () {
+    return (
+      <View>
+        <View style={[styles.column, {borderTopLeftRadius: 24, backgroundColor: '#333', borderColor: '#333', borderWidth: 1}]}>
+          <View style={[styles.columnStatusCon, {marginTop: 10, marginBottom: 10}]}>
+            <Image resizeMode='contain' style={styles.columnFoot} source={{uri: icons.foot[3]}} />
+            <Image resizeMode='contain' style={styles.columnFootComment} source={{uri: icons.comment}} />
+          </View>
+          <Text style={{...styles.columnTitle, color: '#FFF'}} allowFontScaling={false}>Say Goodbye in style</Text>
+          <Text style={{...styles.columnDescription, color: '#FFF'}} allowFontScaling={false}>Let your friends know that you're relocating with a customised email sent directly to their inbox!</Text>
+        </View>
+        <View style={[styles.column, {borderTopLeftRadius: 24, backgroundColor: '#ffefcb', borderColor: '#ffaf00', borderWidth: 1}]}>
+          <View style={[styles.columnStatusCon, {marginTop: 10, marginBottom: 10}]}>
+            <Image resizeMode='contain' style={styles.columnFoot} source={{uri: icons.foot[2]}} />
+            <Image resizeMode='contain' style={styles.columnFootComment} source={{uri: icons.comment}} />
+          </View>
+          <Text style={styles.columnTitle} allowFontScaling={false}>Country + City Guides</Text>
+          <Text style={styles.columnDescription} allowFontScaling={false}>Curious about your new home? Check out our glossary of city guides!</Text>
+        </View>
+      </View>
     )
   }
 
@@ -568,7 +591,7 @@ class Home extends React.Component {
                 }}
               />
               <View style={[styles.taskview, {display: this.state.list.active == 'Task View' ? 'flex' : 'none'}]}>
-                <Carousel pageStyle={{backgroundColor: 'rgb(227, 215, 58)', justifyContent: 'flex-start', backgroundColor: "#f4f4f4", borderRadius: 10}} swipeThreshold={0.1}>
+                <Carousel pageStyle={{backgroundColor: 'rgb(227, 215, 58)', justifyContent: 'flex-start', backgroundColor: "#f4f4f4", borderRadius: 10}} swipeThreshold={0.3}>
                   <View style={styles.slide}>
                     {this.renderColumns(this.state.tasks && this.state.tasks.origin, 0)}
                   </View>

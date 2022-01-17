@@ -145,7 +145,6 @@
 				60545549C43A95ACB9DB85BD /* Pods-Movers-MoversTests.debug.xcconfig */,
 				F454961D63FDA335726696E8 /* Pods-Movers-MoversTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -483,6 +482,7 @@
 			baseConfigurationReference = 3388DE4B5E56396D260C33CB /* Pods-Movers.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_BITCODE = NO;
@@ -509,6 +509,7 @@
 			baseConfigurationReference = 96BF8E7D9D034D6A2B2D58BB /* Pods-Movers.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = Movers/Info.plist;

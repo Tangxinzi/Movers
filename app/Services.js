@@ -391,10 +391,10 @@ export default class Services extends React.Component {
                     <ReadMore numberOfLines={4} animate={false} style={{marginTop: 5, fontSize: 14.5, lineHeight: 20}} underlayColor="none" seeMoreText={'read more'} seeMoreStyle={{color: '#e89cae'}} seeLessText={'show less'} seeLessStyle={{color: '#e89cae'}}>
                       {item.shortDescription.replace(/<[^>]+>/g,"")}
                     </ReadMore>
-                    <TouchableHighlight style={styles.touchButton} underlayColor="none" activeOpacity={0.85} onPress={() => {
+                    <TouchableHighlight style={{...styles.touchButton}} underlayColor="none" activeOpacity={0.85} onPress={() => {
                       this.props.navigation.navigate('Quote')
                     }}>
-                      <Text allowFontScaling={false} style={styles.statusText}>{item.statusText.toUpperCase()}</Text>
+                      <Text allowFontScaling={false} style={{...styles.statusText, backgroundColor: item.statusText == 'See Status' ? '#64ccc9' : '#e89cae'}}>{item.statusText.toUpperCase()}</Text>
                     </TouchableHighlight>
                   </View>
                 )

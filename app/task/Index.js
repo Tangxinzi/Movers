@@ -81,12 +81,12 @@ class Index extends React.Component {
       .catch((error) => {
         console.log(error);
       })
-      
+
     })
     .catch((error) => {
       console.log(error);
     })
-    
+
   }
 
   fetchData () {
@@ -104,7 +104,7 @@ class Index extends React.Component {
     .catch((error) => {
       console.log('err: ', error)
     })
-    
+
 
     fetch(`https://relo-api.moovaz.com/api/v1/Customer/get-task-vendor?taskId=${ this.props.navigation.state.params.taskId || '' }&isQuoteForm=false&pageSize=5`, {
       headers: {
@@ -120,7 +120,7 @@ class Index extends React.Component {
     .catch((error) => {
       console.log('err: ', error)
     })
-    
+
   }
 
   renderColumns () {
@@ -232,10 +232,10 @@ class Index extends React.Component {
                       <ReadMore numberOfLines={4} animate={false} style={{marginTop: 5, fontSize: 14.5, lineHeight: 20}} underlayColor="none" seeMoreText={'read more'} seeMoreStyle={{color: '#e89cae'}} seeLessText={'show less'} seeLessStyle={{color: '#e89cae'}}>
                         {item.shortDescription.replace(/<[^>]+>/g,"")}
                       </ReadMore>
-                      <TouchableHighlight style={styles.touchButton} underlayColor="none" activeOpacity={0.85} onPress={() => {
-
+                      <TouchableHighlight style={{...styles.touchButton}} underlayColor="none" activeOpacity={0.85} onPress={() => {
+                        this.props.navigation.navigate('Quote')
                       }}>
-                        <Text allowFontScaling={false} style={styles.statusText}>{item.statusText.toUpperCase()}</Text>
+                        <Text allowFontScaling={false} style={{...styles.statusText, backgroundColor: item.statusText == 'See Status' ? '#64ccc9' : '#e89cae'}}>{item.statusText.toUpperCase()}</Text>
                       </TouchableHighlight>
                     </View>
                   )
@@ -337,6 +337,19 @@ const styles = {
   },
   vendorContent: {
     flex: 1
+  },
+  touchButton: {
+    marginTop: 18,
+    borderRadius: 23,
+    overflow: 'hidden'
+  },
+  statusText: {
+    color: '#fff',
+    backgroundColor: '#e89cae',
+    padding: 14,
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center'
   },
 }
 

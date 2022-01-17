@@ -5,6 +5,7 @@ import icons from './icons/Icons';
 import Bottom from './components/Bottom';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import DatePicker from 'react-native-datepicker';
 import ActionSheet from 'react-native-actionsheet';
 import Moment from 'moment';
 import {
@@ -31,30 +32,47 @@ export default class Quote extends React.Component {
     super(props);
 
     this.state = {
-      bearer: null
+      bearer: null,
+      questions: null
     }
+
+    this.bearer()
   }
 
   componentDidMount() {
-    this.listener = DeviceEventEmitter.addListener('Change', () => {
-      this.bearer()
-    })
   }
 
   bearer () {
     AsyncStorage.getItem('bearer')
     .then((response) => {
-      if (response == null) {
-        this.props.navigation.navigate('Login')
-      } else {
-        this.setState({
-          bearer: JSON.parse(response)
-        })
-      }
+      this.setState({
+        bearer: JSON.parse(response)
+      })
+
+      fetch(`https://relo-api.moovaz.com/api/v1/Customer/get-quote-form?PartnerId=44dbd90f-1ed3-11ec-8adc-06412451f802&RelocateId=733d93d6-0e52-4013-8f6a-ad46a8a28734&serviceId=7`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${ this.state.bearer.jwToken }`,
+        }
+      })
+      .then(response => response.json())
+      .then(responseData => {
+        console.log('questions: ', responseData.data.questions);
+        this.setState({ questions: responseData.data.questions })
+      })
+      .catch((error) => {
+        console.log('err: ', error)
+      })
     })
     .catch((error) => {
       console.log(error);
     })
+  }
+
+  fetchData () {
+
   }
 
   render() {
@@ -76,17 +94,84 @@ export default class Quote extends React.Component {
             </View>
             <View style={styles.form}>
               <Text style={styles.formText}>* Mandatory fields</Text>
-              <Text style={styles.formText}>Estimated Check-in Date *</Text>
-              <TextInput allowFontScaling={false} style={styles.textInput} multiline={false} placeholder="" clearButtonMode="while-editing" defaultValue={{}} placeholderTextColor="#CCC" onChangeText={(title) => {}} />
-              <Text style={styles.formText}>Estimated Check-out Date *</Text>
-              <TextInput allowFontScaling={false} style={styles.textInput} multiline={false} placeholder="" clearButtonMode="while-editing" defaultValue={{}} placeholderTextColor="#CCC" onChangeText={(title) => {}} />
-              <Text style={styles.formText}>No. of Adults *</Text>
-              <TextInput allowFontScaling={false} style={styles.textInput} multiline={false} placeholder="" clearButtonMode="while-editing" defaultValue={{}} placeholderTextColor="#CCC" onChangeText={(title) => {}} />
-              <Text style={styles.formText}>No. of Children *</Text>
-              <TextInput allowFontScaling={false} style={styles.textInput} multiline={false} placeholder="" clearButtonMode="while-editing" defaultValue={{}} placeholderTextColor="#CCC" onChangeText={(title) => {}} />
-              <Text style={styles.formText}>Budget (per week) </Text>
-              <TextInput allowFontScaling={false} style={styles.textInput} multiline={false} placeholder="" clearButtonMode="while-editing" defaultValue={{}} placeholderTextColor="#CCC" onChangeText={(title) => {}} />
+              {
+                this.state.questions && this.state.questions.map((items, index) => {
+                  return (
+                    <View>
+                      <Text style={styles.formText}>{items.question}</Text>
+                      {
+                        items.typeName == "Dropdown" && items.options ? (
+                          <>
+                            <View style={styles.textInput}></View>
+                            <ActionSheet ref={o => this.ActionSheet = o} title={'Select ...'} options={['Recently Added', 'A - Z', 'Z - A', '$ - $$$', '$$$ - $', 'Cancel']} cancelButtonIndex={5} onPress={(index) => this.ActionSheet.show()} />
+                          </>
+                        ) : (<></>)
+                      }
+                      {
+                        items.options && items.options.map((item, key) => {
+                          if (items.typeName == "Date Picker(Specific date)") {
+                            return (
+                              <TextInput allowFontScaling={false} style={styles.textInput} multiline={false} placeholder="" clearButtonMode="while-editing" defaultValue={item.answer} placeholderTextColor="#CCC" onChangeText={(title) => {}} />
+                            )
+                          }
+
+                          if (items.typeName == "Date Picker(Specific date)") {
+                            return (
+                              <DatePicker
+                                style={[styles.textInput, {padding: 5, flexDirection: 'column'}]}
+                                customStyles={{
+                                  dateInput: {
+                                    borderWidth: 0,
+                                    justifyContent: 'center',
+                                    alignItems: 'flex-start'
+                                  }
+                                }}
+                                date={item.answer}
+                                mode="date"
+                                placeholder="select date"
+                                format="YYYY-MM-DD"
+                                minDate=""
+                                maxDate=""
+                                confirmBtnText="Confirm"
+                                cancelBtnText="Cancel"
+                                showIcon={false}
+                              />
+                            )
+                          }
+
+                          if (items.typeName == 'Paragraph') {
+                            return (
+                              <TextInput
+                                allowFontScaling={false}
+                                style={styles.paragraphInput}
+                                placeholder=""
+                                clearButtonMode="while-editing"
+                                defaultValue={item.answer}
+                                placeholderTextColor="#CCC"
+                                multiline={true}
+                              />
+                            )
+                          }
+                        })
+                      }
+                    </View>
+                  )
+                })
+              }
             </View>
+            <View style={styles.buttons}>
+              <TouchableHighlight underlayColor="none" activeOpacity={0.85} style={styles.button} onPress={() => {
+
+              }}>
+                <Text allowFontScaling={false} style={{...styles.buttonText, color: '#e89cae', backgroundColor: '#FFF'}}>CANCEL</Text>
+              </TouchableHighlight>
+              <TouchableHighlight underlayColor="none" activeOpacity={0.85} style={styles.button} onPress={() => {
+
+              }}>
+                <Text allowFontScaling={false} style={styles.buttonText}>SUBMIT</Text>
+              </TouchableHighlight>
+            </View>
+
           </View>
           <Footer />
         </ScrollView>
@@ -152,4 +237,45 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
+  buttons: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'flex-end'
+  },
+  button: {
+    marginLeft: 20,
+    marginTop: 10,
+  },
+  buttonText: {
+    width: 145,
+    height: 46,
+    borderRadius: 20,
+    overflow: 'hidden',
+    lineHeight: 46,
+    borderWidth: 1,
+    backgroundColor: '#e89cae',
+    borderColor: '#e89cae',
+    textAlign: 'center',
+    fontSize: 18,
+    color: '#FFF',
+    fontWeight: '600'
+  },
+  paragraphInput: {
+    width: '100%',
+    borderColor: '#d3d6d9',
+    borderWidth: 1,
+    borderRadius: 4,
+    padding: 15,
+    paddingTop: 15,
+    paddingBottom: 15,
+    fontWeight: '700',
+    borderRadius: 0,
+    textAlign: 'left',
+    height: 120,
+    color: '#111',
+    textAlign: 'left',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  }
 });

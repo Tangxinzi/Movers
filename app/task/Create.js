@@ -70,7 +70,8 @@ class Create extends React.Component {
       service: {
         index: '',
         action: false,
-        text: ['Air-cooler Services', 'Baggage & Box Shipping', 'Housemaid Assistance', 'Private Transport Hiring', 'Relocation Concierge', 'Short-term Property Rental', 'Vehicle Renting', 'Vehicle Selling', 'Cancel']
+        id: [],
+        text: [],
       },
       budget: {
         index: '',
@@ -80,10 +81,10 @@ class Create extends React.Component {
       },
       bodyContent: {
         TaskData: {
-          taskType: "origin",
+          taskType: params.taskIndex == 0 ? 'origination' : 'destination',
           countryCityName: params.taskIndex == 0 ? 'Singapore' : params.taskIndex == 1 ? 'Sydney' : params.taskIndex == 2 ? 'My Memos' : ''
         },
-        taskType: "origin",
+        taskType: params.taskIndex == 0 ? 'origination' : 'destination',
         chooseCategory: "1",
         description: '',
         note: '',
@@ -91,22 +92,6 @@ class Create extends React.Component {
         relocateId: ''
       }
     };
-
-
-    // this.setState({
-    //   bodyContent: {
-    //     "title": this.state.title || '',
-    //     "description": this.state.description || '',
-    //     "note": this.state.note || '',
-    //     "startDate": this.state.startDate || '',
-    //     "isImportant": false,
-    //     "dueDate": this.state.dueDate || '',
-    //     "budgetType": this.state.budgetType,
-    //     "budgetAmount": this.state.budgetAmount || 0,
-    //     "serviceId": 13,
-    //     "relocateId": this.state.reloDetail.relocateId
-    //   }
-    // })
 
     AsyncStorage.getItem('bearer')
     .then((response) => {
@@ -117,7 +102,6 @@ class Create extends React.Component {
     .catch((error) => {
       console.log(error);
     })
-    
 
     AsyncStorage.getItem('reloDetail')
     .then((response) => {
@@ -127,19 +111,58 @@ class Create extends React.Component {
         reloDetail: response,
         bodyContent: this.state.bodyContent
       })
+      this.fetchGetServiceType()
     })
     .catch((error) => {
       console.log(error);
     })
-    
+
   }
 
   componentWillUnmount() {
     DeviceEventEmitter.emit('Change')
   }
 
+  fetchGetServiceType() {
+    fetch(`https://relo-api.moovaz.com/api/v1/Customer/get-service-type?RelocateID=${ this.state.reloDetail.relocateId }&isAddTask=true`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${ this.state.bearer.jwToken }`
+      }
+    })
+    .then(response => response.json())
+    .then(responseData => {
+      // origination Singapore
+      var servicesText = [], servicesId = [], service = this.state.service
+      if (this.state.params.taskIndex == 0) {
+        for (var i = 0; i < responseData.data.origination.services.length; i++) {
+          servicesText.push(responseData.data.origination.services[i].name)
+          servicesId.push(responseData.data.origination.services[i].id)
+        }
+      }
+
+      // destination Australia
+      if (this.state.params.taskIndex == 1) {
+        for (var i = 0; i < responseData.data.destination.services.length; i++) {
+          servicesText.push(responseData.data.destination.services[i].name)
+          servicesId.push(responseData.data.destination.services[i].id)
+        }
+      }
+
+      servicesText.push('Cancel')
+      service.text = servicesText
+      service.id = servicesId
+      this.setState({ service })
+    })
+    .catch((error) => {
+      console.log('err: ', error)
+    })
+  }
+
   fetchCreateTask() {
-    console.log(this.state.bodyContent);
+    console.log('this.state.bodyContent', this.state.bodyContent);
     fetch(`https://relo-api.moovaz.com/api/v1/Customer/create-task`, {
       method: 'POST',
       headers: {
@@ -159,7 +182,6 @@ class Create extends React.Component {
     .catch((error) => {
       console.log('err: ', error)
     })
-    
   }
 
   render() {
@@ -207,8 +229,10 @@ class Create extends React.Component {
                 </View>
                 <TouchableHighlight style={styles.forLabelTextRow} underlayColor='transparent' activeOpacity={0.8} onPress={() => {
                   this.state.service.action = false
+                  this.state.bodyContent.serviceId = null
                   this.setState({
                     service: this.state.service,
+                    bodyContent: this.state.bodyContent,
                     radio: true
                   })
                 }}>
@@ -217,11 +241,15 @@ class Create extends React.Component {
                 <TouchableHighlight style={styles.forLabelText} underlayColor='transparent' activeOpacity={0.8} onPress={() => this.setState({radio: false})}>
                   <Text allowFontScaling={false} style={styles.forLabelText}>Explore Relocation-related Services</Text>
                 </TouchableHighlight>
-                <ActionSheet ref={o => this.ActionSheetLabel = o} title={'Select ...'} options={this.state.service.text} cancelButtonIndex={8} onPress={(index) => {
-                  if (index < 2) {
+                <ActionSheet ref={o => this.ActionSheetLabel = o} title={'Select ...'} options={this.state.service.text} cancelButtonIndex={this.state.service.text.length - 1} onPress={(index) => {
+                  if (index < this.state.service.text.length - 1) {
                     this.state.service.action = true
                     this.state.service.index = index
-                    this.setState({service: this.state.service})
+                    this.state.bodyContent.serviceId = this.state.service.id[index]
+                    this.setState({
+                      service: this.state.service,
+                      bodyContent: this.state.bodyContent
+                    })
                   }
                 }} />
                 <TouchableHighlight style={[styles.textInput, {backgroundColor: !this.state.radio ? '#ffffff' : '#f2f2f2', alignItems: 'center'}]} underlayColor="#f2f2f2" activeOpacity={0.8} onPress={() => !this.state.radio ? this.ActionSheetLabel.show() : null}>
