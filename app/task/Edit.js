@@ -312,7 +312,7 @@ class Edit extends React.Component {
                 }}
                 // date={this.state.bodyContent.startDate}
                 mode="date"
-                placeholder="select date"
+                placeholder="Select Date ..."
                 format="DD/MM/YYYY"
                 minDate="2021/01/01"
                 maxDate="2023/01/01"
@@ -339,7 +339,7 @@ class Edit extends React.Component {
                 }}
                 date={this.state.bodyContent.dueDate}
                 mode="datetime"
-                placeholder="select date"
+                placeholder="Select Date ..."
                 format="DD/MM/YYYY"
                 minDate="2021/01/01"
                 maxDate="2023/01/01"

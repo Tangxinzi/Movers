@@ -328,7 +328,7 @@ class Create extends React.Component {
                 }}
                 date={this.state.bodyContent.startDate}
                 mode="date"
-                placeholder="select date"
+                placeholder="Select Date ..."
                 format="YYYY-MM-DD"
                 minDate=""
                 maxDate=""
@@ -355,7 +355,7 @@ class Create extends React.Component {
                 }}
                 date={this.state.bodyContent.dueDate}
                 mode="date"
-                placeholder="select date"
+                placeholder="Select Date ..."
                 format="YYYY-MM-DD"
                 minDate=""
                 maxDate=""

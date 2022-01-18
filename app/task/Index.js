@@ -233,7 +233,7 @@ class Index extends React.Component {
                         {item.shortDescription.replace(/<[^>]+>/g,"")}
                       </ReadMore>
                       <TouchableHighlight style={{...styles.touchButton}} underlayColor="none" activeOpacity={0.85} onPress={() => {
-                        this.props.navigation.navigate('Quote')
+                        this.props.navigation.navigate('Quote', {id: item.id})
                       }}>
                         <Text allowFontScaling={false} style={{...styles.statusText, backgroundColor: item.statusText == 'See Status' ? '#64ccc9' : '#e89cae'}}>{item.statusText.toUpperCase()}</Text>
                       </TouchableHighlight>
