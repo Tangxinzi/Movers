@@ -104,6 +104,8 @@ class InboxTotalComponent extends React.Component {
   }
 }
 
+
+
 const styles = StyleSheet.create({
   // iconsBottomContainer
   iconsBottomContainer: {
@@ -140,8 +142,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   iconBottom: {
-    width: 20,
-    height: 20,
+    width: 23,
+    height: 23,
     marginBottom: 0
   },
   iconsContent: {
@@ -235,7 +237,7 @@ const BottomNavigatorScreen = createBottomTabNavigator({
           <TouchableHighlight style={{...styles.iconsBottom, marginTop: 6}} underlayColor="none" activeOpacity={0.85} onPress={() => this.navProps.jumpTo('Service')}>
             <>
               <View style={styles.iconsContent}>
-                <Image resizeMode='cover' style={{...styles.iconBottom, width: focused ? 18 : 20 }} source={{uri: focused ? iconsBottom.servicesActive : iconsBottom.services}} />
+                <Image resizeMode='cover' style={{...styles.iconBottom, width: focused ? 20 : 23 }} source={{uri: focused ? iconsBottom.servicesActive : iconsBottom.services}} />
               </View>
               <Text style={styles.textBottom} allowFontScaling={false}>Service</Text>
             </>
@@ -262,7 +264,7 @@ const BottomNavigatorScreen = createBottomTabNavigator({
           }}>
             <>
               <View style={styles.iconsContent}>
-                <Image resizeMode='cover' style={{...styles.iconBottom, height: focused ? 18 : 20 }} source={{uri: focused ? iconsBottom.resourcesActive : iconsBottom.resources}} />
+                <Image resizeMode='cover' style={{...styles.iconBottom, height: 25 }} source={{uri: focused ? iconsBottom.resourcesActive : iconsBottom.resources}} />
               </View>
               <Text style={styles.textBottom} allowFontScaling={false}>Resources</Text>
             </>
@@ -282,135 +284,10 @@ const BottomNavigatorScreen = createBottomTabNavigator({
   initialRouteName: "Home"
 });
 
-const App = createStackNavigator({
-  BottomNavigatorScreen: {
-    screen: BottomNavigatorScreen,
-    navigationOptions: {
-      header: null
-    }
-  },
-  HomeScreen: {
-    screen: HomeScreen,
-    navigationOptions: {
-      header: null
-    }
-  },
-  InboxScreen: {
-    screen: InboxScreen,
-    navigationOptions: {
-      header: null
-    }
-  },
-  FolderScreen: {
-    screen: FolderScreen,
-    navigationOptions: {
-      header: null
-    }
-  },
-  ServiceScreen: {
-    screen: ServiceScreen,
-    navigationOptions: {
-      header: null
-    }
-  },
-  TaskIndex: {
-    screen: TaskIndex,
-    navigationOptions: {
-      headerBackTitleVisible: false,
-      headerStyle: {
-        elevation: 1,
-      }
-    }
-  },
-  Quote: {
-    screen: Quote,
-    navigationOptions: {
-      header: null
-    }
-  },
-  Boarding: {
-    screen: Boarding,
-  },
-  Web: {
-    screen: Web
-  },
-  BrowseFile: {
-    screen: BrowseFile
-  },
-}, {
-  mode: 'card',
-  // headerMode: 'none',
-  navigationOptions: {
-    headerBackTitleVisible: false,
-    cardStack: {
-      gesturesEnabled: true
-    }
-  },
-  defaultNavigationOptions: {
-    headerStyle: {
-      elevation: 0, // 移除 Android Header 阴影
-      shadowOpacity: 0, // 移除 iOS Header 阴影
-    },
-    headerTitleAlign: 'center', // Android 标题居中
-    headerBackTitleVisible: false, // 隐藏 iOS 返回按钮标题
-    headerPressColorAndroid: 'transparent', // 移除 Android 点击返回按钮效果
-    // cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS, // 切换路由时水平动画
-    // headerStyleInterpolator: HeaderStyleInterpolators.forUIKit, // 切换路时 Header 动画
-  },
-  transitionConfig: () => ({ // 跳转时，从右向左，滑入
-    screenInterpolator: CardStackStyleInterpolator.forHorizontal
-  })
-})
+const Root = createAppContainer(BottomNavigatorScreen);
 
-const Root = createStackNavigator(
-  {
-    App: {
-      screen: App,
-      navigationOptions: {
-        header: null,
-        headerBackTitleVisible: false,
-        headerStyle: {
-          borderBottomWidth: 0,
-          elevation: 0,
-          shadowOpacity: 0
-        }
-      }
-    },
-    Login: {
-      screen: Login,
-      navigationOptions: {
-        headerBackTitleVisible: false,
-        headerStyle: {
-          elevation: 1,
-        }
-      }
-    },
-    TaskCreate: {
-      screen: TaskCreate,
-      navigationOptions: {
-        headerBackTitleVisible: false,
-        headerStyle: {
-          elevation: 1,
-        }
-      }
-    },
-    TaskEdit: {
-      screen: TaskEdit,
-      navigationOptions: {
-        headerBackTitleVisible: false,
-        headerStyle: {
-          elevation: 1,
-        }
-      }
-    },
-  },
-  {
-    mode: 'modal',
-    // headerMode: 'none',
-    transitionConfig: () => ({ // 跳转时，从右向左，滑入
-      screenInterpolator: CardStackStyleInterpolator.forHorizontal
-    })
+export default class RootContainerApp extends React.Component {
+  render() {
+    return <Root />;
   }
-);
-
-export default createAppContainer(Root);
+}

@@ -367,7 +367,7 @@ export default class Services extends React.Component {
                     <View style={styles.vendorRow}>
                       {
                         item.profileImg ? (
-                          <Image resizeMode='cover' style={styles.vendorImage} source={{
+                          <Image resizeMode='contain' style={styles.vendorImage} source={{
                             uri: item.profileImg,
                             method: 'GET',
                             headers: {

@@ -27,6 +27,7 @@ import Web from './Web'
 import Login from './Login'
 import Boarding from './Boarding'
 import Quote from './Quote'
+import RootContainerApp from './RootContainerApp'
 
 import TaskIndex from './task/Index'
 import TaskCreate from './task/Create'
@@ -140,8 +141,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   iconBottom: {
-    width: 20,
-    height: 20,
+    width: 23,
+    height: 23,
     marginBottom: 0
   },
   iconsContent: {
@@ -203,7 +204,7 @@ const BottomNavigatorScreen = createBottomTabNavigator({
           <TouchableHighlight style={{...styles.iconsBottom, marginTop: 6}} underlayColor="none" activeOpacity={0.85} onPress={() => this.navProps.jumpTo('Folder')}>
             <>
               <View style={styles.iconsContent}>
-                <Image resizeMode='cover' style={{...styles.iconBottom, height: focused ? 18 : 20 }} source={{uri: focused ? iconsBottom.folderActive : iconsBottom.folder}} />
+                <Image resizeMode='cover' style={{...styles.iconBottom }} source={{uri: focused ? iconsBottom.folderActive : iconsBottom.folder}} />
               </View>
               <Text style={styles.textBottom} allowFontScaling={false}>Folder</Text>
             </>
@@ -235,7 +236,7 @@ const BottomNavigatorScreen = createBottomTabNavigator({
           <TouchableHighlight style={{...styles.iconsBottom, marginTop: 6}} underlayColor="none" activeOpacity={0.85} onPress={() => this.navProps.jumpTo('Service')}>
             <>
               <View style={styles.iconsContent}>
-                <Image resizeMode='cover' style={{...styles.iconBottom, width: focused ? 18 : 20 }} source={{uri: focused ? iconsBottom.servicesActive : iconsBottom.services}} />
+                <Image resizeMode='cover' style={{...styles.iconBottom, width: focused ? 20 : 23 }} source={{uri: focused ? iconsBottom.servicesActive : iconsBottom.services}} />
               </View>
               <Text style={styles.textBottom} allowFontScaling={false}>Service</Text>
             </>
@@ -262,7 +263,7 @@ const BottomNavigatorScreen = createBottomTabNavigator({
           }}>
             <>
               <View style={styles.iconsContent}>
-                <Image resizeMode='cover' style={{...styles.iconBottom, height: focused ? 18 : 20 }} source={{uri: focused ? iconsBottom.resourcesActive : iconsBottom.resources}} />
+                <Image resizeMode='cover' style={{...styles.iconBottom, width: 25 }} source={{uri: focused ? iconsBottom.resourcesActive : iconsBottom.resources}} />
               </View>
               <Text style={styles.textBottom} allowFontScaling={false}>Resources</Text>
             </>
@@ -285,6 +286,12 @@ const BottomNavigatorScreen = createBottomTabNavigator({
 const App = createStackNavigator({
   BottomNavigatorScreen: {
     screen: BottomNavigatorScreen,
+    navigationOptions: {
+      header: null
+    }
+  },
+  RootContainerApp: {
+    screen: RootContainerApp,
     navigationOptions: {
       header: null
     }

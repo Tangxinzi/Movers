@@ -212,7 +212,7 @@ class Index extends React.Component {
                   return (
                     <View style={styles.vendor} key={key}>
                       <View style={styles.vendorRow}>
-                        <Image resizeMode='cover' style={styles.vendorImage} source={{
+                        <Image resizeMode='contain' style={styles.vendorImage} source={{
                           uri: item.profileImg,
                           method: 'GET',
                           headers: {

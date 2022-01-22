@@ -234,10 +234,18 @@ class Boarding extends React.Component {
     this.setState({ master })
   }
 
+  onScrollView () {
+    this.fetchData()
+  }
+
   render() {
     if (this.state.bearer) {
       return (
-        <ScrollView>
+        <ScrollView onScroll = {(event) => {{
+            console.log(event.nativeEvent.contentOffset.y);//垂直滚动距离
+          }}}
+          scrollEventThrottle = {200}
+        >
           <View style={styles.container}>
             <StatusBar backgroundColor="#ffffff" barStyle="dark-content" />
             <View style={styles.header}>

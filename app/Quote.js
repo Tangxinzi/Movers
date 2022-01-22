@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import icons from './icons/Icons';
-import Bottom from './components/Bottom';
+import Bottom from './components/BottomQuote';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import DatePicker from 'react-native-datepicker';
@@ -39,6 +39,8 @@ export default class Quote extends React.Component {
       questions: null
     }
 
+    console.log('this.state.params', this.state.params);
+
     this.bearer()
   }
 
@@ -63,7 +65,7 @@ export default class Quote extends React.Component {
       .then(responseData => {
         this.setState({reloDetail: responseData.data})
 
-        fetch(`https://relo-api.moovaz.com/api/v1/Customer/get-quote-form?PartnerId=${ this.state.params.id || '44dbd90f-1ed3-11ec-8adc-06412451f802' }&RelocateId=${ this.state.reloDetail.relocateId }&serviceId=7`, {
+        fetch(`https://relo-api.moovaz.com/api/v1/Customer/get-quote-form?PartnerId=${ this.state.params.id }&RelocateId=${ this.state.reloDetail.relocateId }&serviceId=7`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -103,8 +105,34 @@ export default class Quote extends React.Component {
     })
   }
 
-  fetchData () {
+  fetchSubmitData () {
+    fetch(`https://relo-api.moovaz.com/api/v1/Customer/submit-form`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${ this.state.bearer.jwToken }`,
+      },
+      body: JSON.stringify({
+        countryType: "",
+        partnerId: this.state.params.id,
+        relocateId: this.state.reloDetail.relocateId,
+        serviceId: "",
+        questions: [
 
+        ],
+      })
+    })
+    .then(response => response.json())
+    .then(responseData => {
+      console.log(responseData)
+      if (responseData.succeeded) {
+        this.props.navigation.goBack()
+      }
+    })
+    .catch((error) => {
+      console.log('err: ', error)
+    })
   }
 
   render() {
@@ -171,7 +199,7 @@ export default class Quote extends React.Component {
                                 alignItems: 'flex-start'
                               }
                             }}
-                            date={items.answer}
+                            date={items.options[0]['answer']}
                             mode="date"
                             placeholder="Select Date ..."
                             format="YYYY-MM-DD"
@@ -245,9 +273,7 @@ export default class Quote extends React.Component {
               }}>
                 <Text allowFontScaling={false} style={{...styles.buttonText, color: '#e89cae', backgroundColor: '#FFF'}}>CANCEL</Text>
               </TouchableHighlight>
-              <TouchableHighlight underlayColor="none" activeOpacity={0.85} style={styles.button} onPress={() => {
-
-              }}>
+              <TouchableHighlight underlayColor="none" activeOpacity={0.85} style={styles.button} onPress={() => this.fetchSubmitData()}>
                 <Text allowFontScaling={false} style={styles.buttonText}>SUBMIT</Text>
               </TouchableHighlight>
             </View>

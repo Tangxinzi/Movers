@@ -67,7 +67,7 @@ export default class Bottom extends React.Component {
   }
 
   render() {
-    if (true) {
+    if (false) {
       return (
         <TouchableHighlight underlayColor="none" onPress={() => this.props.navigation.navigate('Web')} style={{position: 'absolute', right: 20, bottom: 40, width: 53, height: 50}}>
           <Image style={{width: 53, height: 50}} resizeMode='cover' source={{uri: icons.chat}} />
@@ -103,7 +103,7 @@ export default class Bottom extends React.Component {
         <TouchableHighlight style={styles.iconsBottom} underlayColor="none" activeOpacity={0.85} onPress={() => this.props.navigation.popToTop('ServiceScreen')}>
           <>
             <View style={styles.iconsContent}>
-              <Image resizeMode='cover' style={styles.iconBottom} source={{uri: this.props.type == 'services' ? iconsBottom.servicesActive : iconsBottom.services}} />
+              <Image resizeMode='cover' style={{...styles.iconBottom, width: this.props.type == 'services' ? 20 : 23 }} source={{uri: this.props.type == 'services' ? iconsBottom.servicesActive : iconsBottom.services}} />
             </View>
             <Text style={styles.textBottom} allowFontScaling={false}>Services</Text>
           </>
@@ -120,7 +120,7 @@ export default class Bottom extends React.Component {
         }}>
           <>
             <View style={styles.iconsContent}>
-              <Image resizeMode='cover' style={{...styles.iconBottom, width: 22}} source={{uri: this.props.type == 'resources' ? iconsBottom.resourcesActive : iconsBottom.resources}} />
+              <Image resizeMode='cover' style={{...styles.iconBottom, width: 25}} source={{uri: this.props.type == 'resources' ? iconsBottom.resourcesActive : iconsBottom.resources}} />
             </View>
             <Text style={styles.textBottom} allowFontScaling={false}>Resources</Text>
           </>
@@ -161,17 +161,18 @@ const styles = StyleSheet.create({
     marginRight: 5
   },
   iconsBottom: {
+    position: 'relative',
     flex: 1,
     alignItems: 'center'
   },
   iconBottom: {
-    width: 20,
-    height: 20,
+    width: 23,
+    height: 23,
     marginBottom: 0
   },
   iconsContent: {
     height: 20,
-    marginBottom: 5,
+    marginBottom: 3,
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -179,17 +180,20 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '700'
   },
+  textTotalBottom: {
+
+  },
   textBottomMark: {
     position: 'absolute',
-    top: -14,
-    right: 12,
+    top: -6,
+    right: 20,
     backgroundColor: '#e89cae',
     color: '#fff',
-    padding: 4,
+    padding: 2,
     fontWeight: '500',
-    fontSize: 12,
-    borderRadius: 10,
-    minWidth: 20,
+    fontSize: 10,
+    borderRadius: 8,
+    minWidth: 18,
     textAlign: 'center',
     overflow: 'hidden'
   }
