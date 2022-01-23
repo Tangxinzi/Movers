@@ -25,6 +25,7 @@ import {
   DeviceEventEmitter,
   TouchableHighlight,
 } from 'react-native';
+let { width, height } = Dimensions.get('window');
 
 class Boarding extends React.Component {
   static navigationOptions = ({navigation, screenProps}) => ({
@@ -64,6 +65,7 @@ class Boarding extends React.Component {
     super(props);
 
     this.state = {
+      barWidth: 0,
       bearer: null,
       cities_1_name: [],
       cities_2_name: [],
@@ -241,201 +243,213 @@ class Boarding extends React.Component {
   render() {
     if (this.state.bearer) {
       return (
-        <ScrollView onScroll = {(event) => {{
-            console.log(event.nativeEvent.contentOffset.y);//垂直滚动距离
-          }}}
-          scrollEventThrottle = {200}
-        >
-          <View style={styles.container}>
-            <StatusBar backgroundColor="#ffffff" barStyle="dark-content" />
-            <View style={styles.header}>
-              <Image resizeMode='cover' style={styles.headerLogo} source={{
-                uri: 'https://relo-api.moovaz.com/api/v1/Component/get-file?Id=8fafpMxCpfWc10n892Hqmg%3D%3D&code=jvUICPwSsXo%2B8cX1t1a90w%3D%3D&tick=637780094165784581&type=USERS',
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'image/png',
-                  'Authorization': `Bearer ${ this.state.bearer.jwToken }`,
+        <>
+          <View style={{...styles.bar, width: this.state.barWidth}}></View>
+          <ScrollView onScroll = {(event) => {{
+              var barWidth = event.nativeEvent.contentOffset.y / (event.nativeEvent.contentSize.height - event.nativeEvent.layoutMeasurement.height) * 100
+              if (barWidth < 0) {
+                this.setState({ barWidth: 0 })
+              } else if (barWidth <= 100) {
+                this.setState({ barWidth: barWidth + '%' })
+              } else if (barWidth > 100) {
+                this.setState({ barWidth: '100%' })
+              }
+
+              console.log(barWidth);
+            }}}
+            scrollEventThrottle = {200}
+          >
+            <View style={styles.container}>
+              <StatusBar backgroundColor="#ffffff" barStyle="dark-content" />
+              <View style={styles.header}>
+                <Image resizeMode='cover' style={styles.headerLogo} source={{
+                  uri: 'https://relo-api.moovaz.com/api/v1/Component/get-file?Id=8fafpMxCpfWc10n892Hqmg%3D%3D&code=jvUICPwSsXo%2B8cX1t1a90w%3D%3D&tick=637780094165784581&type=USERS',
+                  method: 'GET',
+                  headers: {
+                    'Content-Type': 'image/png',
+                    'Authorization': `Bearer ${ this.state.bearer.jwToken }`,
+                  }
+                }} />
+                <Text allowFontScaling={false} style={styles.headerTitle}>Hi!</Text>
+                <Text allowFontScaling={false} style={styles.headerTitle}>I’m your Relocation Buddy.</Text>
+                <Text allowFontScaling={false} style={styles.headerText}>Tell me more about your relocation so that I can make it as painless and stress-free as it can be!</Text>
+              </View>
+              <View style={styles.form}>
+                <Text allowFontScaling={false} style={styles.titleInputContainer}>1. Move Details</Text>
+                <View style={styles.textInputContainer}>
+                  <Text allowFontScaling={false} style={{color: 'rgb(51, 51, 51)'}}>You’re moving from*</Text>
+                  <View style={styles.textInput}>
+                    <ModalDropdown textStyle={{fontSize: 14, width: Dimensions.get('window').width - 102}} dropdownStyle={{width: Dimensions.get('window').width - 102}} defaultValue={this.state.cities_3_name[0] || 'Please Select ...'} options={this.state.cities_3_name} />
+                  </View>
+                </View>
+                <View style={styles.textInputContainer}>
+                  <View style={styles.textInput}>
+                    <ModalDropdown textStyle={{fontSize: 14, width: Dimensions.get('window').width - 102}} dropdownStyle={{width: Dimensions.get('window').width - 102}} defaultValue={this.state.cities_2_name[0] || 'Please Select ...'} options={this.state.cities_2_name} />
+                  </View>
+                </View>
+                <View style={styles.textInputContainer}>
+                  <Text allowFontScaling={false} style={{color: 'rgb(51, 51, 51)'}}>To*</Text>
+                  <View style={styles.textInput}>
+                    <ModalDropdown textStyle={{fontSize: 14, width: Dimensions.get('window').width - 102}} dropdownStyle={{width: Dimensions.get('window').width - 102}} defaultValue={this.state.cities_3_name[0] || 'Please Select ...'} options={this.state.cities_3_name} />
+                  </View>
+                </View>
+                <View style={styles.textInputContainer}>
+                  <View style={styles.textInput}>
+                    <ModalDropdown textStyle={{fontSize: 14, width: Dimensions.get('window').width - 102}} dropdownStyle={{width: Dimensions.get('window').width - 102}} defaultValue={this.state.cities_2_name[0] || 'Please Select ...'} options={this.state.cities_2_name} />
+                  </View>
+                </View>
+                <View style={styles.textInputContainer}>
+                  <Text allowFontScaling={false} style={{color: 'rgb(51, 51, 51)'}}>Departing On*</Text>
+                  <DatePicker
+                    style={[styles.textInput, {padding: 5, paddingLeft: 15, flexDirection: 'column'}]}
+                    customStyles={{
+                      dateInput: {
+                        borderWidth: 0,
+                        justifyContent: 'center',
+                        alignItems: 'flex-start'
+                      }
+                    }}
+                    date={this.state.bodyContent.departingOn}
+                    mode="date"
+                    placeholder="Select Date ..."
+                    format="YYYY-MM-DD"
+                    minDate=""
+                    maxDate=""
+                    confirmBtnText="Confirm"
+                    cancelBtnText="Cancel"
+                    showIcon={false}
+                    onDateChange={(departingOn) => {
+                      this.state.bodyContent.departingOn = departingOn
+                      this.setState({bodyContent: this.state.bodyContent})
+                    }}
+                  />
+                </View>
+                <View style={styles.textInputContainer}>
+                  <Text allowFontScaling={false} style={{color: 'rgb(51, 51, 51)'}}>Arriving On</Text>
+                  <DatePicker
+                    style={[styles.textInput, {padding: 5, paddingLeft: 15, flexDirection: 'column'}]}
+                    customStyles={{
+                      dateInput: {
+                        borderWidth: 0,
+                        justifyContent: 'center',
+                        alignItems: 'flex-start'
+                      }
+                    }}
+                    date={this.state.bodyContent.arrivingOn}
+                    mode="date"
+                    placeholder="Select Date ..."
+                    format="YYYY-MM-DD"
+                    minDate=""
+                    maxDate=""
+                    confirmBtnText="Confirm"
+                    cancelBtnText="Cancel"
+                    showIcon={false}
+                    onDateChange={(arrivingOn) => {
+                      this.state.bodyContent.arrivingOn = arrivingOn
+                      this.setState({bodyContent: this.state.bodyContent})
+                    }}
+                  />
+                </View>
+              </View>
+              <View style={styles.textSubmitFoot}>
+                <TouchableHighlight underlayColor='transparent' style={styles.touch} onPress={() => {}}>
+                  <Text allowFontScaling={false} numberOfLines={1} style={styles.touchText}>NEXT</Text>
+                </TouchableHighlight>
+              </View>
+              <View style={styles.form}>
+                <Text allowFontScaling={false} style={styles.titleInputContainer}>2. What has inspired your move?</Text>
+                {
+                  this.state.master.travelingFor.map((item, key) => {
+                    return (
+                      <TouchableHighlight key={key} activeOpacity={0.9} underlayColor="none" style={styles.item} onPress={() => {
+                        this.travelingFor(item.name)
+                      }}>
+                        <>
+                          <Image resizeMode='cover' style={styles.radio} source={{uri: item.radio ? iconsBoarding.radio : iconsBoarding.rectangle}} />
+                          <Text style={styles.moveText} allowFontScaling={false}>{item.name}</Text>
+                          <Image resizeMode='cover' style={styles.moveImage} source={{
+                            uri: item.icon,
+                            method: 'GET',
+                            headers: {
+                              'Content-Type': 'image/png',
+                              'Authorization': `Bearer ${ this.state.bearer.jwToken }`,
+                            }
+                          }} />
+                        </>
+                      </TouchableHighlight>
+                    )
+                  })
                 }
-              }} />
-              <Text allowFontScaling={false} style={styles.headerTitle}>Hi!</Text>
-              <Text allowFontScaling={false} style={styles.headerTitle}>I’m your Relocation Buddy.</Text>
-              <Text allowFontScaling={false} style={styles.headerText}>Tell me more about your relocation so that I can make it as painless and stress-free as it can be!</Text>
-            </View>
-            <View style={styles.form}>
-              <Text allowFontScaling={false} style={styles.titleInputContainer}>1. Move Details</Text>
-              <View style={styles.textInputContainer}>
-                <Text allowFontScaling={false} style={{color: 'rgb(51, 51, 51)'}}>You’re moving from*</Text>
-                <View style={styles.textInput}>
-                  <ModalDropdown textStyle={{fontSize: 14, width: Dimensions.get('window').width - 102}} dropdownStyle={{width: Dimensions.get('window').width - 102}} defaultValue={this.state.cities_3_name[0] || 'Please Select ...'} options={this.state.cities_3_name} />
-                </View>
               </View>
-              <View style={styles.textInputContainer}>
-                <View style={styles.textInput}>
-                  <ModalDropdown textStyle={{fontSize: 14, width: Dimensions.get('window').width - 102}} dropdownStyle={{width: Dimensions.get('window').width - 102}} defaultValue={this.state.cities_2_name[0] || 'Please Select ...'} options={this.state.cities_2_name} />
-                </View>
+              <View style={styles.textSubmitFoot}>
+                <TouchableHighlight underlayColor='transparent' style={styles.touch} onPress={() => {}}>
+                  <Text allowFontScaling={false} numberOfLines={1} style={styles.touchText}>NEXT</Text>
+                </TouchableHighlight>
               </View>
-              <View style={styles.textInputContainer}>
-                <Text allowFontScaling={false} style={{color: 'rgb(51, 51, 51)'}}>To*</Text>
-                <View style={styles.textInput}>
-                  <ModalDropdown textStyle={{fontSize: 14, width: Dimensions.get('window').width - 102}} dropdownStyle={{width: Dimensions.get('window').width - 102}} defaultValue={this.state.cities_3_name[0] || 'Please Select ...'} options={this.state.cities_3_name} />
-                </View>
-              </View>
-              <View style={styles.textInputContainer}>
-                <View style={styles.textInput}>
-                  <ModalDropdown textStyle={{fontSize: 14, width: Dimensions.get('window').width - 102}} dropdownStyle={{width: Dimensions.get('window').width - 102}} defaultValue={this.state.cities_2_name[0] || 'Please Select ...'} options={this.state.cities_2_name} />
-                </View>
-              </View>
-              <View style={styles.textInputContainer}>
-                <Text allowFontScaling={false} style={{color: 'rgb(51, 51, 51)'}}>Departing On*</Text>
-                <DatePicker
-                  style={[styles.textInput, {padding: 5, paddingLeft: 15, flexDirection: 'column'}]}
-                  customStyles={{
-                    dateInput: {
-                      borderWidth: 0,
-                      justifyContent: 'center',
-                      alignItems: 'flex-start'
-                    }
-                  }}
-                  date={this.state.bodyContent.departingOn}
-                  mode="date"
-                  placeholder="Select Date ..."
-                  format="YYYY-MM-DD"
-                  minDate=""
-                  maxDate=""
-                  confirmBtnText="Confirm"
-                  cancelBtnText="Cancel"
-                  showIcon={false}
-                  onDateChange={(departingOn) => {
-                    this.state.bodyContent.departingOn = departingOn
-                    this.setState({bodyContent: this.state.bodyContent})
-                  }}
-                />
-              </View>
-              <View style={styles.textInputContainer}>
-                <Text allowFontScaling={false} style={{color: 'rgb(51, 51, 51)'}}>Arriving On</Text>
-                <DatePicker
-                  style={[styles.textInput, {padding: 5, paddingLeft: 15, flexDirection: 'column'}]}
-                  customStyles={{
-                    dateInput: {
-                      borderWidth: 0,
-                      justifyContent: 'center',
-                      alignItems: 'flex-start'
-                    }
-                  }}
-                  date={this.state.bodyContent.arrivingOn}
-                  mode="date"
-                  placeholder="Select Date ..."
-                  format="YYYY-MM-DD"
-                  minDate=""
-                  maxDate=""
-                  confirmBtnText="Confirm"
-                  cancelBtnText="Cancel"
-                  showIcon={false}
-                  onDateChange={(arrivingOn) => {
-                    this.state.bodyContent.arrivingOn = arrivingOn
-                    this.setState({bodyContent: this.state.bodyContent})
-                  }}
-                />
-              </View>
-            </View>
-            <View style={styles.textSubmitFoot}>
-              <TouchableHighlight underlayColor='transparent' style={styles.touch} onPress={() => {}}>
-                <Text allowFontScaling={false} numberOfLines={1} style={styles.touchText}>NEXT</Text>
-              </TouchableHighlight>
-            </View>
-            <View style={styles.form}>
-              <Text allowFontScaling={false} style={styles.titleInputContainer}>2. What has inspired your move?</Text>
-              {
-                this.state.master.travelingFor.map((item, key) => {
-                  return (
-                    <TouchableHighlight key={key} activeOpacity={0.9} underlayColor="none" style={styles.item} onPress={() => {
-                      this.travelingFor(item.name)
-                    }}>
-                      <>
-                        <Image resizeMode='cover' style={styles.radio} source={{uri: item.radio ? iconsBoarding.radio : iconsBoarding.rectangle}} />
-                        <Text style={styles.moveText} allowFontScaling={false}>{item.name}</Text>
-                        <Image resizeMode='cover' style={styles.moveImage} source={{
-                          uri: item.icon,
-                          method: 'GET',
-                          headers: {
-                            'Content-Type': 'image/png',
-                            'Authorization': `Bearer ${ this.state.bearer.jwToken }`,
-                          }
-                        }} />
-                      </>
-                    </TouchableHighlight>
-                  )
-                })
-              }
-            </View>
-            <View style={styles.textSubmitFoot}>
-              <TouchableHighlight underlayColor='transparent' style={styles.touch} onPress={() => {}}>
-                <Text allowFontScaling={false} numberOfLines={1} style={styles.touchText}>NEXT</Text>
-              </TouchableHighlight>
-            </View>
-            <View style={styles.form}>
-              <Text allowFontScaling={false} style={styles.titleInputContainer}>3. Who’s moving with you?</Text>
-              {
-                this.state.who.map((item, key) => {
-                  return (
-                    <View key={key} activeOpacity={0.9} underlayColor="none" style={styles.whoItem}>
-                      <>
-                        <Text style={styles.whoText} allowFontScaling={false}>{item.title}</Text>
-                        <View style={styles.active}>
-                          <TouchableHighlight key={key} activeOpacity={0.9} underlayColor="none" onPress={() => {
-                            var who = this.state.who
-                            if (item.title == 'Adults' && who[0].num > 0) {
-                              who[0].num -= 1
-                            }
+              <View style={styles.form}>
+                <Text allowFontScaling={false} style={styles.titleInputContainer}>3. Who’s moving with you?</Text>
+                {
+                  this.state.who.map((item, key) => {
+                    return (
+                      <View key={key} activeOpacity={0.9} underlayColor="none" style={styles.whoItem}>
+                        <>
+                          <Text style={styles.whoText} allowFontScaling={false}>{item.title}</Text>
+                          <View style={styles.active}>
+                            <TouchableHighlight key={key} activeOpacity={0.9} underlayColor="none" onPress={() => {
+                              var who = this.state.who
+                              if (item.title == 'Adults' && who[0].num > 0) {
+                                who[0].num -= 1
+                              }
 
-                            if (item.title == 'Children' && who[1].num > 0) {
-                              who[1].num -= 1
-                            }
+                              if (item.title == 'Children' && who[1].num > 0) {
+                                who[1].num -= 1
+                              }
 
-                            if (item.title == 'Pets' && who[2].num > 0) {
-                              who[2].num -= 1
-                            }
+                              if (item.title == 'Pets' && who[2].num > 0) {
+                                who[2].num -= 1
+                              }
 
-                            this.setState({ who })
-                          }}>
-                            <Image resizeMode='cover' style={styles.activeImage} source={{uri: item.num == 0 ? iconsBoarding.minusDisable : iconsBoarding.minus}} />
-                          </TouchableHighlight>
-                          <View style={styles.activeContent}>
-                            <Text style={styles.activeText} allowFontScaling={false}>{item.num}</Text>
+                              this.setState({ who })
+                            }}>
+                              <Image resizeMode='cover' style={styles.activeImage} source={{uri: item.num == 0 ? iconsBoarding.minusDisable : iconsBoarding.minus}} />
+                            </TouchableHighlight>
+                            <View style={styles.activeContent}>
+                              <Text style={styles.activeText} allowFontScaling={false}>{item.num}</Text>
+                            </View>
+                            <TouchableHighlight key={key} activeOpacity={0.9} underlayColor="none" onPress={() => {
+                              var who = this.state.who
+                              if (item.title == 'Adults') {
+                                who[0].num += 1
+                              }
+
+                              if (item.title == 'Children') {
+                                who[1].num += 1
+                              }
+
+                              if (item.title == 'Pets') {
+                                who[2].num += 1
+                              }
+
+                              this.setState({ who })
+                            }}>
+                              <Image resizeMode='cover' style={styles.activeImage} source={{uri: iconsBoarding.plus}} />
+                            </TouchableHighlight>
                           </View>
-                          <TouchableHighlight key={key} activeOpacity={0.9} underlayColor="none" onPress={() => {
-                            var who = this.state.who
-                            if (item.title == 'Adults') {
-                              who[0].num += 1
-                            }
-
-                            if (item.title == 'Children') {
-                              who[1].num += 1
-                            }
-
-                            if (item.title == 'Pets') {
-                              who[2].num += 1
-                            }
-
-                            this.setState({ who })
-                          }}>
-                            <Image resizeMode='cover' style={styles.activeImage} source={{uri: iconsBoarding.plus}} />
-                          </TouchableHighlight>
-                        </View>
-                      </>
-                    </View>
-                  )
-                })
-              }
+                        </>
+                      </View>
+                    )
+                  })
+                }
+              </View>
+              <View style={styles.textSubmitFoot}>
+                <TouchableHighlight underlayColor='transparent' style={styles.touch} onPress={() => {}}>
+                  <Text allowFontScaling={false} numberOfLines={1} style={styles.touchText}>NEXT</Text>
+                </TouchableHighlight>
+              </View>
             </View>
-            <View style={styles.textSubmitFoot}>
-              <TouchableHighlight underlayColor='transparent' style={styles.touch} onPress={() => {}}>
-                <Text allowFontScaling={false} numberOfLines={1} style={styles.touchText}>NEXT</Text>
-              </TouchableHighlight>
-            </View>
-          </View>
-          <Footer />
-        </ScrollView>
+            <Footer />
+          </ScrollView>
+        </>
       )
     } else {
       return <></>
@@ -579,7 +593,8 @@ const styles = {
   },
   radio: { width: 22, height: 22, marginRight: 11, },
   touch: { backgroundColor: '#FFF', borderWidth: 0.5, borderColor: '#E89CAE', width: 145, height: 46, justifyContent: 'center', borderRadius: 23 },
-  touchText: { fontSize: 16, fontWeight: '600', color: '#e89cae', textAlign: 'center', marginHorizontal: 16 }
+  touchText: { fontSize: 16, fontWeight: '600', color: '#e89cae', textAlign: 'center', marginHorizontal: 16 },
+  bar: { borderWidth: 3, position: 'relative', borderColor: 'rgb(255, 191, 206)', top: 0, left: 0, zIndex: 100 }
 }
 
 module.exports = Boarding;
