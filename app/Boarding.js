@@ -254,8 +254,6 @@ class Boarding extends React.Component {
               } else if (barWidth > 100) {
                 this.setState({ barWidth: '100%' })
               }
-
-              console.log(barWidth);
             }}}
             scrollEventThrottle = {200}
           >

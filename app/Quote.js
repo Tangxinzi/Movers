@@ -106,6 +106,25 @@ export default class Quote extends React.Component {
   }
 
   fetchSubmitData () {
+    var questions = [], _questions = this.state.questions
+    for (var i = 0; i < _questions.length; i++) {
+      questions.push({
+        id: _questions[i].id,
+        answers: []
+      })
+
+      if (_questions[i].options && _questions[i].options.length) {
+        for (var j = 0; j < _questions[i].options.length; j++) {
+          questions[i].answers.push({
+            "answer": _questions[i].options[j].answer,
+            "answerText": _questions[i].options[j].answerText
+          })
+        }
+      }
+    }
+
+    console.log(questions);
+
     fetch(`https://relo-api.moovaz.com/api/v1/Customer/submit-form`, {
       method: 'POST',
       headers: {
@@ -114,13 +133,11 @@ export default class Quote extends React.Component {
         'Authorization': `Bearer ${ this.state.bearer.jwToken }`,
       },
       body: JSON.stringify({
-        countryType: "",
+        countryType: "origin",
         partnerId: this.state.params.id,
         relocateId: this.state.reloDetail.relocateId,
-        serviceId: "",
-        questions: [
-
-        ],
+        serviceId: 7,
+        questions,
       })
     })
     .then(response => response.json())
@@ -128,6 +145,8 @@ export default class Quote extends React.Component {
       console.log(responseData)
       if (responseData.succeeded) {
         this.props.navigation.goBack()
+      } else {
+        Alert.alert('Tips', responseData.message)
       }
     })
     .catch((error) => {
@@ -182,8 +201,9 @@ export default class Quote extends React.Component {
                             clearButtonMode="while-editing"
                             defaultValue={items.answer}
                             placeholderTextColor="#CCC"
-                            onChangeText={(title) => {
-
+                            onChangeText={(answer) => {
+                              this.state.questions[index].options[0]['answer'] = answer
+                              this.setState({questions: this.state.questions})
                             }}
                           />
                         ) : (<></>)
@@ -208,6 +228,10 @@ export default class Quote extends React.Component {
                             confirmBtnText="Confirm"
                             cancelBtnText="Cancel"
                             showIcon={false}
+                            onDateChange={(answer) => {
+                              this.state.questions[index].options[0]['answer'] = answer
+                              this.setState({questions: this.state.questions})
+                            }}
                           />
                         ) : (<></>)
                       }
